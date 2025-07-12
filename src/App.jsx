@@ -9,13 +9,10 @@ import Form from './pages/Form';
 import History from './pages/History';
 import AppSettingsPage from './pages/AppSettings';
 import UserSettingsPage from './pages/UserSettings';
-import { ThemeProvider } from './ThemeContext';
-import ThemeToggleIcon from './components/ThemeToggleIcon';
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <BrowserRouter>
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<LoginWrapper />} />
         <Route path="/home" element={<Home />} />
@@ -27,8 +24,6 @@ export default function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
-        <ThemeToggleIcon />
-      </ThemeProvider>
   );
 }
 

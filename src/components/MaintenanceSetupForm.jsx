@@ -1,8 +1,7 @@
 
-import React, { useState, useRef, useContext } from 'react';
+import React, { useState, useRef } from 'react';
 import Select from 'react-select';
 import { useNavigate } from 'react-router-dom';
-import { ThemeContext } from '../ThemeContext';
 
 
 // 模擬保養資料庫
@@ -26,7 +25,6 @@ const maintenanceDB = [
 const defaultUnit = '永泰企業';
 
 export default function MaintenanceSetupForm() {
-  const { theme } = useContext(ThemeContext);
   const navigate = useNavigate();
   // 狀態
   const [site, setSite] = useState(null);
@@ -170,9 +168,7 @@ export default function MaintenanceSetupForm() {
         left: 0,
         width: '100vw',
         height: '100vh',
-        background: theme === 'dark'
-          ? 'linear-gradient(135deg, #23272f 0%, #222 100%)'
-          : 'linear-gradient(135deg, #e3f0ff 0%, #f5f5f5 100%)',
+        background: 'linear-gradient(135deg, #e3f0ff 0%, #f5f5f5 100%)',
         padding: 'clamp(12px, 4vw, 32px)',
         boxSizing: 'border-box',
         overflowY: 'auto',
@@ -181,45 +177,35 @@ export default function MaintenanceSetupForm() {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        transition: 'background 0.2s',
       }}
     >
       <h2
         style={{
           textAlign: 'center',
-          color: theme === 'dark' ? '#90caf9' : '#1976d2',
+          color: '#1976d2',
           marginBottom: 'clamp(16px, 4vw, 32px)',
           fontSize: 'clamp(1.3rem, 5vw, 2rem)',
           letterSpacing: 1,
-          fontWeight: 700,
-          textShadow: theme === 'dark' ? '0 1px 2px #222' : 'none',
-          transition: 'color 0.2s',
         }}
       >
         季保養表單
       </h2>
-      <form onSubmit={handleSubmit} style={{ fontSize: 'clamp(1rem, 3vw, 1.15rem)', width: '100%', maxWidth: 420, background: theme === 'dark' ? 'rgba(30,34,40,0.98)' : '#fff', borderRadius: 18, boxShadow: theme === 'dark' ? '0 4px 24px rgba(25,118,210,0.18)' : '0 2px 12px rgba(25,118,210,0.10)', padding: 'clamp(18px, 4vw, 32px)', border: theme === 'dark' ? '1.5px solid #333' : '1.5px solid #e3f0ff', margin: '0 auto', transition: 'background 0.2s, box-shadow 0.2s, border 0.2s' }}>
+      <form onSubmit={handleSubmit} style={{ fontSize: 'clamp(1rem, 3vw, 1.15rem)', width: '100%', maxWidth: 400 }}>
         {/* 1. 保養案場 (react-select) */}
         <div style={{ marginBottom: 'clamp(10px, 2vw, 20px)' }}>
-          <label style={{ fontWeight: 600, color: theme === 'dark' ? '#90caf9' : '#1976d2', letterSpacing: 1 }}>案場名稱：</label><br />
+          <label>案場名稱：</label><br />
           <Select
             options={siteOptions}
             value={site}
             onChange={option => { setSite(option); setItem(null); setLocation(null); }}
             placeholder="請選擇案場"
             isClearable
-            styles={{
-              control: base => ({ ...base, borderRadius: 10, borderColor: theme === 'dark' ? '#444' : '#90caf9', background: theme === 'dark' ? '#23272f' : '#f7fbff', color: theme === 'dark' ? '#fff' : '#1976d2', boxShadow: 'none', minHeight: 44 }),
-              menu: base => ({ ...base, zIndex: 20, borderRadius: 10, background: theme === 'dark' ? '#23272f' : '#fff', color: theme === 'dark' ? '#fff' : '#1976d2' }),
-              singleValue: base => ({ ...base, color: theme === 'dark' ? '#fff' : '#1976d2' }),
-              option: (base, state) => ({ ...base, background: state.isSelected ? (theme === 'dark' ? '#1976d2' : '#e3f0ff') : state.isFocused ? (theme === 'dark' ? '#333' : '#e3f0ff') : 'none', color: theme === 'dark' ? '#fff' : '#1976d2', borderRadius: 8 }),
-              placeholder: base => ({ ...base, color: theme === 'dark' ? '#90caf9' : '#90caf9' }),
-            }}
+            styles={{ menu: base => ({ ...base, zIndex: 20 }) }}
           />
         </div>
         {/* 2. 保養項目 (react-select) */}
         <div style={{ marginBottom: 'clamp(10px, 2vw, 20px)' }}>
-          <label style={{ fontWeight: 600, color: theme === 'dark' ? '#90caf9' : '#1976d2', letterSpacing: 1 }}>保養項目：</label><br />
+          <label>保養項目：</label><br />
           <Select
             options={itemOptions}
             value={item}
@@ -227,18 +213,12 @@ export default function MaintenanceSetupForm() {
             placeholder={site ? '請選擇項目' : '請先選擇案場'}
             isClearable
             isDisabled={!site}
-            styles={{
-              control: base => ({ ...base, borderRadius: 10, borderColor: theme === 'dark' ? '#444' : '#90caf9', background: theme === 'dark' ? '#23272f' : '#f7fbff', color: theme === 'dark' ? '#fff' : '#1976d2', boxShadow: 'none', minHeight: 44 }),
-              menu: base => ({ ...base, zIndex: 20, borderRadius: 10, background: theme === 'dark' ? '#23272f' : '#fff', color: theme === 'dark' ? '#fff' : '#1976d2' }),
-              singleValue: base => ({ ...base, color: theme === 'dark' ? '#fff' : '#1976d2' }),
-              option: (base, state) => ({ ...base, background: state.isSelected ? (theme === 'dark' ? '#1976d2' : '#e3f0ff') : state.isFocused ? (theme === 'dark' ? '#333' : '#e3f0ff') : 'none', color: theme === 'dark' ? '#fff' : '#1976d2', borderRadius: 8 }),
-              placeholder: base => ({ ...base, color: theme === 'dark' ? '#90caf9' : '#90caf9' }),
-            }}
+            styles={{ menu: base => ({ ...base, zIndex: 20 }) }}
           />
         </div>
         {/* 3. 保養位置 (react-select) */}
         <div style={{ marginBottom: 'clamp(10px, 2vw, 20px)' }}>
-          <label style={{ fontWeight: 600, color: theme === 'dark' ? '#90caf9' : '#1976d2', letterSpacing: 1 }}>保養位置：</label><br />
+          <label>保養位置：</label><br />
           <Select
             options={locationOptions}
             value={location}
@@ -246,74 +226,45 @@ export default function MaintenanceSetupForm() {
             placeholder={item ? '請選擇位置' : '請先選擇項目'}
             isClearable
             isDisabled={!item}
-            styles={{
-              control: base => ({ ...base, borderRadius: 10, borderColor: theme === 'dark' ? '#444' : '#90caf9', background: theme === 'dark' ? '#23272f' : '#f7fbff', color: theme === 'dark' ? '#fff' : '#1976d2', boxShadow: 'none', minHeight: 44 }),
-              menu: base => ({ ...base, zIndex: 20, borderRadius: 10, background: theme === 'dark' ? '#23272f' : '#fff', color: theme === 'dark' ? '#fff' : '#1976d2' }),
-              singleValue: base => ({ ...base, color: theme === 'dark' ? '#fff' : '#1976d2' }),
-              option: (base, state) => ({ ...base, background: state.isSelected ? (theme === 'dark' ? '#1976d2' : '#e3f0ff') : state.isFocused ? (theme === 'dark' ? '#333' : '#e3f0ff') : 'none', color: theme === 'dark' ? '#fff' : '#1976d2', borderRadius: 8 }),
-              placeholder: base => ({ ...base, color: theme === 'dark' ? '#90caf9' : '#90caf9' }),
-            }}
+            styles={{ menu: base => ({ ...base, zIndex: 20 }) }}
           />
         </div>
         {/* 4. 上傳圖片 */}
         <div style={{ marginBottom: 'clamp(10px, 2vw, 20px)' }}>
-          <label style={{ fontWeight: 600, color: theme === 'dark' ? '#90caf9' : '#1976d2', letterSpacing: 1 }}>上傳照片：</label><br />
-          <input type="file" accept="image/*" capture="environment" onChange={handlePhotoChange} style={{ width: '100%', fontSize: 'inherit', padding: '8px', borderRadius: 10, border: `1.5px solid ${theme === 'dark' ? '#444' : '#bbb'}`, background: theme === 'dark' ? '#23272f' : '#f7fbff', color: theme === 'dark' ? '#fff' : '#1976d2', marginTop: 4, marginBottom: 4 }} />
+          <label>上傳照片：</label><br />
+          <input type="file" accept="image/*" capture="environment" onChange={handlePhotoChange} />
           <canvas ref={canvasRef} style={{ display: 'none' }} />
-          {photoUrl && <img src={photoUrl} alt="預覽" style={{ width: '100%', marginTop: 8, borderRadius: 10, border: `1.5px solid ${theme === 'dark' ? '#444' : '#bbb'}` }} />}
+          {photoUrl && <img src={photoUrl} alt="預覽" style={{ width: '100%', marginTop: 8, borderRadius: 4, border: '1px solid #bbb' }} />}
         </div>
         {/* 5. 保養單位 */}
         <div style={{ marginBottom: 'clamp(10px, 2vw, 20px)' }}>
-          <label style={{ fontWeight: 600, color: theme === 'dark' ? '#90caf9' : '#1976d2', letterSpacing: 1 }}>保養單位：</label><br />
-          <input type="text" value={unit} onChange={e => setUnit(e.target.value)} style={{ width: '100%', fontSize: 'inherit', padding: '8px', borderRadius: 10, border: `1.5px solid ${theme === 'dark' ? '#444' : '#bbb'}`, background: theme === 'dark' ? '#23272f' : '#f7fbff', color: theme === 'dark' ? '#fff' : '#1976d2', marginTop: 4 }} />
+          <label>保養單位：</label><br />
+          <input type="text" value={unit} onChange={e => setUnit(e.target.value)} style={{ width: '100%', fontSize: 'inherit', padding: '8px', borderRadius: 4, border: '1px solid #bbb' }} />
         </div>
         {/* 6. 保養時間 */}
         <div style={{ marginBottom: 'clamp(10px, 2vw, 20px)' }}>
-          <label style={{ fontWeight: 600, color: theme === 'dark' ? '#90caf9' : '#1976d2', letterSpacing: 1 }}>保養時間：</label><br />
-          <input type="datetime-local" value={nowDate} readOnly style={{ width: '100%', fontSize: 'inherit', padding: '8px', borderRadius: 10, border: `1.5px solid ${theme === 'dark' ? '#444' : '#bbb'}`, background: theme === 'dark' ? '#23272f' : '#eee', color: theme === 'dark' ? '#fff' : '#1976d2', marginTop: 4 }} />
+          <label>保養時間：</label><br />
+          <input type="datetime-local" value={nowDate} readOnly style={{ width: '100%', fontSize: 'inherit', padding: '8px', borderRadius: 4, border: '1px solid #bbb', background: '#eee' }} />
         </div>
         {/* 說明欄位（自動帶出） */}
         <div style={{ marginBottom: 'clamp(10px, 2vw, 20px)' }}>
-          <label style={{ fontWeight: 600, color: theme === 'dark' ? '#90caf9' : '#1976d2', letterSpacing: 1 }}>檢查說明：</label><br />
-          <input type="text" value={desc} readOnly style={{ width: '100%', fontSize: 'inherit', padding: '8px', borderRadius: 10, border: `1.5px solid ${theme === 'dark' ? '#444' : '#bbb'}`, background: theme === 'dark' ? '#23272f' : '#eee', color: theme === 'dark' ? '#fff' : '#1976d2', marginTop: 4 }} />
+          <label>檢查說明：</label><br />
+          <input type="text" value={desc} readOnly style={{ width: '100%', fontSize: 'inherit', padding: '8px', borderRadius: 4, border: '1px solid #bbb', background: '#eee' }} />
         </div>
-        {error && <div style={{ color: '#d32f2f', marginBottom: 12, fontWeight: 600 }}>{error}</div>}
+        {error && <div style={{ color: 'red', marginBottom: 12 }}>{error}</div>}
         <button
           type="submit"
           style={{
             width: '100%',
-            background: theme === 'dark'
-              ? 'linear-gradient(135deg, #1976d2 60%, #23272f 100%)'
-              : 'linear-gradient(135deg, #e3f0ff 60%, #1976d2 100%)',
-            color: theme === 'dark' ? '#fff' : '#1976d2',
-            padding: 'clamp(12px, 2vw, 18px)',
+            background: '#1976d2',
+            color: '#fff',
+            padding: 'clamp(10px, 2vw, 16px)',
             border: 'none',
-            borderRadius: 12,
-            fontWeight: 700,
+            borderRadius: 4,
+            fontWeight: 600,
             fontSize: 'inherit',
             marginTop: 8,
-            boxShadow: theme === 'dark'
-              ? '0 4px 16px rgba(25, 118, 210, 0.18)'
-              : '0 2px 8px rgba(25, 118, 210, 0.10)',
-            cursor: 'pointer',
-            letterSpacing: 1,
-            transition: 'background 0.2s, color 0.2s, box-shadow 0.2s',
-          }}
-          onMouseOver={e => {
-            e.currentTarget.style.background = theme === 'dark'
-              ? 'linear-gradient(135deg, #1976d2 60%, #23272f 100%)'
-              : 'linear-gradient(135deg, #1976d2 60%, #e3f0ff 100%)';
-            e.currentTarget.style.boxShadow = '0 6px 24px rgba(25, 118, 210, 0.22)';
-            e.currentTarget.style.color = theme === 'dark' ? '#ffe082' : '#1565c0';
-          }}
-          onMouseOut={e => {
-            e.currentTarget.style.background = theme === 'dark'
-              ? 'linear-gradient(135deg, #1976d2 60%, #23272f 100%)'
-              : 'linear-gradient(135deg, #e3f0ff 60%, #1976d2 100%)';
-            e.currentTarget.style.boxShadow = theme === 'dark'
-              ? '0 4px 16px rgba(25, 118, 210, 0.18)'
-              : '0 2px 8px rgba(25, 118, 210, 0.10)';
-            e.currentTarget.style.color = theme === 'dark' ? '#fff' : '#1976d2';
+            transition: 'background 0.2s',
           }}
         >
           提交表單
