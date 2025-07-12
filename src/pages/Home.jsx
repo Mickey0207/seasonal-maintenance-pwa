@@ -33,94 +33,29 @@ export default function Home() {
   }, [navigate]);
 
   return (
-    <div style={{ position: 'relative', minHeight: '100vh', background: 'linear-gradient(135deg, #e3f0ff 0%, #f5f5f5 100%)' }}>
+    <div className="card" style={{ position: 'relative', minHeight: '100vh', background: 'var(--color-primary-light)' }}>
       {isMobile ? (
         <>
           {/* 左上三條線按鈕 */}
-          <button aria-label="開啟選單" style={{ position: 'absolute', top: 16, left: 16, background: 'none', border: 'none', fontSize: 28, cursor: 'pointer' }} onClick={() => setSidebarOpen(true)}>
-            <span style={{ display: 'block', width: 28, height: 4, background: '#333', margin: '5px 0', borderRadius: 2 }}></span>
-            <span style={{ display: 'block', width: 28, height: 4, background: '#333', margin: '5px 0', borderRadius: 2 }}></span>
-            <span style={{ display: 'block', width: 28, height: 4, background: '#333', margin: '5px 0', borderRadius: 2 }}></span>
+          <button aria-label="開啟選單" style={{ position: 'absolute', top: 24, left: 24, background: 'var(--color-surface)', border: 'none', borderRadius: '50%', boxShadow: 'var(--color-shadow)', fontSize: 28, width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'box-shadow 0.2s' }} onClick={() => setSidebarOpen(true)}>
+            <span style={{ display: 'block', width: 28, height: 4, background: 'var(--color-primary)', margin: '5px 0', borderRadius: 2 }}></span>
+            <span style={{ display: 'block', width: 28, height: 4, background: 'var(--color-primary)', margin: '5px 0', borderRadius: 2 }}></span>
+            <span style={{ display: 'block', width: 28, height: 4, background: 'var(--color-primary)', margin: '5px 0', borderRadius: 2 }}></span>
           </button>
           {/* 側邊欄 */}
           {sidebarOpen && <SidebarDrawer user={user} onClose={() => setSidebarOpen(false)} />}
-          <div
-            style={{
-              width: '100vw',
-              minWidth: 0,
-              margin: 0,
-              paddingTop: 80,
-              paddingLeft: 0,
-              paddingRight: 0,
-              boxSizing: 'border-box',
-            }}
-          >
-            <h1
-              style={{
-                textAlign: 'center',
-                marginBottom: 32,
-                color: '#1976d2',
-                fontSize: 'clamp(2rem, 8vw, 2.5rem)',
-                fontWeight: 700,
-                textShadow: '0 2px 8px #b3c6e6',
-                wordBreak: 'break-word',
-                background: 'rgba(255,255,255,0.7)',
-                padding: '8px 0',
-                borderRadius: 0,
-              }}
-            >
+          <div style={{ width: '100vw', minWidth: 0, margin: 0, paddingTop: 80, paddingLeft: 0, paddingRight: 0, boxSizing: 'border-box' }}>
+            <h1 style={{ textAlign: 'center', marginBottom: 32, color: 'var(--color-primary)', fontSize: 'clamp(2rem, 8vw, 2.5rem)', fontWeight: 700, letterSpacing: 1, wordBreak: 'break-word', background: 'rgba(255,255,255,0.7)', padding: '8px 0', borderRadius: 'var(--radius)', boxShadow: 'var(--color-shadow)' }}>
               主畫面
             </h1>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16, padding: '0 8px' }}>
-              <button
-                style={{
-                  width: '100%',
-                  padding: 'clamp(14px, 4vw, 22px)',
-                  fontSize: 'clamp(1rem, 4vw, 1.25rem)',
-                  borderRadius: 0,
-                  border: 'none',
-                  background: '#1976d2',
-                  color: '#fff',
-                  cursor: 'pointer',
-                  fontWeight: 600,
-                  transition: 'background 0.2s',
-                }}
-                onClick={() => navigate('/setup')}
-              >
+            <div className="flex flex-center gap-md" style={{ flexDirection: 'column', padding: '0 8px' }}>
+              <button className="flex flex-center" style={{ width: '100%', borderRadius: 'var(--radius)', background: 'var(--color-primary)', color: '#fff', fontWeight: 600, fontSize: '1.1rem', boxShadow: 'var(--color-shadow)', border: 'none', padding: '1rem', marginBottom: 8, transition: 'background 0.2s, box-shadow 0.2s' }} onClick={() => navigate('/setup')}>
                 本次季保養設定
               </button>
-              <button
-                style={{
-                  width: '100%',
-                  padding: 'clamp(14px, 4vw, 22px)',
-                  fontSize: 'clamp(1rem, 4vw, 1.25rem)',
-                  borderRadius: 0,
-                  border: 'none',
-                  background: '#388e3c',
-                  color: '#fff',
-                  cursor: 'pointer',
-                  fontWeight: 600,
-                  transition: 'background 0.2s',
-                }}
-                onClick={() => navigate('/form')}
-              >
+              <button className="flex flex-center" style={{ width: '100%', borderRadius: 'var(--radius)', background: '#388e3c', color: '#fff', fontWeight: 600, fontSize: '1.1rem', boxShadow: 'var(--color-shadow)', border: 'none', padding: '1rem', marginBottom: 8, transition: 'background 0.2s, box-shadow 0.2s' }} onClick={() => navigate('/form')}>
                 本次季保養表單
               </button>
-              <button
-                style={{
-                  width: '100%',
-                  padding: 'clamp(14px, 4vw, 22px)',
-                  fontSize: 'clamp(1rem, 4vw, 1.25rem)',
-                  borderRadius: 0,
-                  border: 'none',
-                  background: '#fbc02d',
-                  color: '#333',
-                  cursor: 'pointer',
-                  fontWeight: 600,
-                  transition: 'background 0.2s',
-                }}
-                onClick={() => navigate('/history')}
-              >
+              <button className="flex flex-center" style={{ width: '100%', borderRadius: 'var(--radius)', background: '#fbc02d', color: '#333', fontWeight: 600, fontSize: '1.1rem', boxShadow: 'var(--color-shadow)', border: 'none', padding: '1rem', marginBottom: 8, transition: 'background 0.2s, box-shadow 0.2s' }} onClick={() => navigate('/history')}>
                 本次保養季保養紀錄歷史
               </button>
             </div>
@@ -129,89 +64,18 @@ export default function Home() {
       ) : (
         <>
           <TopBarMenu user={user} />
-          <div
-            style={{
-              width: '100vw',
-              background: 'rgba(255,255,255,0.95)',
-              borderRadius: 0,
-              boxShadow: 'none',
-              padding: 'clamp(32px, 6vw, 64px) 0 clamp(24px, 4vw, 48px) 0',
-              minHeight: '100vh',
-              boxSizing: 'border-box',
-            }}
-          >
-            <h1
-              style={{
-                textAlign: 'center',
-                marginBottom: 40,
-                color: '#1976d2',
-                fontSize: 'clamp(2rem, 8vw, 2.5rem)',
-                fontWeight: 700,
-                letterSpacing: 2,
-                wordBreak: 'break-word',
-                background: 'rgba(255,255,255,0.7)',
-                padding: '8px 0',
-                borderRadius: 0,
-              }}
-            >
+          <div style={{ width: '100vw', background: 'rgba(255,255,255,0.95)', borderRadius: 'var(--radius)', boxShadow: 'var(--color-shadow)', padding: 'clamp(32px, 6vw, 64px) 0 clamp(24px, 4vw, 48px) 0', minHeight: '100vh', boxSizing: 'border-box' }}>
+            <h1 style={{ textAlign: 'center', marginBottom: 40, color: 'var(--color-primary)', fontSize: 'clamp(2rem, 8vw, 2.5rem)', fontWeight: 700, letterSpacing: 2, wordBreak: 'break-word', background: 'rgba(255,255,255,0.7)', padding: '8px 0', borderRadius: 'var(--radius)', boxShadow: 'var(--color-shadow)' }}>
               ACL 季保養系統
             </h1>
-            <div style={{ display: 'flex', flexDirection: 'row', gap: 32, justifyContent: 'center', padding: '0 32px' }}>
-              <button
-                style={{
-                  flex: 1,
-                  minWidth: 180,
-                  maxWidth: 320,
-                  padding: 'clamp(18px, 4vw, 32px)',
-                  fontSize: 'clamp(1rem, 4vw, 1.25rem)',
-                  borderRadius: 0,
-                  border: 'none',
-                  background: '#1976d2',
-                  color: '#fff',
-                  cursor: 'pointer',
-                  fontWeight: 600,
-                  transition: 'background 0.2s',
-                }}
-                onClick={() => navigate('/setup')}
-              >
+            <div className="flex flex-center gap-md" style={{ flexDirection: 'row', justifyContent: 'center', padding: '0 32px' }}>
+              <button className="flex flex-center" style={{ flex: 1, minWidth: 180, maxWidth: 320, borderRadius: 'var(--radius)', background: 'var(--color-primary)', color: '#fff', fontWeight: 600, fontSize: '1.1rem', boxShadow: 'var(--color-shadow)', border: 'none', padding: '1.2rem', margin: 8, transition: 'background 0.2s, box-shadow 0.2s' }} onClick={() => navigate('/setup')}>
                 本次季保養設定
               </button>
-              <button
-                style={{
-                  flex: 1,
-                  minWidth: 180,
-                  maxWidth: 320,
-                  padding: 'clamp(18px, 4vw, 32px)',
-                  fontSize: 'clamp(1rem, 4vw, 1.25rem)',
-                  borderRadius: 0,
-                  border: 'none',
-                  background: '#388e3c',
-                  color: '#fff',
-                  cursor: 'pointer',
-                  fontWeight: 600,
-                  transition: 'background 0.2s',
-                }}
-                onClick={() => navigate('/form')}
-              >
+              <button className="flex flex-center" style={{ flex: 1, minWidth: 180, maxWidth: 320, borderRadius: 'var(--radius)', background: '#388e3c', color: '#fff', fontWeight: 600, fontSize: '1.1rem', boxShadow: 'var(--color-shadow)', border: 'none', padding: '1.2rem', margin: 8, transition: 'background 0.2s, box-shadow 0.2s' }} onClick={() => navigate('/form')}>
                 本次季保養表單
               </button>
-              <button
-                style={{
-                  flex: 1,
-                  minWidth: 180,
-                  maxWidth: 320,
-                  padding: 'clamp(18px, 4vw, 32px)',
-                  fontSize: 'clamp(1rem, 4vw, 1.25rem)',
-                  borderRadius: 0,
-                  border: 'none',
-                  background: '#fbc02d',
-                  color: '#333',
-                  cursor: 'pointer',
-                  fontWeight: 600,
-                  transition: 'background 0.2s',
-                }}
-                onClick={() => navigate('/history')}
-              >
+              <button className="flex flex-center" style={{ flex: 1, minWidth: 180, maxWidth: 320, borderRadius: 'var(--radius)', background: '#fbc02d', color: '#333', fontWeight: 600, fontSize: '1.1rem', boxShadow: 'var(--color-shadow)', border: 'none', padding: '1.2rem', margin: 8, transition: 'background 0.2s, box-shadow 0.2s' }} onClick={() => navigate('/history')}>
                 本次保養季保養紀錄歷史
               </button>
             </div>

@@ -73,18 +73,78 @@ export default function LoginForm({ onLoginSuccess, onAppSettings }) {
 
         <h2 style={{ textAlign: 'center', marginBottom: 32, color: '#1976d2', fontSize: 'clamp(1.5rem, 6vw, 2.2rem)', fontWeight: 700, letterSpacing: 2 }}>登入</h2>
         <div style={{ margin: '20px 0' }}>
-          <label htmlFor="account" style={{ fontWeight: 600, fontSize: 16 }}>使用者帳號</label>
-          <select id="account" value={account} onChange={e => setAccount(e.target.value)} style={{ width: '100%', padding: 10, marginTop: 6, fontSize: 16, borderRadius: 6, border: '1px solid #bdbdbd' }}>
+          <label htmlFor="account" style={{ fontWeight: 600, fontSize: 16, marginBottom: 6, display: 'block', color: 'var(--color-primary)' }}>使用者帳號</label>
+          <select
+            id="account"
+            value={account}
+            onChange={e => setAccount(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '12px 14px',
+              marginTop: 6,
+              fontSize: 16,
+              borderRadius: 'var(--radius)',
+              border: '1.5px solid #bdbdbd',
+              boxShadow: 'var(--color-shadow)',
+              background: 'var(--color-surface)',
+              color: 'var(--color-text)',
+              outline: 'none',
+              transition: 'border 0.2s, box-shadow 0.2s',
+            }}
+            onFocus={e => { e.target.style.border = '1.5px solid var(--color-primary)'; e.target.style.boxShadow = '0 0 0 2px #90caf9'; }}
+            onBlur={e => { e.target.style.border = '1.5px solid #bdbdbd'; e.target.style.boxShadow = 'var(--color-shadow)'; }}
+          >
             {users.map(u => (
               <option key={u.id} value={u.account}>{u.account}</option>
             ))}
           </select>
         </div>
         <div style={{ margin: '20px 0' }}>
-          <label htmlFor="password" style={{ fontWeight: 600, fontSize: 16 }}>密碼</label>
-          <input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} style={{ width: '100%', padding: 10, marginTop: 6, fontSize: 16, borderRadius: 6, border: '1px solid #bdbdbd' }} />
+          <label htmlFor="password" style={{ fontWeight: 600, fontSize: 16, marginBottom: 6, display: 'block', color: 'var(--color-primary)' }}>密碼</label>
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '12px 14px',
+              marginTop: 6,
+              fontSize: 16,
+              borderRadius: 'var(--radius)',
+              border: '1.5px solid #bdbdbd',
+              boxShadow: 'var(--color-shadow)',
+              background: 'var(--color-surface)',
+              color: 'var(--color-text)',
+              outline: 'none',
+              transition: 'border 0.2s, box-shadow 0.2s',
+            }}
+            onFocus={e => { e.target.style.border = '1.5px solid var(--color-primary)'; e.target.style.boxShadow = '0 0 0 2px #90caf9'; }}
+            onBlur={e => { e.target.style.border = '1.5px solid #bdbdbd'; e.target.style.boxShadow = 'var(--color-shadow)'; }}
+          />
         </div>
-        <button onClick={handleLogin} style={{ width: '100%', padding: 'clamp(12px, 4vw, 18px)', background: '#1976d2', color: '#fff', border: 'none', borderRadius: 8, fontSize: 'clamp(1rem, 4vw, 1.2rem)', cursor: 'pointer', fontWeight: 600, marginTop: 12, marginBottom: 8, transition: 'background 0.2s' }} disabled={!account || !password}>
+        <button
+          onClick={handleLogin}
+          style={{
+            width: '100%',
+            padding: 'clamp(14px, 4vw, 20px)',
+            background: 'var(--color-primary)',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 'var(--radius)',
+            fontSize: 'clamp(1rem, 4vw, 1.2rem)',
+            cursor: 'pointer',
+            fontWeight: 700,
+            marginTop: 16,
+            marginBottom: 8,
+            boxShadow: 'var(--color-shadow)',
+            letterSpacing: 1,
+            transition: 'background 0.2s, box-shadow 0.2s',
+          }}
+          disabled={!account || !password}
+          onMouseOver={e => { e.currentTarget.style.background = '#1565c0'; e.currentTarget.style.boxShadow = '0 6px 24px rgba(25, 118, 210, 0.22)'; }}
+          onMouseOut={e => { e.currentTarget.style.background = 'var(--color-primary)'; e.currentTarget.style.boxShadow = 'var(--color-shadow)'; }}
+        >
           登入
         </button>
         {error && <div style={{ color: 'red', marginTop: 12, fontWeight: 600 }}>{error}</div>}
