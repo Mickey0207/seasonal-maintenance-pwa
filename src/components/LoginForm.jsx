@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useNavigate } from 'react-router-dom';
+import { Form, Input, Button, Modal, Typography, Dropdown, Space, message } from 'antd';
+import { SettingOutlined, MoreOutlined } from '@ant-design/icons';
 
 // 登入表單元件
 export default function LoginForm({ onLoginSuccess, onAppSettings }) {
@@ -81,125 +83,143 @@ export default function LoginForm({ onLoginSuccess, onAppSettings }) {
   };
 
   return (
-    <div>
-      {/* 設定用戶名彈窗 */}
-      {showSetUsername && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.3)', zIndex: 300 }}>
-          <div style={{ background: '#fff', padding: 24, borderRadius: 8, maxWidth: 340, margin: '120px auto', position: 'relative', textAlign: 'center' }}>
-            <h3 style={{ fontWeight: 700, fontSize: 20, marginBottom: 12 }}>請設定用戶名</h3>
-            <input
-              type="text"
+    <div
+      style={{
+        minHeight: '100vh',
+        width: '100vw',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#e3eafc',
+      }}
+    >
+      <div
+        style={{
+          width: '100%',
+          maxWidth: 400,
+          minWidth: 0,
+          padding: 'min(8vw,64px) 4vw min(4vw,32px) 4vw',
+          background: '#fff',
+          borderRadius: 16,
+          boxShadow: '0 4px 24px 0 #e3e3e3',
+          boxSizing: 'border-box',
+        }}
+      >
+      <Modal
+        open={showSetUsername}
+        title="請設定用戶名"
+        onCancel={() => { setShowSetUsername(false); setNewUsername(''); }}
+        footer={null}
+        centered
+      >
+        <Form
+          layout="vertical"
+          onFinish={async () => {
+            setSetUsernameError('');
+            if (!newUsername.trim()) {
+              setSetUsernameError('請輸入用戶名');
+              return;
+            }
+            const { data: existUser, error: existUserError } = await supabase.from('user_names').select('user').eq('user', newUsername.trim());
+            if (!existUserError && existUser && existUser.length > 0) {
+              setSetUsernameError('用戶名已被使用');
+              return;
+            }
+            const { error: insertError } = await supabase.from('user_names').insert([{ user: newUsername.trim(), email: pendingEmail }]);
+            if (insertError) {
+              setSetUsernameError('寫入 user_names 失敗：' + insertError.message);
+              return;
+            }
+            setShowSetUsername(false);
+            setShowRegisterSuccess(true);
+            setNewUsername('');
+            const { data, error } = await supabase.from('user_names').select('user');
+            if (!error && data) setUsers(data);
+          }}
+        >
+          <Form.Item validateStatus={setUsernameError ? 'error' : ''} help={setUsernameError}>
+            <Input
               value={newUsername}
               onChange={e => setNewUsername(e.target.value)}
               placeholder="請輸入用戶名"
-              style={{ width: '100%', padding: 10, fontSize: 16, borderRadius: 6, border: '1px solid #bdbdbd', marginBottom: 12 }}
               autoFocus
             />
-            {setUsernameError && <div style={{ color: 'red', marginBottom: 8 }}>{setUsernameError}</div>}
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button
-                style={{ flex: 1, padding: 10, background: '#1976d2', color: '#fff', border: 'none', borderRadius: 6, fontSize: 16, cursor: 'pointer', fontWeight: 600 }}
-                onClick={async () => {
-                  setSetUsernameError('');
-                  if (!newUsername.trim()) {
-                    setSetUsernameError('請輸入用戶名');
-                    return;
-                  }
-                  // 檢查 user_names 是否已存在同名用戶名
-                  const { data: existUser, error: existUserError } = await supabase.from('user_names').select('user').eq('user', newUsername.trim());
-                  if (!existUserError && existUser && existUser.length > 0) {
-                    setSetUsernameError('用戶名已被使用');
-                    return;
-                  }
-                  // 新增 user_names
-                  const { error: insertError } = await supabase.from('user_names').insert([{ user: newUsername.trim(), email: pendingEmail }]);
-                  if (insertError) {
-                    setSetUsernameError('寫入 user_names 失敗：' + insertError.message);
-                    return;
-                  }
-                  setShowSetUsername(false);
-                  setShowRegisterSuccess(true);
-                  setNewUsername('');
-                  // 重新載入 users 下拉選單
-                  const { data, error } = await supabase.from('user_names').select('user');
-                  if (!error && data) setUsers(data);
-                }}
-              >儲存</button>
-              <button
-                style={{ flex: 1, padding: 10, background: '#eee', color: '#1976d2', border: 'none', borderRadius: 6, fontSize: 16, cursor: 'pointer', fontWeight: 600 }}
-                onClick={() => {
-                  setShowSetUsername(false);
-                  setNewUsername('');
-                }}
-              >下次再設定</button>
-            </div>
-          </div>
-        </div>
-      )}
-      {/* 註冊成功提示彈窗 */}
-      {showRegisterSuccess && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.3)', zIndex: 200 }} onClick={() => setShowRegisterSuccess(false)}>
-          <div style={{ background: '#fff', padding: 24, borderRadius: 8, maxWidth: 320, margin: '120px auto', position: 'relative', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
-            <h3 style={{ fontWeight: 700, fontSize: 20, marginBottom: 12 }}>註冊成功</h3>
-            <div style={{ fontSize: 16, marginBottom: 16 }}>下次可直接使用用戶名登入</div>
-            <button onClick={() => setShowRegisterSuccess(false)} style={{ width: '100%', padding: 10, background: '#1976d2', color: '#fff', border: 'none', borderRadius: 6, fontSize: 16, cursor: 'pointer', fontWeight: 600 }}>確定</button>
-          </div>
-        </div>
-      )}
-      <div style={{ position: 'relative' }}>
-        <button aria-label="更多選單" style={{ background: 'none', border: 'none', fontSize: 24, cursor: 'pointer' }} onClick={() => setShowMenu(!showMenu)}>
-          &#8942;
-        </button>
-        {showMenu && (
-          <div style={{ position: 'absolute', right: 0, top: 32, background: '#fff', border: '1px solid #ccc', borderRadius: 4, zIndex: 10 }}>
-            <button style={{ padding: '8px 16px', width: '100%', background: 'none', border: 'none', cursor: 'pointer' }} onClick={() => { setShowAppSettings(true); setShowMenu(false); }}>應用程式設定</button>
-          </div>
-        )}
+          </Form.Item>
+          <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+            <Button type="primary" htmlType="submit" block>儲存</Button>
+            <Button onClick={() => { setShowSetUsername(false); setNewUsername(''); }} block>下次再設定</Button>
+          </Space>
+        </Form>
+      </Modal>
+      <Modal
+        open={showRegisterSuccess}
+        title="註冊成功"
+        onCancel={() => setShowRegisterSuccess(false)}
+        footer={[
+          <Button type="primary" key="ok" onClick={() => setShowRegisterSuccess(false)} block>確定</Button>
+        ]}
+        centered
+      >
+        <div>下次可直接使用用戶名登入</div>
+      </Modal>
+      <Dropdown
+        menu={{
+          items: [
+            {
+              key: 'appSettings',
+              label: '應用程式設定',
+              icon: <SettingOutlined />,
+              onClick: () => setShowAppSettings(true),
+            },
+          ],
+        }}
+        placement="bottomRight"
+        trigger={['click']}
+      >
+        <Button type="text" icon={<MoreOutlined />} style={{ float: 'right', fontSize: 20 }} />
+      </Dropdown>
+      <Typography.Title level={2} style={{ textAlign: 'center', marginBottom: 40, color: '#1976d2', fontWeight: 800, letterSpacing: 2, fontSize: 32 }}>登入</Typography.Title>
+      <Form layout="vertical" onFinish={handleLogin} size="large" style={{ gap: 0 }}>
+        <Form.Item label={<span style={{ fontWeight: 600, fontSize: 18 }}>用戶名</span>} required style={{ marginBottom: 24 }}>
+          <Input
+            list="user-list"
+            value={account}
+            onChange={e => setAccount(e.target.value)}
+            placeholder="請輸入用戶名或選擇用戶名"
+            autoComplete="username"
+            style={{ height: 48, fontSize: 18, borderRadius: 8 }}
+          />
+          <datalist id="user-list">
+            {users.map(u => (
+              u.user && !u.user.includes('@') ? <option key={u.user} value={u.user} /> : null
+            ))}
+          </datalist>
+        </Form.Item>
+        <input type="hidden" value={email} readOnly />
+        <Form.Item label={<span style={{ fontWeight: 600, fontSize: 18 }}>密碼</span>} required style={{ marginBottom: 24 }}>
+          <Input.Password value={password} onChange={e => setPassword(e.target.value)} autoComplete="current-password" style={{ height: 48, fontSize: 18, borderRadius: 8 }} />
+        </Form.Item>
+        <Form.Item style={{ marginBottom: 16 }}>
+          <Button type="primary" htmlType="submit" block disabled={!account || !password} style={{ height: 48, fontSize: 18, borderRadius: 8, fontWeight: 700, marginBottom: 8 }}>登入</Button>
+          <Button type="default" block onClick={() => navigate('/register')} style={{ height: 44, fontSize: 16, borderRadius: 8, fontWeight: 600 }}>註冊新帳號</Button>
+        </Form.Item>
+        {error && <Typography.Text type="danger" style={{ fontWeight: 600, fontSize: 16 }}>{error}</Typography.Text>}
+      </Form>
+      <Modal
+        open={showAppSettings}
+        title="輸入設定人員密碼"
+        onCancel={() => setShowAppSettings(false)}
+        footer={null}
+        centered
+      >
+        <Form onFinish={handleAppSettings} layout="vertical">
+          <Form.Item label="密碼" validateStatus={adminError ? 'error' : ''} help={adminError}>
+            <Input.Password value={adminPwd} onChange={e => setAdminPwd(e.target.value)} />
+          </Form.Item>
+          <Button type="primary" htmlType="submit" block>確認</Button>
+        </Form>
+      </Modal>
       </div>
-
-      <h2 style={{ textAlign: 'center', marginBottom: 32, color: '#1976d2', fontSize: 'clamp(1.5rem, 6vw, 2.2rem)', fontWeight: 700, letterSpacing: 2 }}>登入</h2>
-      <div style={{ margin: '20px 0' }}>
-        <label htmlFor="account" style={{ fontWeight: 600, fontSize: 16 }}>用戶名</label>
-        <input
-          id="account"
-          list="user-list"
-          value={account}
-          onChange={e => setAccount(e.target.value)}
-          placeholder="請輸入用戶名或選擇用戶名"
-          style={{ width: '100%', padding: 10, marginTop: 6, fontSize: 16, borderRadius: 6, border: '1px solid #bdbdbd' }}
-          autoComplete="username"
-        />
-        <datalist id="user-list">
-          {users.map(u => (
-            u.user && !u.user.includes('@') ? <option key={u.user} value={u.user} /> : null
-          ))}
-        </datalist>
-      </div>
-      {/* 隱藏 email 欄位 */}
-      <input type="hidden" value={email} readOnly />
-      <div style={{ margin: '20px 0' }}>
-        <label htmlFor="password" style={{ fontWeight: 600, fontSize: 16 }}>密碼</label>
-        <input id="password" type="password" value={password} onChange={e => setPassword(e.target.value)} style={{ width: '100%', padding: 10, marginTop: 6, fontSize: 16, borderRadius: 6, border: '1px solid #bdbdbd' }} />
-      </div>
-      <button onClick={handleLogin} style={{ width: '100%', padding: 'clamp(12px, 4vw, 18px)', background: '#1976d2', color: '#fff', border: 'none', borderRadius: 8, fontSize: 'clamp(1rem, 4vw, 1.2rem)', cursor: 'pointer', fontWeight: 600, marginTop: 12, marginBottom: 8, transition: 'background 0.2s' }} disabled={!account || !password}>
-        登入
-      </button>
-      <button type="button" onClick={() => navigate('/register')} style={{ width: '100%', padding: 10, background: '#eee', color: '#1976d2', border: 'none', borderRadius: 8, fontSize: 16, fontWeight: 600, marginTop: 8 }}>
-        註冊新帳號
-      </button>
-      {error && <div style={{ color: 'red', marginTop: 12, fontWeight: 600 }}>{error}</div>}
-
-      {/* 應用程式設定密碼彈窗 */}
-      {showAppSettings && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.3)', zIndex: 100 }} onClick={() => setShowAppSettings(false)}>
-          <div style={{ background: '#fff', padding: 24, borderRadius: 8, maxWidth: 320, margin: '120px auto', position: 'relative' }} onClick={e => e.stopPropagation()}>
-            <h3 style={{ fontWeight: 700, fontSize: 20, marginBottom: 12 }}>輸入設定人員密碼</h3>
-            <input type="password" value={adminPwd} onChange={e => setAdminPwd(e.target.value)} style={{ width: '100%', padding: 8, marginTop: 8, fontSize: 16, borderRadius: 6, border: '1px solid #bdbdbd' }} />
-            <button onClick={handleAppSettings} style={{ width: '100%', marginTop: 16, padding: 10, background: '#1976d2', color: '#fff', border: 'none', borderRadius: 6, fontSize: 16, cursor: 'pointer', fontWeight: 600 }}>確認</button>
-            {adminError && <div style={{ color: 'red', marginTop: 8 }}>{adminError}</div>}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
