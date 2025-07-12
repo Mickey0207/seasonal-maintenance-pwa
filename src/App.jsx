@@ -10,6 +10,8 @@ import History from './pages/History';
 import AppSettingsPage from './pages/AppSettings';
 import UserSettingsPage from './pages/UserSettings';
 
+import Register from './pages/Register';
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -21,6 +23,7 @@ export default function App() {
         <Route path="/history" element={<History />} />
         <Route path="/app-settings" element={<AppSettingsPage />} />
         <Route path="/user-settings" element={<UserSettingsPage />} />
+        <Route path="/register" element={<Register />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
