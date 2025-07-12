@@ -5,6 +5,7 @@ import SidebarDrawer from '../components/SidebarDrawer';
 import TopBarMenu from '../components/TopBarMenu';
 
 // 主畫面
+
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -12,11 +13,24 @@ export default function Home() {
   // 假登入者資料
   const user = { account: 'user1', displayName: '王小明' };
 
+  // 自動跳轉邏輯
   useEffect(() => {
+    // 保養期間自動跳轉
+    const periodStr = localStorage.getItem('maintenancePeriod');
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    if (periodStr && isLoggedIn) {
+      try {
+        const { start, end } = JSON.parse(periodStr);
+        const now = new Date();
+        if (start && end && new Date(start) <= now && now <= new Date(end)) {
+          navigate('/form', { replace: true });
+        }
+      } catch (e) {}
+    }
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [navigate]);
 
   return (
     <div style={{ position: 'relative', minHeight: '100vh', background: 'linear-gradient(135deg, #e3f0ff 0%, #f5f5f5 100%)' }}>
