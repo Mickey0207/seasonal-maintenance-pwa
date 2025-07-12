@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import RegisterForm from '../components/RegisterForm';
+import ThemeSwitchBtn from '../components/ThemeSwitchBtn';
 import { useNavigate } from 'react-router-dom';
 
 export default function Register() {
@@ -7,7 +8,14 @@ export default function Register() {
   const [success, setSuccess] = useState(false);
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#e3eafc' }}>
+    <div style={{
+      position: 'relative',
+      minHeight: '100vh',
+      background: 'var(--register-bg, #e3eafc)',
+      width: '100vw',
+      overflow: 'hidden',
+    }}>
+      <ThemeSwitchBtn style={{ right: 24, top: 24 }} />
       {success ? (
         <div style={{ background: '#fff', padding: 32, borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }}>
           <h2>註冊成功！</h2>

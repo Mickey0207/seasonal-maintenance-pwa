@@ -2,8 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useNavigate } from 'react-router-dom';
-import { Form, Input, Button, Modal, Typography, Dropdown, Space, message } from 'antd';
+import { Form, Input, Button, Modal, Typography, Dropdown, Space, message, AutoComplete } from 'antd';
 import { SettingOutlined, MoreOutlined } from '@ant-design/icons';
+import ThemeSwitchBtn from './ThemeSwitchBtn';
 
 // 登入表單元件
 export default function LoginForm({ onLoginSuccess, onAppSettings }) {
@@ -90,16 +91,17 @@ export default function LoginForm({ onLoginSuccess, onAppSettings }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: '#e3eafc',
+        background: 'transparent',
       }}
     >
       <div
+        className="login-card"
         style={{
           width: '100%',
           maxWidth: 400,
           minWidth: 0,
           padding: 'min(8vw,64px) 4vw min(4vw,32px) 4vw',
-          background: '#fff',
+          background: 'var(--login-card-bg, #fff)',
           borderRadius: 16,
           boxShadow: '0 4px 24px 0 #e3e3e3',
           boxSizing: 'border-box',
@@ -162,38 +164,24 @@ export default function LoginForm({ onLoginSuccess, onAppSettings }) {
       >
         <div>下次可直接使用用戶名登入</div>
       </Modal>
-      <Dropdown
-        menu={{
-          items: [
-            {
-              key: 'appSettings',
-              label: '應用程式設定',
-              icon: <SettingOutlined />,
-              onClick: () => setShowAppSettings(true),
-            },
-          ],
-        }}
-        placement="bottomRight"
-        trigger={['click']}
-      >
-        <Button type="text" icon={<MoreOutlined />} style={{ float: 'right', fontSize: 20 }} />
-      </Dropdown>
+      {/* 右上角主題切換按鈕 */}
+      <ThemeSwitchBtn style={{ right: 24, top: 24, position: 'absolute' }} />
       <Typography.Title level={2} style={{ textAlign: 'center', marginBottom: 40, color: '#1976d2', fontWeight: 800, letterSpacing: 2, fontSize: 32 }}>登入</Typography.Title>
       <Form layout="vertical" onFinish={handleLogin} size="large" style={{ gap: 0 }}>
         <Form.Item label={<span style={{ fontWeight: 600, fontSize: 18 }}>用戶名</span>} required style={{ marginBottom: 24 }}>
-          <Input
-            list="user-list"
+          <AutoComplete
             value={account}
-            onChange={e => setAccount(e.target.value)}
-            placeholder="請輸入用戶名或選擇用戶名"
-            autoComplete="username"
-            style={{ height: 48, fontSize: 18, borderRadius: 8 }}
+            onChange={v => setAccount(v)}
+            options={users.filter(u => u.user && !u.user.includes('@')).map(u => ({ value: u.user }))}
+            placeholder="請輸入Email或選擇用戶名"
+            style={{ width: '100%', fontSize: 18, borderRadius: 8, minHeight: 48 }}
+            dropdownStyle={{ fontSize: 18, minWidth: 180 }}
+            size="large"
+            allowClear={false}
+            filterOption={(inputValue, option) =>
+              (option?.value ?? '').toLowerCase().includes(inputValue.toLowerCase())
+            }
           />
-          <datalist id="user-list">
-            {users.map(u => (
-              u.user && !u.user.includes('@') ? <option key={u.user} value={u.user} /> : null
-            ))}
-          </datalist>
         </Form.Item>
         <input type="hidden" value={email} readOnly />
         <Form.Item label={<span style={{ fontWeight: 600, fontSize: 18 }}>密碼</span>} required style={{ marginBottom: 24 }}>

@@ -41,16 +41,17 @@ export default function RegisterForm({ onRegisterSuccess }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: '#e3eafc',
+        background: 'transparent',
       }}
     >
       <div
+        className="register-card"
         style={{
           width: '100%',
           maxWidth: 400,
           minWidth: 0,
           padding: 'min(8vw,64px) 4vw min(4vw,32px) 4vw',
-          background: '#fff',
+          background: 'var(--register-card-bg, #fff)',
           borderRadius: 16,
           boxShadow: '0 4px 24px 0 #e3e3e3',
           boxSizing: 'border-box',

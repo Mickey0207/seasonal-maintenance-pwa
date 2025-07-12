@@ -1,3 +1,107 @@
+.dark-theme body {
+  --project-bg: #181a20;
+}
+body {
+  --project-bg: #e3eafc;
+}
+/* 深色主題自訂樣式 */
+.dark-theme {
+  background: #181a20 !important;
+  color: #e3eafc !important;
+}
+.dark-theme body {
+  background: #181a20 !important;
+  color: #e3eafc !important;
+}
+.dark-theme .ant-layout {
+  background: #181a20 !important;
+}
+.dark-theme .ant-layout-header {
+  background: #23262f !important;
+  color: #e3eafc !important;
+}
+.dark-theme .ant-layout-content {
+  background: #181a20 !important;
+  color: #e3eafc !important;
+}
+.dark-theme .ant-card {
+  background: #23262f !important;
+  color: #e3eafc !important;
+  border-color: #23262f !important;
+}
+.dark-theme .ant-card-bordered {
+  border: 1px solid #23262f !important;
+}
+.dark-theme .ant-btn {
+  background: #23262f !important;
+  color: #e3eafc !important;
+  border-color: #23262f !important;
+}
+.dark-theme .ant-btn-primary {
+  background: #1976d2 !important;
+  color: #fff !important;
+  border-color: #1976d2 !important;
+}
+.dark-theme .ant-input, .dark-theme .ant-input-password, .dark-theme .ant-select-selector, .dark-theme .ant-select-dropdown {
+  background: #23262f !important;
+  color: #e3eafc !important;
+  border-color: #23262f !important;
+}
+.dark-theme .ant-typography, .dark-theme .ant-typography h1, .dark-theme .ant-typography h2, .dark-theme .ant-typography h3, .dark-theme .ant-typography h4, .dark-theme .ant-typography h5 {
+  color: #e3eafc !important;
+}
+.dark-theme .ant-dropdown-menu {
+  background: #23262f !important;
+  color: #e3eafc !important;
+}
+.dark-theme .ant-modal-content {
+  background: #23262f !important;
+  color: #e3eafc !important;
+}
+.dark-theme .ant-modal-header {
+  background: #23262f !important;
+  color: #e3eafc !important;
+}
+.dark-theme .ant-modal-title {
+  color: #e3eafc !important;
+}
+
+.dark-theme .login-card,
+.dark-theme .register-card {
+  background: #23262f !important;
+  color: #e3eafc !important;
+  box-shadow: 0 4px 24px 0 #111a2f !important;
+}
+.dark-theme body {
+  --login-bg: #181a20;
+  --register-bg: #181a20;
+  --login-card-bg: #23262f;
+  --register-card-bg: #23262f;
+}
+body {
+  --login-bg: #e3eafc;
+  --register-bg: #e3eafc;
+  --login-card-bg: #fff;
+  --register-card-bg: #fff;
+}
+.dark-theme .ant-select-item-option-content {
+  color: #e3eafc !important;
+}
+.dark-theme .ant-message-notice-content {
+  background: #23262f !important;
+  color: #e3eafc !important;
+}
+.dark-theme .ant-form-item-label > label {
+  color: #e3eafc !important;
+}
+.dark-theme .ant-drawer-content {
+  background: #23262f !important;
+  color: #e3eafc !important;
+}
+.dark-theme .ant-drawer-header {
+  background: #23262f !important;
+  color: #e3eafc !important;
+}
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
