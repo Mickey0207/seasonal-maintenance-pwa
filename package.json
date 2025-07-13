@@ -13,8 +13,6 @@
     "vite-plugin-pwa": "^1.0.1"
   },
   "dependencies": {
-    "@chakra-ui/react": "^3.22.0",
-    "@emotion/react": "^11.14.0",
     "@supabase/supabase-js": "^2.50.5",
     "@vitejs/plugin-react": "^4.6.0",
     "antd": "^5.26.4",
