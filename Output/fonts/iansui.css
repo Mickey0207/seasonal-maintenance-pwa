@@ -1,0 +1,18 @@
+/* Iansui font from https://github.com/ButTaiwan/iansui */
+@font-face {
+  font-family: 'Iansui';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/ButTaiwan/iansui/fonts/Iansui-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Iansui';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/ButTaiwan/iansui/fonts/Iansui-Bold.woff2') format('woff2');
+}
+body, html, * {
+  font-family: 'Iansui', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Noto Sans TC', Arial, sans-serif !important;
+}
