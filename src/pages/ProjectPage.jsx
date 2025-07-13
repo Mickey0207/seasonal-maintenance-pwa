@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
-import { Spin, Typography, Button, Layout } from 'antd';
+
+import { Spin, Typography, Button, Layout, Form, Input, DatePicker, message } from 'antd';
 import ProjectTopBar from '../components/ProjectTopBar';
 
 export default function ProjectPage() {
+  const [form] = Form.useForm();
+  const [saving, setSaving] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
   const [project, setProject] = useState(null);
@@ -53,8 +56,26 @@ export default function ProjectPage() {
   // 按鈕事件
   const handleUserClick = () => navigate('/home');
   const handleHistory = () => {/* TODO: 實作歷史頁面跳轉 */};
-  const handleSeasonSetting = () => {/* TODO: 實作季保養設定頁面跳轉 */};
+  const handleSeasonSetting = () => {};
   const handleInfoSetting = () => {/* TODO: 實作保養資訊設定頁面跳轉 */};
+
+  // 季保養表單送出
+  const handleSeasonFormFinish = async (values) => {
+    setSaving(true);
+    const { time_start, time_finish } = values;
+    const { error } = await supabase.from('maintainance').insert({
+      project_id: project.id,
+      time_start: time_start ? time_start.format('YYYY-MM-DD HH:mm:ss') : null,
+      time_finish: time_finish ? time_finish.format('YYYY-MM-DD HH:mm:ss') : null,
+    });
+    setSaving(false);
+    if (!error) {
+      message.success('保養時間已儲存');
+      form.resetFields(['time_start', 'time_finish']);
+    } else {
+      message.error('儲存失敗: ' + error.message);
+    }
+  };
 
   if (loading) return <Spin tip="載入中..." style={{ marginTop: 80 }} />;
   if (!project) return <div style={{ padding: 32 }}><Typography.Text type="danger">找不到專案資料</Typography.Text><br /><Button onClick={() => navigate('/home')}>回主畫面</Button></div>;
@@ -71,10 +92,11 @@ export default function ProjectPage() {
         drawerOpen={drawerOpen}
         setDrawerOpen={setDrawerOpen}
       />
-      <Layout.Content style={{ width: '100vw', minHeight: 'calc(100vh - 64px)', padding: '32px 16px', margin: 0 }}>
+      <Layout.Content style={{ width: '100vw', minHeight: 'calc(100vh - 64px)', padding: '32px 16px', margin: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         <Typography.Title level={3}>{project.name}</Typography.Title>
         <div>單位：{project.unit}</div>
         <div>說明：{project.directions}</div>
+        {/* 季保養設定表單已移至獨立頁面 SeasonSetting */}
         <Button style={{ marginTop: 24 }} onClick={() => navigate('/home')}>回主畫面</Button>
       </Layout.Content>
     </Layout>

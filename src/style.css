@@ -1,3 +1,8 @@
+/* 強制移除 ant-design Layout.Header 的下方白線 */
+.project-top-bar, .ant-layout-header.project-top-bar {
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
 /* Home 頁頂端列樣式 */
 /* Home 頁頂端列樣式（與卡片一致） */
 .home-top-bar {

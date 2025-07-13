@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-route
 import Login from './pages/Login';
 import Home from './pages/Home';
 import ProjectPage from './pages/ProjectPage';
+import SeasonSetting from './pages/SeasonSetting';
 
 
 import Register from './pages/Register';
@@ -18,6 +19,7 @@ export default function App() {
           <Route path="/" element={<LoginWrapper />} />
           <Route path="/home" element={<Home />} />
           <Route path="/project/:id" element={<ProjectPage />} />
+          <Route path="/season-setting" element={<SeasonSetting />} />
           <Route path="/register" element={<Register />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
