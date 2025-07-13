@@ -7,9 +7,10 @@ import { UserOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { supabase } from '../lib/supabaseClient';
 import ProjectTopBar from '../components/ProjectTopBar';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function SeasonSetting() {
+  const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [initialValues, setInitialValues] = useState({});
   const [projectInfo, setProjectInfo] = useState({ name: '', unit: '', directions: '' });
@@ -128,39 +129,25 @@ export default function SeasonSetting() {
     setLoading(false);
   };
 
-  // 側邊欄：案場名稱、用戶名稱、季保養表單按鈕
-  const projectId = 1;
-  const CustomTopBar = () => (
-    <ProjectTopBar
-      userName={userName || '用戶'}
-      projectName={projectInfo.name || '案場設定'}
-      onUserClick={() => {}}
-      onHistory={() => {}}
-      onInfoSetting={() => {}}
-      onHomeClick={() => navigate(`/project/${projectId}`)}
-      drawerOpen={drawerOpen}
-      setDrawerOpen={setDrawerOpen}
-      customSideMenu={
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-          <div style={{ fontWeight: 800, fontSize: 22, color: '#1976d2', textAlign: 'center', margin: '32px 0 24px 0' }}>{projectInfo.name}</div>
-          <Button type="text" style={{ textAlign: 'left', width: '100%', fontSize: 18, marginBottom: 8, color: '#1976d2', fontWeight: 700 }} onClick={() => navigate('/project/1')}>
-            季保養表單
-          </Button>
-          <div style={{ flex: 1 }} />
-          <div style={{ textAlign: 'center', marginBottom: 24 }}>
-            <Button type="text" style={{ fontWeight: 700, fontSize: 18, color: '#1976d2' }} icon={<UserOutlined />}>
-              {userName || '用戶'}
-            </Button>
-          </div>
-        </div>
-      }
-      noShadow
-    />
-  );
+  // 統一側邊欄事件
+  const handleUserClick = () => navigate('/home');
+  const handleHistory = () => {};
+  const handleSeasonSetting = () => {};
+  const handleInfoSetting = () => { navigate(`/project/${id}/maintain-setting`); };
 
   return (
     <div style={{ minHeight: '100vh', width: '100vw', background: 'var(--background-color)', display: 'flex', flexDirection: 'column' }}>
-      <CustomTopBar />
+      <ProjectTopBar
+        userName={userName}
+        projectName={projectInfo.name}
+        id={id}
+        onUserClick={handleUserClick}
+        onHistory={handleHistory}
+        onSeasonSetting={handleSeasonSetting}
+        onInfoSetting={handleInfoSetting}
+        drawerOpen={drawerOpen}
+        setDrawerOpen={setDrawerOpen}
+      />
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         {(!projectInfo.name && !projectInfo.unit && !projectInfo.directions) ? (
           <div style={{ color: '#888', fontSize: 18 }}>載入中...</div>

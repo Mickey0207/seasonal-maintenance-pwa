@@ -1,12 +1,12 @@
 import React from 'react';
 import { Layout, Button, Typography, Dropdown, Menu, Drawer } from 'antd';
-import { UserOutlined, HistoryOutlined, SettingOutlined, ToolOutlined, MenuOutlined, BulbOutlined, MoonOutlined, HomeOutlined } from '@ant-design/icons';
+import { UserOutlined, HistoryOutlined, SettingOutlined, ToolOutlined, MenuOutlined, BulbOutlined, MoonOutlined, HomeOutlined, FormOutlined } from '@ant-design/icons';
 import { useTheme } from '../lib/ThemeContext';
 import { useMediaQuery } from 'react-responsive';
 
 import { useNavigate } from 'react-router-dom';
 
-export default function ProjectTopBar({ userName, projectName, onUserClick, onHistory, onInfoSetting, onHomeClick, drawerOpen, setDrawerOpen, customSideMenu, noShadow }) {
+export default function ProjectTopBar({ userName, projectName, id, onUserClick, onHistory, onInfoSetting, onHomeClick, drawerOpen, setDrawerOpen, customSideMenu, noShadow }) {
   const navigate = useNavigate();
   const isMobile = useMediaQuery({ maxWidth: 767 });
   const { theme, toggleTheme } = useTheme();
@@ -16,9 +16,16 @@ export default function ProjectTopBar({ userName, projectName, onUserClick, onHi
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <div style={{ fontWeight: 800, fontSize: 22, color: '#1976d2', textAlign: 'center', margin: '32px 0 24px 0' }}>{projectName}</div>
       <Button type="text" icon={<HomeOutlined />} style={{ textAlign: 'left', width: '100%', fontSize: 18, marginBottom: 8 }} onClick={onHomeClick}>主畫面</Button>
-      <Button type="text" icon={<HistoryOutlined />} style={{ textAlign: 'left', width: '100%', fontSize: 18, marginBottom: 8 }} onClick={onHistory}>本次季保養歷史</Button>
-      <Button type="text" icon={<SettingOutlined />} style={{ textAlign: 'left', width: '100%', fontSize: 18, marginBottom: 8 }} onClick={() => navigate('/season-setting')}>本次季保養設定</Button>
-      <Button type="text" icon={<ToolOutlined />} style={{ textAlign: 'left', width: '100%', fontSize: 18, marginBottom: 8 }} onClick={onInfoSetting}>保養資訊設定</Button>
+      <div style={{ height: 8 }} />
+      <hr style={{ margin: '8px 0' }} />
+      <div style={{ height: 8 }} />
+      <Button type="text" icon={<FormOutlined />} style={{ textAlign: 'left', width: '100%', fontSize: 18, marginBottom: 8 }} onClick={() => navigate(`/project/${id}`)}>本次季保養表單</Button>
+      <Button type="text" icon={<HistoryOutlined />} style={{ textAlign: 'left', width: '100%', fontSize: 18, marginBottom: 8 }} onClick={() => navigate(`/project/${id}/history`)}>本次季保養歷史</Button>
+      <div style={{ height: 8 }} />
+      <hr style={{ margin: '8px 0' }} />
+      <div style={{ height: 8 }} />
+      <Button type="text" icon={<SettingOutlined />} style={{ textAlign: 'left', width: '100%', fontSize: 18, marginBottom: 8 }} onClick={() => navigate(`/project/${id}/season-setting`)}>本次季保養設定</Button>
+      <Button type="text" icon={<ToolOutlined />} style={{ textAlign: 'left', width: '100%', fontSize: 18, marginBottom: 8 }} onClick={() => navigate(`/project/${id}/maintain-setting`)}>保養資訊設定</Button>
       <div style={{ flex: 1 }} />
       <div style={{ textAlign: 'center', marginBottom: 24 }}>
         <Button type="text" icon={<UserOutlined />} style={{ fontWeight: 700, fontSize: 18, color: '#1976d2' }} onClick={onUserClick}>{userName || '用戶'}</Button>

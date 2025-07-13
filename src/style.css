@@ -1,3 +1,22 @@
+/* === 強制測試 Antd message 彈窗顯示（排查用）=== */
+.ant-message {
+  z-index: 9999 !important;
+  position: fixed !important;
+  top: 40% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  pointer-events: all !important;
+}
+.ant-message-notice-content {
+  background: #ff5252 !important;
+  color: #000 !important;
+  font-size: 24px !important;
+  border: 3px solid #000 !important;
+}
+/* 強制讓 Antd message 彈窗永遠在最上層 */
+.ant-message {
+  z-index: 2000 !important;
+}
 /* 強制移除 ant-design Layout.Header 的下方白線 */
 .project-top-bar, .ant-layout-header.project-top-bar {
   border-bottom: none !important;
@@ -539,4 +558,47 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+/* ProjectMaintainSetting 欄位外框與日曆樣式覆蓋 */
+.ant-btn, .ant-btn-primary {background: rgba(25, 118, 210, 0.15) !important;}
+/* 強化 selector，確保三個欄位有藍色邊框 */
+.ant-input[name="name"],
+.ant-input[name="unit"],
+.ant-input[name="directions"],
+textarea[name="directions"] {resize: none !important;}
+/* directions 外層也加外框 */
+.ant-form-item-control-input-content textarea[name="directions"] {border: 2px solid #1976d2 !important;border-radius: 8px !important;box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.08) !important;}
+.ant-form-item-control-input-content textarea[name="directions"]:focus {border-color: #1565c0 !important;box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.15) !important;}
+.ant-input-affix-wrapper input[name="name"],
+.ant-input-affix-wrapper input[name="unit"] {border: 2px solid #1976d2 !important;border-radius: 8px !important;box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.08) !important;background: transparent;}
+.ant-input[name="name"]:focus,
+.ant-input[name="unit"]:focus,
+.ant-input[name="directions"]:focus,
+.ant-input-affix-wrapper input[name="name"]:focus,
+.ant-input-affix-wrapper input[name="unit"]:focus {border-color: #1565c0 !important;box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.15) !important;}
+.ant-input-affix-wrapper[name="name"],
+.ant-input-affix-wrapper[name="unit"] {border: 2px solid #1976d2 !important;border-radius: 8px !important;box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.08) !important;}
+.ant-input-affix-wrapper[name="name"]:focus-within,
+.ant-input-affix-wrapper[name="unit"]:focus-within {border-color: #1565c0 !important;box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.15) !important;}
+/* DatePicker 月曆 header 及所有按鈕移除背景與邊框 */
+.ant-picker-panel .ant-picker-header button,
+.ant-picker-panel .ant-picker-header,
+.ant-picker-panel .ant-picker-super-prev-icon,
+.ant-picker-panel .ant-picker-super-next-icon,
+.ant-picker-panel .ant-picker-prev-icon,
+.ant-picker-panel .ant-picker-next-icon,
+.ant-picker-panel .ant-picker-month-btn,
+.ant-picker-panel .ant-picker-year-btn {background: none !important;box-shadow: none !important;border: none !important;}
+.ant-picker-panel .ant-picker-header button:active,
+.ant-picker-panel .ant-picker-header button:focus {background: none !important;border: none !important;}
+/* 強制案場名稱與檢查單位欄位有藍色邊框 */
+.ant-input[name="name"],
+.ant-input[name="unit"],
+.ant-input-affix-wrapper input[name="name"],
+.ant-input-affix-wrapper input[name="unit"] {
+  border: 2px solid #1976d2 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.08) !important;
+  background: #fff;
 }
