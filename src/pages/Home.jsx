@@ -15,7 +15,7 @@ import { supabase } from '../lib/supabaseClient';
 
 export default function Home() {
   // 可自訂主頁頂端列與側邊欄標題
-  const HOME_TOPBAR_TITLE = 'ACL 季保養';
+  const HOME_TOPBAR_TITLE = '柯曼曼 我今天很忙但是我超級超級愛妳的歐!♥♥♥♥♥♥♥♥♥♥';
   const HOME_SIDEBAR_TITLE = 'ACL 季保養';
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);

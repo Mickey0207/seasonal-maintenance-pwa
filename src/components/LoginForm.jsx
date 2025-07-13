@@ -171,7 +171,6 @@ export default function LoginForm({ onLoginSuccess, onAppSettings }) {
             onChange={v => setAccount(v)}
             options={users.filter(u => u.user && !u.user.includes('@')).map(u => ({ value: u.user }))}
             placeholder="請輸入Email或選擇用戶名"
-            style={{ width: '100%', fontSize: 18, borderRadius: 12, minHeight: 48, background: 'var(--bg-input, #232b39)', border: 'none', boxShadow: 'none', outline: 'none' }}
             dropdownStyle={{ fontSize: 18, minWidth: 180, background: '#232b39', color: '#fff', borderRadius: 12, boxShadow: '0 4px 32px 0 #10162499', border: '1.5px solid #353a4a' }}
             popupClassName="login-autocomplete-dropdown"
             size="large"
@@ -183,7 +182,7 @@ export default function LoginForm({ onLoginSuccess, onAppSettings }) {
         </Form.Item>
         <input type="hidden" value={email} readOnly />
         <Form.Item label={<span style={{ fontWeight: 600, fontSize: 18 }}>密碼</span>} required style={{ marginBottom: 24 }}>
-          <Input.Password value={password} onChange={e => setPassword(e.target.value)} autoComplete="current-password" style={{ height: 48, fontSize: 18, borderRadius: 8 }} />
+          <Input.Password value={password} onChange={e => setPassword(e.target.value)} autoComplete="current-password" />
         </Form.Item>
         <Form.Item style={{ marginBottom: 16 }}>
           <Button type="primary" htmlType="submit" block disabled={!account || !password} style={{ height: 48, fontSize: 18, borderRadius: 8, fontWeight: 700, marginBottom: 8 }}>登入</Button>

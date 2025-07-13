@@ -47,7 +47,7 @@ export default function RegisterForm({ onRegisterSuccess }) {
           <Input style={{ height: 48, fontSize: 18, borderRadius: 8 }} autoFocus />
         </Form.Item>
         <Form.Item label={<span style={{ fontWeight: 600, fontSize: 18 }}>密碼</span>} name="password" rules={[{ required: true, message: '請輸入密碼' }]} style={{ marginBottom: 24 }}>
-          <Input.Password style={{ height: 48, fontSize: 18, borderRadius: 8 }} autoComplete="new-password" />
+          <Input.Password style={{ height: 48, fontSize: 18, borderRadius: 8, border: 'none', boxShadow: 'none', outline: 'none', background: 'var(--bg-input, #232b39)' }} autoComplete="new-password" />
         </Form.Item>
         <Form.Item label={<span style={{ fontWeight: 600, fontSize: 18 }}>確認密碼</span>} name="confirmPassword" dependencies={["password"]} rules={[
           { required: true, message: '請再次輸入密碼' },
@@ -60,7 +60,7 @@ export default function RegisterForm({ onRegisterSuccess }) {
             },
           }),
         ]} style={{ marginBottom: 24 }}>
-          <Input.Password style={{ height: 48, fontSize: 18, borderRadius: 8 }} autoComplete="new-password" />
+          <Input.Password style={{ height: 48, fontSize: 18, borderRadius: 8, border: 'none', boxShadow: 'none', outline: 'none', background: 'var(--bg-input, #232b39)' }} autoComplete="new-password" />
         </Form.Item>
         {error && <Typography.Text type="danger" style={{ fontWeight: 600, fontSize: 16 }}>{error}</Typography.Text>}
         <Form.Item style={{ marginTop: 8 }}>
