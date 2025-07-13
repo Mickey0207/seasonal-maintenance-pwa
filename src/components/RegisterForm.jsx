@@ -34,29 +34,7 @@ export default function RegisterForm({ onRegisterSuccess }) {
   };
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        width: '100vw',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'transparent',
-      }}
-    >
-      <div
-        className="register-card"
-        style={{
-          width: '100%',
-          maxWidth: 400,
-          minWidth: 0,
-          padding: 'min(8vw,64px) 4vw min(4vw,32px) 4vw',
-          background: 'var(--register-card-bg, #fff)',
-          borderRadius: 16,
-          boxShadow: '0 4px 24px 0 #e3e3e3',
-          boxSizing: 'border-box',
-        }}
-      >
+    <>
       <Typography.Title level={2} style={{ textAlign: 'center', marginBottom: 32, color: '#1976d2', fontWeight: 800, letterSpacing: 2, fontSize: 28 }}>註冊新帳號</Typography.Title>
       <Form
         form={form}
@@ -91,7 +69,6 @@ export default function RegisterForm({ onRegisterSuccess }) {
           </Button>
         </Form.Item>
       </Form>
-      </div>
-    </div>
+    </>
   );
 }

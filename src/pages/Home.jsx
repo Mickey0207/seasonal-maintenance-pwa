@@ -1,10 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
-import ThemeSwitchBtn from '../components/ThemeSwitchBtn';
+import ProjectTopBar from '../components/ProjectTopBar';
 // import HomeSidebar from '../components/HomeSidebar';
 import { Drawer } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
-import { useTheme } from '../lib/ThemeContext';
+
 import { useNavigate } from 'react-router-dom';
 import { Layout, Card, Row, Col, Dropdown, Menu, Button, Typography, message } from 'antd';
 import { UserOutlined, SettingOutlined, LogoutOutlined, PlusOutlined, HistoryOutlined, ToolOutlined } from '@ant-design/icons';
@@ -14,12 +14,15 @@ import { supabase } from '../lib/supabaseClient';
 
 
 export default function Home() {
+  // 可自訂主頁頂端列與側邊欄標題
+  const HOME_TOPBAR_TITLE = 'ACL 季保養';
+  const HOME_SIDEBAR_TITLE = 'ACL 季保養';
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
-  const { theme } = useTheme();
+
 
 
   // 取得專案卡片資料
@@ -106,7 +109,10 @@ export default function Home() {
   // 取得圖片 URL
   const getImageUrl = (imgPath) => {
     if (!imgPath) return '';
-    return supabase.storage.from('home-project-card-photo').getPublicUrl(imgPath).publicUrl;
+    const { data } = supabase.storage.from('home-project-card-photo').getPublicUrl(imgPath);
+    const url = data?.publicUrl || '';
+    console.log('卡片圖片 imgPath:', imgPath, 'publicUrl:', url);
+    return url;
   };
 
   // 側邊欄選單
@@ -127,40 +133,29 @@ export default function Home() {
     message.info('尚未實作用戶頁面');
   };
   const projectName = projects[0]?.name || '專案名稱';
-  const homesideMenu = (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <div style={{ fontWeight: 800, fontSize: 22, color: '#1976d2', textAlign: 'center', margin: '32px 0 24px 0' }}>{projectName}</div>
-      <Button type="text" icon={<SettingOutlined />} style={{ textAlign: 'left', width: '100%', fontSize: 18, marginBottom: 8 }} onClick={onAppSettings}>應用程式設定</Button>
-      <div style={{ flex: 1 }} />
-      <div style={{ textAlign: 'center', marginBottom: 24 }}>
-        <Button type="text" icon={<UserOutlined />} style={{ fontWeight: 700, fontSize: 18, color: '#1976d2' }} onClick={onUserClick}>{userName || '用戶'}</Button>
-      </div>
-    </div>
-  );
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--main-bg, #e3f0ff)' }}>
       <Layout style={{ minHeight: '100vh', background: 'transparent' }}>
-        {/* 頂端列 */}
-        <div className={`home-top-bar${theme === 'dark' ? ' dark-theme' : ''}`}> 
-          {/* 左側：功能選單按鈕 */}
-          <Button type="text" icon={<MenuOutlined />} style={{ fontSize: 24, marginRight: 16 }} onClick={() => setDrawerOpen(true)} />
-          {/* 中間：標題 */}
-          <Typography.Title level={3} style={{ margin: 0, flex: 1, textAlign: 'center', color: '#1976d2', fontWeight: 800, letterSpacing: 2 }}>ACL 季保養</Typography.Title>
-          {/* 右側：主題切換按鈕與用戶名 */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <ThemeSwitchBtn style={{ position: 'static', fontSize: 22 }} />
-            <Dropdown overlay={userMenu} trigger={['click']}>
-              <Button type="text" style={{ fontWeight: 700, fontSize: 18, padding: 0, color: '#1976d2' }} icon={<UserOutlined />}>
-                {userName || '用戶'}
-              </Button>
-            </Dropdown>
-          </div>
-        </div>
-        {/* Drawer 側邊欄 */}
-        <Drawer placement="left" open={drawerOpen} onClose={() => setDrawerOpen(false)} width={260} bodyStyle={{ padding: 0, background: theme === 'dark' ? '#23262f' : '#fff' }}>
-          {homesideMenu}
-        </Drawer>
+        <ProjectTopBar
+          userName={userName}
+          projectName={HOME_TOPBAR_TITLE}
+          sideBarTitle={HOME_SIDEBAR_TITLE}
+          onUserClick={onUserClick}
+          onHomeClick={() => {}}
+          drawerOpen={drawerOpen}
+          setDrawerOpen={setDrawerOpen}
+          customSideMenu={
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+              <div style={{ fontWeight: 800, fontSize: 22, color: '#1976d2', textAlign: 'center', margin: '32px 0 24px 0' }}>{HOME_SIDEBAR_TITLE}</div>
+              <Button className="sidebar-btn" type="text" icon={<SettingOutlined />} onClick={onAppSettings}>應用程式設定</Button>
+              <div style={{ flex: 1 }} />
+              <div style={{ textAlign: 'center', marginBottom: 24 }}>
+                <Button className="sidebar-btn" type="text" icon={<UserOutlined />} onClick={onUserClick}>{userName || '用戶'}</Button>
+              </div>
+            </div>
+          }
+        />
         <Layout.Content style={{ width: '100vw', maxWidth: '100vw', minHeight: 'calc(100vh - 72px)', padding: '32px 16px', margin: 0 }}>
           <Row gutter={[24, 24]} style={{ width: '100%' }}>
             {/* 新增卡片 */}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Form, Input, Button, DatePicker, message, Card, Modal } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
@@ -16,6 +16,10 @@ export default function ProjectMaintainSetting() {
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [modalType, setModalType] = useState('success'); // 'success' | 'error'
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [uploadFile, setUploadFile] = useState(null);
+  const [photoPath, setPhotoPath] = useState(null);
+  const fileInputRef = useRef();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,14 +63,20 @@ export default function ProjectMaintainSetting() {
         setLoading(false);
         return;
       }
-      // 取得案場資訊
+      // 取得案場資訊，包含 photo_path
       const { data: projectData } = await supabase
         .from('home_project_card')
-        .select('name, unit, directions')
+        .select('name, unit, directions, photo_path')
         .eq('id', projectId)
         .single();
       if (projectData) {
         setProjectInfo(projectData);
+        if (projectData.photo_path) {
+          setPhotoPath(projectData.photo_path);
+          // 若是 storage 路徑，轉 publicUrl
+          const publicUrl = supabase.storage.from('home-project-card-photo').getPublicUrl(projectData.photo_path).publicUrl;
+          setPreviewUrl(publicUrl);
+        }
       }
       setLoading(false);
     };
@@ -78,10 +88,30 @@ export default function ProjectMaintainSetting() {
   const onFinish = async (values) => {
     setLoading(true);
     const { name, unit, directions } = values;
+    let uploadedPhotoPath = photoPath;
+    // 若有新圖片要上傳
+    if (uploadFile) {
+      const ext = uploadFile.name.split('.').pop();
+      const filePath = `${id || 1}/${Date.now()}.${ext}`;
+      const { error: uploadError } = await supabase
+        .storage
+        .from('home-project-card-photo')
+        .upload(filePath, uploadFile, { upsert: true });
+      if (uploadError) {
+        setModalType('error');
+        setModalMessage(`圖片上傳失敗：${uploadError.message}`);
+        setShowModal(true);
+        setLoading(false);
+        return;
+      }
+      uploadedPhotoPath = filePath; // 只存 storage 路徑
+      setPhotoPath(uploadedPhotoPath);
+    }
+    // 更新資料表
     const { error } = await supabase
       .from('home_project_card')
-      .update({ name, unit, directions })
-      .eq('id', 1);
+      .update({ name, unit, directions, photo_path: uploadedPhotoPath })
+      .eq('id', id || 1);
     if (error) {
       setModalType('error');
       setModalMessage(`儲存失敗：${error.message || '未知錯誤'}`);
@@ -91,6 +121,7 @@ export default function ProjectMaintainSetting() {
       setModalMessage('儲存成功');
       setShowModal(true);
       setProjectInfo({ name, unit, directions });
+      setUploadFile(null);
     }
     setLoading(false);
   };
@@ -105,7 +136,7 @@ export default function ProjectMaintainSetting() {
         okText="確認"
         cancelButtonProps={{ style: { display: 'none' } }}
         centered
-        width={340}
+        className="sidebar"
         bodyStyle={{ textAlign: 'center', fontSize: 18, padding: 32 }}
         title={modalType === 'success' ? '成功' : '錯誤'}
         afterClose={() => {
@@ -119,6 +150,7 @@ export default function ProjectMaintainSetting() {
           projectName={projectInfo.name || "載入中..."}
           userName={userName}
           id={id}
+          onHomeClick={() => navigate('/home')}
           drawerOpen={drawerOpen}
           setDrawerOpen={setDrawerOpen}
         />
@@ -148,7 +180,38 @@ export default function ProjectMaintainSetting() {
                 <Form.Item label="檢查說明" name="directions"> 
                   <Input.TextArea name="directions" autoSize style={{ border: '2px solid #1976d2', borderRadius: 8, boxShadow: '0 0 0 2px rgba(25, 118, 210, 0.08)' }} />
                 </Form.Item>
-                {/* 已移除季別、保養時間起、保養時間迄欄位 */}
+                {/* 圖片上傳欄位 */}
+                <Form.Item label="上傳圖片">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    onChange={e => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        setUploadFile(file);
+                        const reader = new FileReader();
+                        reader.onload = ev => {
+                          setPreviewUrl(ev.target.result);
+                        };
+                        reader.readAsDataURL(file);
+                      } else {
+                        // 若沒有選擇新檔案，若資料庫有圖片則顯示 publicUrl
+                        if (photoPath) {
+                          const publicUrl = supabase.storage.from('home-project-card-photo').getPublicUrl(photoPath).publicUrl;
+                          setPreviewUrl(publicUrl);
+                        } else {
+                          setPreviewUrl(null);
+                        }
+                        setUploadFile(null);
+                      }
+                    }}
+                    style={{ width: '100%' }}
+                  />
+                  {/* 圖片預覽區塊，可根據 state 顯示 */}
+                  {previewUrl && <img src={previewUrl} alt="預覽" style={{ maxWidth: '100%', marginTop: 8 }} />}
+                </Form.Item>
                 <Form.Item>
                   <Button type="primary" htmlType="submit" block loading={loading} style={{ background: 'rgba(25, 118, 210, 0.15)' }}>儲存</Button>
                 </Form.Item>

@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useNavigate } from 'react-router-dom';
 import { Form, Input, Button, Modal, Typography, Dropdown, Space, message, AutoComplete } from 'antd';
 import { SettingOutlined, MoreOutlined } from '@ant-design/icons';
-import ThemeSwitchBtn from './ThemeSwitchBtn';
+// import ThemeSwitchBtn from './ThemeSwitchBtn';
 
 // 登入表單元件
 export default function LoginForm({ onLoginSuccess, onAppSettings }) {
@@ -164,8 +163,6 @@ export default function LoginForm({ onLoginSuccess, onAppSettings }) {
       >
         <div>下次可直接使用用戶名登入</div>
       </Modal>
-      {/* 右上角主題切換按鈕 */}
-      <ThemeSwitchBtn style={{ right: 24, top: 24, position: 'absolute' }} />
       <Typography.Title level={2} style={{ textAlign: 'center', marginBottom: 40, color: '#1976d2', fontWeight: 800, letterSpacing: 2, fontSize: 32 }}>登入</Typography.Title>
       <Form layout="vertical" onFinish={handleLogin} size="large" style={{ gap: 0 }}>
         <Form.Item label={<span style={{ fontWeight: 600, fontSize: 18 }}>用戶名</span>} required style={{ marginBottom: 24 }}>
@@ -174,8 +171,9 @@ export default function LoginForm({ onLoginSuccess, onAppSettings }) {
             onChange={v => setAccount(v)}
             options={users.filter(u => u.user && !u.user.includes('@')).map(u => ({ value: u.user }))}
             placeholder="請輸入Email或選擇用戶名"
-            style={{ width: '100%', fontSize: 18, borderRadius: 8, minHeight: 48 }}
-            dropdownStyle={{ fontSize: 18, minWidth: 180 }}
+            style={{ width: '100%', fontSize: 18, borderRadius: 12, minHeight: 48, background: 'var(--bg-input, #232b39)', border: 'none', boxShadow: 'none', outline: 'none' }}
+            dropdownStyle={{ fontSize: 18, minWidth: 180, background: '#232b39', color: '#fff', borderRadius: 12, boxShadow: '0 4px 32px 0 #10162499', border: '1.5px solid #353a4a' }}
+            popupClassName="login-autocomplete-dropdown"
             size="large"
             allowClear={false}
             filterOption={(inputValue, option) =>

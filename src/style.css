@@ -1,604 +1,723 @@
-/* === 強制測試 Antd message 彈窗顯示（排查用）=== */
-.ant-message {
-  z-index: 9999 !important;
-  position: fixed !important;
-  top: 40% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  pointer-events: all !important;
+/* ====== 頂端列使用者選單自訂樣式 ====== */
+.project-top-bar__user-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
-.ant-message-notice-content {
-  background: #ff5252 !important;
-  color: #000 !important;
-  font-size: 24px !important;
-  border: 3px solid #000 !important;
-}
-/* 強制讓 Antd message 彈窗永遠在最上層 */
-.ant-message {
-  z-index: 2000 !important;
-}
-/* 強制移除 ant-design Layout.Header 的下方白線 */
-.project-top-bar, .ant-layout-header.project-top-bar {
-  border-bottom: none !important;
-  box-shadow: none !important;
-}
-/* Home 頁頂端列樣式 */
-/* Home 頁頂端列樣式（與卡片一致） */
-.home-top-bar {
-  background: var(--brand-bg-card) !important;
-  color: var(--brand-text) !important;
-  border-radius: var(--brand-radius-xl) !important;
-  box-shadow: var(--brand-shadow-2) !important;
-  margin: 0 !important;
-  padding: 0 32px !important;
-  height: 72px !important;
-  width: 100vw !important;
-  max-width: 100vw !important;
-  display: flex !important;
-  align-items: center !important;
-  position: relative !important;
-  z-index: 10 !important;
-  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
-}
-.home-top-bar.dark-theme {
-  background: var(--brand-bg-card) !important;
-  color: var(--brand-text) !important;
-  box-shadow: var(--brand-shadow-2) !important;
-}
-/* ProjectTopBar 樣式統一管理 */
-.project-top-bar {
-  background: #fff !important;
-  box-shadow: 0 2px 8px #e3e3e3 !important;
-  padding: 0 24px !important;
-  display: flex !important;
-  align-items: center !important;
-  height: 64px !important;
-  transition: background 0.3s, color 0.3s;
-}
-.project-top-bar.dark-theme {
-  background: #181818 !important;
-  color: #e3eafc !important;
-}
-/* 讓 register-card 下的普通 input 也有一致的邊框 */
-.register-card .ant-input {
-  border: 2px solid #90caf9 !important;
+.project-top-bar__user-menu-btn {
+  color: #fff !important;
+  font-weight: 700;
+  font-size: 1.08em;
   border-radius: 12px !important;
-  background: #f4faff !important;
+  padding: 10px 24px !important;
+  background: transparent !important;
+  border: none !important;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+/* 第一個：設定使用者資料 */
+.project-top-bar__user-menu-btn.profile {
+  color: #fff !important;
+}
+.project-top-bar__user-menu-btn.profile:hover {
+  background: #6366f1 !important;
+  color: #fff !important;
+  box-shadow: 0 0 32px 8px #6366f1cc, 0 0 64px 16px #6366f199 !important;
+}
+/* 第二個：登出按鈕 */
+.project-top-bar__user-menu-btn.logout:hover {
+  background: #ff4d4f !important;
+  color: #fff !important;
+  box-shadow: 0 0 32px 8px #ff4d4fcc, 0 0 64px 16px #ff4d4f99 !important;
+}
+/* 強制移除註冊卡片與返回登入按鈕的發光效果 */
+.register-card, .ant-card.register-card, div.register-card {
   box-shadow: none !important;
-  padding: 0 12px !important;
-  color: #1976d2 !important;
-  height: 48px !important;
+.register-back-btn, button.register-back-btn, .ant-btn.register-back-btn {
+  box-shadow: none !important;
+}
+/* 修正註冊/登入表單欄位標籤與輸入框垂直對齊 */
+.register-card .ant-form-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5em;
+}
+.register-card .ant-form-item-label {
+  display: flex !important;
+  align-items: center !important;
+  padding-bottom: 0 !important;
+  min-width: 110px;
+  margin-bottom: 0 !important;
+}
+.register-card .ant-form-item-control {
+  flex: 1 1 0%;
+  display: flex !important;
+  align-items: center !important;
+  margin-bottom: 0 !important;
+}
+/* 註冊頁返回登入按鈕發光樣式 */
+.register-back-btn {
+  margin: 24px auto 0;
+  display: block;
+  padding: 10px 0;
+  width: 100%;
+  max-width: 400px;
+  background: transparent;
+  color: #6366f1;
+  border: 2px solid #6366f1;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  box-shadow: 0 0 64px 24px #a3baff, 0 0 128px 48px #a3baff;
+/* 移除多餘括號，修正語法錯誤 */
+/* 註冊頁 register-card 也套用與登入頁 login-card 一致的 input、AutoComplete、Button 樣式 */
+.register-card .ant-input,
+.register-card .ant-input-password,
+.register-card .ant-input-affix-wrapper,
+.register-card input {
+  border: none !important;
+  border-radius: 16px !important;
+  background: #232b39 !important;
+  color: #fff !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 8px 16px !important;
   font-size: 18px !important;
-  transition: border 0.2s, box-shadow 0.2s;
+  min-height: 48px !important;
+  transition: background 0.18s, color 0.18s;
 }
-.register-card .ant-input:focus {
-  border-color: #64b5f6 !important;
-  box-shadow: 0 0 0 2px rgba(100,181,246,0.10) !important;
+.register-card .ant-input:focus,
+.register-card .ant-input-password:focus,
+.register-card .ant-input-affix-wrapper-focused,
+.register-card input:focus {
+  box-shadow: none !important;
 }
-.dark-theme .register-card .ant-input {
-  border: 2px solid #64b5f6 !important;
+.register-card .ant-btn-primary {
+  background: var(--main-light, #6366f1) !important;
+  border: none !important;
+  color: #fff !important;
+  font-weight: 700;
+}
+.register-card .ant-btn-default {
+  background: #232b39 !important;
+  color: #fff !important;
+  border: 1.5px solid #353a4a !important;
+}
+.register-card .ant-select-selector {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+.register-card .ant-select-item {
+  background: #232b39 !important;
+  color: #fff !important;
+  border-radius: 0 !important;
+}
+.register-card .ant-select-item-option-active {
+  background: #353a4a !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+  margin: 2px 6px !important;
+  transition: background 0.18s, border-radius 0.18s;
+}
+.register-card .ant-select-item-option-active > div {
+  background: #353a4a !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+}
+.register-card .ant-select-item-option-selected {
+  background: var(--main-light, #6366f1) !important;
+  color: #fff !important;
+}
+.register-card .ant-select-dropdown {
+  background: #232b39 !important;
+  color: #fff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 32px 0 #10162499 !important;
+  border: 1.5px solid #353a4a !important;
+}
+/* 移除 Ant Design AutoComplete 及 Input 元件的邊框與陰影 (僅針對登入頁) */
+.login-card .ant-input,
+.login-card .ant-input-affix-wrapper,
+.login-card .ant-select-selector {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+/* 針對 AutoComplete 下拉選單也做處理 */
+.login-autocomplete-dropdown .ant-select-item {
+  background: #232b39 !important;
+  color: #fff !important;
+  border: none !important;
+}
+/* 註冊頁 register-card 樣式與登入頁 login-card 完全一致，並強化優先權避免全域 input 樣式干擾 */
+.register-card {
+  background: #181c24 !important;
+  border: 2.5px solid var(--main-light, #6366f1) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 0 128px 48px #e3eaff, 0 0 256px 96px #b5d0ff, 0 0 64px 24px #fff, 0 4px 32px 0 #10162499 !important;
+  color: #fff !important;
+  padding: min(8vw,64px) 4vw min(4vw,32px) 4vw !important;
+  max-width: 400px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+}
+/* ====== 現代深色主題登入/註冊頁樣式 ====== */
+
+.login-card, .register-card {
+  background: #181c24 !important;
+  border-radius: 18px !important;
+  box-shadow: 0 4px 32px 0 #10162499 !important;
+  color: #e3eafc !important;
+  padding: 40px 32px 32px 32px !important;
+  max-width: 400px;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1.5px solid #232b39 !important;
+}
+
+.login-card h1, .register-card h1 {
+  color: #5b6fff !important;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.login-card .ant-form-item, .register-card .ant-form-item {
+  margin-bottom: 22px !important;
+}
+.login-card .ant-form-item-label > label,
+.register-card .ant-form-item-label > label {
+  color: #a3aed0 !important;
+  font-weight: 700;
+  font-size: 1.08em;
+  letter-spacing: 1px;
+}
+.login-card .ant-input,
+.register-card .ant-input,
+.login-card .ant-input-password,
+.register-card .ant-input-password,
+.login-card .ant-input-affix-wrapper,
+.register-card .ant-input-affix-wrapper,
+.login-card input,
+.register-card input {
+  border: 1.5px solid #353a4a !important;
   border-radius: 12px !important;
   background: #232b39 !important;
   color: #e3eafc !important;
-}
-.dark-theme .register-card .ant-input:focus {
-  border-color: #90caf9 !important;
-  box-shadow: 0 0 0 2px rgba(100,181,246,0.18) !important;
-}
-/* 讓 body 根據頁面類型切換背景色，避免覆蓋問題 */
-body.login-page {
-  background: #e3eafc !important;
-}
-body.register-page {
-  background: #e3eafc !important;
-}
-.dark-theme body.login-page {
-  background: #181a20 !important;
-}
-.dark-theme.register-page {
-  background: #181a20 !important;
-}
-/* 讓 register-card 下的密碼欄 affix-wrapper 只保留外層邊框，內部 input 無邊框 */
-.register-card .ant-input-affix-wrapper {
-  border: 2px solid #90caf9 !important;
-  border-radius: 12px !important;
-  background: #f4faff !important;
   box-shadow: none !important;
-  padding: 0 !important;
-  transition: border 0.2s, box-shadow 0.2s;
+  outline: none !important;
+  padding: 10px 16px !important;
+  font-size: 1.08em !important;
+  min-height: 44px !important;
+  transition: border 0.2s, background 0.2s, color 0.2s;
 }
-.register-card .ant-input-affix-wrapper:focus,
-.register-card .ant-input-affix-wrapper-focused {
-  border-color: #64b5f6 !important;
-  box-shadow: 0 0 0 2px rgba(100,181,246,0.10) !important;
+.login-card .ant-input:focus,
+.register-card .ant-input:focus,
+.login-card .ant-input-password:focus,
+.register-card .ant-input-password:focus,
+.login-card .ant-input-affix-wrapper-focused,
+.register-card .ant-input-affix-wrapper-focused,
+.login-card input:focus,
+.register-card input:focus {
+  border-color: #5b6fff !important;
+  box-shadow: 0 0 0 2px #5b6fff33 !important;
 }
+.login-card .ant-btn-primary,
+.register-card .ant-btn-primary {
+  background: linear-gradient(90deg, #6366f1 0%, #5b6fff 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  font-weight: 700;
+  font-size: 1.08em;
+  border-radius: 12px !important;
+  min-height: 44px;
+  box-shadow: none !important;
+  transition: background 0.2s, color 0.2s;
+}
+.login-card .ant-btn-primary:hover,
+.register-card .ant-btn-primary:hover {
+  background: linear-gradient(90deg, #5b6fff 0%, #6366f1 100%) !important;
+  color: #fff !important;
+}
+.login-card .ant-btn-default,
+.register-card .ant-btn-default {
+  background: #232b39 !important;
+  color: #e3eafc !important;
+  border: 1.5px solid #353a4a !important;
+  border-radius: 12px !important;
+  min-height: 44px;
+  font-weight: 700;
+  font-size: 1.08em;
+  box-shadow: none !important;
+  transition: background 0.2s, color 0.2s;
+}
+.login-card .ant-btn-default:hover,
+.register-card .ant-btn-default:hover {
+  background: #353a4a !important;
+  color: #fff !important;
+}
+.login-card .ant-form-item-label,
+.register-card .ant-form-item-label {
+  padding-bottom: 4px !important;
+}
+.login-card .ant-form-item-control,
+.register-card .ant-form-item-control {
+  margin-bottom: 0 !important;
+}
+.login-card .ant-input-affix-wrapper .ant-input,
 .register-card .ant-input-affix-wrapper .ant-input {
-  border: none !important;
   background: transparent !important;
+  border: none !important;
   box-shadow: none !important;
-  color: #1976d2 !important;
+  padding-left: 0 !important;
 }
-.dark-theme .register-card .ant-input-affix-wrapper {
-  border: 2px solid #64b5f6 !important;
-  border-radius: 12px !important;
+.login-card .ant-input-affix-wrapper,
+.register-card .ant-input-affix-wrapper {
+  padding: 0 8px !important;
   background: #232b39 !important;
-  box-shadow: none !important;
-  padding: 0 !important;
+  border-radius: 12px !important;
+  border: 1.5px solid #353a4a !important;
 }
-.dark-theme .register-card .ant-input-affix-wrapper:focus,
-.dark-theme .register-card .ant-input-affix-wrapper-focused {
-  border-color: #90caf9 !important;
-  box-shadow: 0 0 0 2px rgba(100,181,246,0.18) !important;
+.login-card .ant-input-affix-wrapper-focused,
+.register-card .ant-input-affix-wrapper-focused {
+  border-color: #5b6fff !important;
+  box-shadow: 0 0 0 2px #5b6fff33 !important;
 }
-.dark-theme .register-card .ant-input-affix-wrapper .ant-input {
-  border: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
+.login-card .ant-form-item-explain,
+.register-card .ant-form-item-explain {
+  color: #ff6b81 !important;
+  font-size: 0.98em;
+  margin-top: 2px;
+}
+.login-card .ant-form-item-required > label,
+.register-card .ant-form-item-required > label {
+  color: #6fa8ff !important;
+}
+.login-card .ant-typography,
+.register-card .ant-typography {
   color: #e3eafc !important;
 }
-/* 保留 affix-wrapper 預設邊框，讓密碼欄位和用戶名欄位一致 */
-/* ===== Atomize Design System 全站主題變數 ===== */
-:root {
-  --brand-main: #5b6fff;
-  --brand-main-dark: #556ee6;
-  --brand-light: #f4f6fb;
-  --brand-bg: #f4f6fb;
-  --brand-bg-card: #fff;
-  --brand-bg-input: #f8f9fb;
-  --brand-border: #e3e8ee;
-  --brand-radius-xs: 2px;
-  --brand-radius-sm: 4px;
-  --brand-radius-md: 6px;
-  --brand-radius-lg: 8px;
-  --brand-radius-xl: 12px;
-  --brand-shadow-1: 0 1px 3px rgba(20,20,43,0.04);
-  --brand-shadow-2: 0 4px 8px rgba(20,20,43,0.08);
-  --brand-shadow-3: 0 8px 24px rgba(20,20,43,0.12);
-  --brand-text: #222;
-  --brand-text-light: #707eae;
-  --brand-font: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  justify-content: center;
+  min-width: 0;
+  z-index: 0;
 }
-.dark-theme {
-  --brand-main: #5b6fff;
-  --brand-main-dark: #5b6fff;
-  --brand-light: #23262f;
-  --brand-bg: #181a20;
-  --brand-bg-card: #23262f;
-  --brand-bg-input: #232b39;
-  --brand-border: #353a4a;
-  --brand-text: #e3e8ee;
-  --brand-text-light: #a3aed0;
+/* 縮小 jul 和 2025 的按鈕，移除發光與 hover 效果 */
+.ant-picker-header > div > div {
+  font-size: 0.98em !important;
+  font-weight: 700;
+  color: #fff !important;
+  word-break: break-all;
+  background: #353a4a !important;
+  border-radius: 12px !important;
+  padding: 2px 16px !important;
+  margin: 2px 0 0 0 !important;
+  box-shadow: none !important;
+  transition: none !important;
+  cursor: pointer;
+}
+.ant-picker-header > div > div:hover {
+  background: #353a4a !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+
+/* 移除小日曆 panel 圓角，讓四角不再是白色 */
+.ant-picker-panel {
+  border-radius: 0 !important;
+}
+/* DatePicker 小日曆深色主題設計 */
+.ant-picker-panel {
+  background: #232b39 !important;
+  color: #e3eafc !important;
+  border-radius: 18px !important;
+  box-shadow: 0 4px 32px 0 #10162499 !important;
+  border: 1.5px solid #353a4a !important;
+}
+.ant-picker-header {
+  background: #232b39 !important;
+  color: #e3eafc !important;
+  border-bottom: 1px solid #353a4a !important;
+}
+.ant-picker-header > button {
+  background: #353a4a !important;
+  color: #fff !important;
+}
+.ant-picker-header > button:hover {
+  background: var(--main-light) !important;
+  color: #fff !important;
+}
+.ant-picker-body {
+  background: #232b39 !important;
+}
+.ant-picker-content th {
+  color: #a3aed0 !important;
+  font-weight: 700;
+}
+.ant-picker-cell {
+  color: #e3eafc !important;
+}
+.ant-picker-cell-in-view {
+  color: #e3eafc !important;
+}
+.ant-picker-cell-today .ant-picker-cell-inner {
+  border-color: var(--main-light) !important;
+}
+.ant-picker-cell-selected .ant-picker-cell-inner,
+.ant-picker-cell-range-start .ant-picker-cell-inner,
+.ant-picker-cell-range-end .ant-picker-cell-inner {
+  background: var(--main-light) !important;
+  color: #fff !important;
+}
+.ant-picker-cell-inner {
+  border-radius: 8px !important;
+  transition: background 0.2s, color 0.2s;
+}
+.ant-picker-cell:hover .ant-picker-cell-inner {
+  background: #353a4a !important;
+  color: #fff !important;
+}
+.ant-picker-footer {
+  background: #232b39 !important;
+  border-top: 1px solid #353a4a !important;
+}
+.ant-picker-today-btn {
+  color: var(--main-light) !important;
+}
+/* DatePicker 日曆上方左右切換按鈕大小與背景色 */
+.ant-picker-panel .ant-picker-header > button {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  border-radius: 16px !important;
+  background: #353a4a !important;
+  color: #fff !important;
+  font-size: 1.1em !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 4px !important;
+  box-shadow: none !important;
+  border: none !important;
+  transition: background 0.2s;
+}
+.ant-picker-panel .ant-picker-header > button:hover {
+  background: var(--main-light) !important;
+  color: #fff !important;
+}
+/* 保養時間起/迄 DatePicker placeholder 文字白色，外框灰色 */
+.ant-picker-input input::placeholder {
+  color: #fff !important;
+  opacity: 1;
+}
+.ant-picker {
+  border: 1.5px solid #353a4a !important;
+  background: var(--bg-input) !important;
+}
+.ant-picker-focused, .ant-picker:hover {
+  border-color: var(--main) !important;
+}
+/* 季別欄位 placeholder 文字顏色為白色 */
+.ant-input::placeholder {
+  color: #fff !important;
+  opacity: 1;
+}
+/* 側邊欄專用按鈕樣式，請在側邊欄按鈕加上 className="sidebar-btn" */
+.sidebar-btn {
+  min-width: 0 !important;
+  max-width: none !important;
+  width: auto !important;
+  min-height: 40px !important;
+  padding: 4px 18px !important;
+  border-radius: 32px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.5em auto;
+  box-sizing: border-box;
+  font-weight: 700;
+  font-size: 1.08em;
+  background: transparent !important;
+  color: #fff !important;
+  border: none !important;
+  letter-spacing: 0.5px;
+  box-shadow: none !important;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, border 0.2s;
+}
+.sidebar-btn:hover {
+  border-radius: 999px !important;
+  box-shadow: 0 0 48px 24px rgba(91,111,255,0.33), 0 0 96px 32px #10162444 !important;
+  background: linear-gradient(90deg, rgba(99,102,241,0.97) 0%, rgba(91,111,255,0.97) 100%) !important;
+  color: #fff !important;
+}
+
+/* 建議：側邊欄容器寬度加大，讓按鈕完整顯示圓角與發光 */
+.sidebar, .ant-layout-sider,
+.sidebar.ant-drawer .ant-drawer-content-wrapper,
+.sidebar .ant-drawer-content-wrapper,
+.sidebar .ant-drawer-content {
+  min-width: 360px !important;
+  width: 360px !important;
+  max-width: 400px !important;
+  box-sizing: border-box !important;
+}
+/* 頂端列現代深色排版 */
+.project-top-bar, .ant-layout-header.project-top-bar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  height: 64px !important;
+  background: #0d1a26 !important;
+  color: var(--main) !important;
+  box-shadow: 0 2px 16px 0 #10162499 !important;
+  padding: 0 32px !important;
+  border-bottom: 1.5px solid #232b39 !important;
+  position: relative !important;
+  z-index: 100 !important;
+}
+
+/* 標題置中，左右各一區 */
+.project-top-bar__title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--main);
+  letter-spacing: 2px;
+  text-shadow: 0 2px 8px #10162455;
+  pointer-events: none;
+}
+
+.project-top-bar__left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.project-top-bar__right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* 用戶資訊按鈕美化 */
+.project-top-bar__user {
+  background: var(--main-light);
+  color: #fff;
+  border-radius: 18px;
+  font-weight: 700;
+  padding: 4px 18px;
+  font-size: 1.1em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px 0 #10162433;
+}
+
+/* 漢堡選單icon調整 */
+.project-top-bar__menu {
+  background: var(--main-light);
+  color: #fff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6em;
+  box-shadow: 0 2px 8px 0 #10162433;
+}
+
+/* ===== 全站深色主題設計 ===== */
+
+:root {
+  --main: #5b6fff;
+  --main-dark: #232b39;
+  --main-light: #6366f1;
+  --bg: #181a20;
+  --bg-card: #232b39;
+  --bg-input: #232b39;
+  --border: #353a4a;
+  --radius: 12px;
+  --shadow: 0 4px 32px 0 #101624;
+  --text: #e3eafc;
+  --text-light: #a3aed0;
+  --font: 'Segoe UI', 'Noto Sans TC', Arial, sans-serif;
 }
 
 body, .ant-layout, .ant-layout-content {
-  background: var(--brand-bg) !important;
-  color: var(--brand-text) !important;
-  font-family: var(--brand-font) !important;
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  font-family: var(--font) !important;
   transition: background 0.3s, color 0.3s;
 }
 
-/* ===== 卡片 ===== */
-.ant-card, .login-card, .register-card {
-  background: var(--brand-bg-card) !important;
-  color: var(--brand-text) !important;
-  border-radius: var(--brand-radius-xl) !important;
-  box-shadow: var(--brand-shadow-2) !important;
-  border: none !important;
-  padding: 24px !important;
+/* 卡片/彈窗/表單容器 */
+.ant-card, .register-card, .ant-modal-content, .ant-drawer-content, .ant-dropdown-menu {
+  background: var(--bg-card) !important;
+  color: var(--text) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: var(--shadow) !important;
+  border: 1.5px solid var(--bg-card) !important;
+  padding: 32px 28px !important;
   transition: background 0.3s, color 0.3s, box-shadow 0.3s;
 }
-.ant-card:hover, .login-card:hover, .register-card:hover {
-  box-shadow: var(--brand-shadow-3) !important;
+.login-card {
+  background: var(--bg-card, #232b39) !important;
+  color: var(--text, #e3eafc) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 32px 0 #10162499 !important;
+  border: 2.5px solid var(--main-light, #6366f1) !important;
+  padding: min(8vw,64px) 4vw min(4vw,32px) 4vw !important;
+  max-width: 400px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* ===== 按鈕 ===== */
+/* 標題 */
+h1, h2, h3, h4, h5, h6, .ant-typography {
+  color: var(--main) !important;
+  font-weight: 800 !important;
+  letter-spacing: 1.5px;
+  text-shadow: 0 2px 8px #10162455;
+}
+
+/* 按鈕 */
 .ant-btn, button {
-  border-radius: var(--brand-radius-lg) !important;
+  border-radius: var(--radius) !important;
   font-weight: 700;
   font-size: 1.08em;
-  border: 1.5px solid var(--brand-main) !important;
-  background: var(--brand-main) !important;
+  border: none !important;
+  background: transparent !important;
   color: #fff !important;
-  box-shadow: var(--brand-shadow-1) !important;
+  padding: 0.7em 2.2em !important;
+  letter-spacing: 0.5px;
+  min-height: 40px;
+  min-width: 80px;
+  box-sizing: border-box;
+  /* box-shadow: none !important;  // 已移除，避免覆蓋卡片發光 */
   transition: background 0.2s, color 0.2s, box-shadow 0.2s, border 0.2s;
 }
 .ant-btn:hover, button:hover {
-  background: var(--brand-main-dark) !important;
+  background: linear-gradient(90deg, rgba(99,102,241,0.97) 0%, rgba(91,111,255,0.97) 100%) !important;
   color: #fff !important;
-  box-shadow: var(--brand-shadow-3) !important;
+  box-shadow: 0 0 36px 18px rgba(91,111,255,0.33), 0 0 64px 24px #10162444 !important;
+  border-radius: 32px !important;
 }
 .ant-btn-default, button.ant-btn-default {
-  background: var(--brand-bg-card) !important;
-  color: var(--brand-main) !important;
-  border: 1.5px solid var(--brand-main) !important;
+  background: var(--bg-card) !important;
+  color: var(--main) !important;
+  border: 1.5px solid var(--main) !important;
 }
 .ant-btn-default:hover, button.ant-btn-default:hover {
-  background: var(--brand-light) !important;
-  color: var(--brand-main-dark) !important;
+  background: var(--bg-card) !important;
+  color: #fff !important;
+  border: 1.5px solid var(--main-light) !important;
 }
 
-/* ===== 輸入框 ===== */
-.ant-input, .ant-input-password, .ant-select-selector, .ant-input-affix-wrapper {
-  border-radius: var(--brand-radius-lg) !important;
-  background: var(--brand-bg-input) !important;
-  color: var(--brand-text) !important;
-  border: 1.5px solid var(--brand-border) !important;
+/* 輸入框 */
+.ant-input, .ant-input-password, .ant-select-selector, .ant-input-affix-wrapper, textarea, input {
+  border-radius: var(--radius) !important;
+  background: var(--bg-input) !important;
+  color: var(--text) !important;
+  border: 1.5px solid var(--border) !important;
   font-size: 1.08em;
   transition: border 0.2s, background 0.2s, color 0.2s;
   box-shadow: none !important;
 }
-.ant-input:focus, .ant-input-password:focus, .ant-select-focused .ant-select-selector, .ant-input-affix-wrapper-focused {
-  border-color: var(--brand-main) !important;
-  box-shadow: 0 0 0 2px rgba(91,111,255,0.10) !important;
+.ant-input:focus, .ant-input-password:focus, .ant-select-focused .ant-select-selector, .ant-input-affix-wrapper-focused, textarea:focus, input:focus {
+  border-color: var(--main) !important;
+  box-shadow: 0 0 0 2px var(--main-light)33 !important;
 }
 
-/* ===== 標題 ===== */
-.ant-typography, .ant-typography h1, .ant-typography h2, .ant-typography h3, .ant-typography h4, .ant-typography h5 {
-  color: var(--brand-main) !important;
-  font-weight: 800 !important;
-  letter-spacing: 1.5px;
+/* 表格/列表/分頁/標籤/選單等 */
+.ant-table, .ant-table-container, .ant-table-content, .ant-table-thead > tr > th, .ant-table-tbody > tr > td,
+.ant-pagination, .ant-pagination-item, .ant-pagination-prev, .ant-pagination-next, .ant-pagination-jump-next, .ant-pagination-jump-prev,
+.ant-list, .ant-list-item, .ant-list-item-meta, .ant-tag, .ant-menu, .ant-menu-item, .ant-menu-submenu, .ant-menu-submenu-title,
+.ant-tabs-nav, .ant-tabs-tab, .ant-breadcrumb, .ant-breadcrumb-link, .ant-breadcrumb-separator,
+.ant-collapse, .ant-collapse-header, .ant-collapse-content, .ant-descriptions, .ant-descriptions-item-label, .ant-descriptions-item-content,
+.ant-popover-inner, .ant-upload, .ant-upload-list, .ant-upload-list-item, .ant-avatar, .ant-select-item-option-content {
+  background: var(--bg-card) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
 }
-
-/* ===== Drawer、Modal、Dropdown ===== */
-.ant-drawer-content, .ant-modal-content, .ant-dropdown-menu {
-  background: var(--brand-bg-card) !important;
-  color: var(--brand-text) !important;
-  border-radius: var(--brand-radius-xl) !important;
-  box-shadow: var(--brand-shadow-2) !important;
-}
-.ant-drawer-header, .ant-modal-header {
-  background: var(--brand-bg-card) !important;
-  color: var(--brand-main) !important;
-  border-radius: var(--brand-radius-xl) var(--brand-radius-xl) 0 0 !important;
-}
-
-/* ===== 其他細節 ===== */
-.ant-message-notice-content {
-  border-radius: var(--brand-radius-lg) !important;
-  background: var(--brand-bg-card) !important;
-  color: var(--brand-text) !important;
-  box-shadow: var(--brand-shadow-2) !important;
-}
-.ant-form-item-label > label {
-  color: var(--brand-main) !important;
+.ant-table-thead > tr > th {
+  background: var(--bg) !important;
+  color: var(--main) !important;
   font-weight: 700;
 }
-
-/* ===== 深色主題覆蓋 ===== */
-.dark-theme .ant-btn, .dark-theme button {
-  background: var(--brand-main) !important;
+.ant-table-tbody > tr.ant-table-row:hover > td {
+  background: var(--main-dark) !important;
+}
+.ant-pagination-item-active {
+  background: var(--main-light) !important;
   color: #fff !important;
-  border: 1.5px solid var(--brand-main) !important;
 }
-.dark-theme .ant-btn-default, .dark-theme button.ant-btn-default {
-  background: var(--brand-bg-card) !important;
-  color: var(--brand-main) !important;
-  border: 1.5px solid var(--brand-main) !important;
+.ant-tag {
+  color: var(--main) !important;
 }
-.dark-theme .ant-input, .dark-theme .ant-input-password, .dark-theme .ant-select-selector, .dark-theme .ant-input-affix-wrapper {
-  background: var(--brand-bg-input) !important;
-  color: var(--brand-text) !important;
-  border: 1.5px solid var(--brand-border) !important;
-}
-.dark-theme .ant-input:focus, .dark-theme .ant-input-password:focus, .dark-theme .ant-select-focused .ant-select-selector, .dark-theme .ant-input-affix-wrapper-focused {
-  border-color: var(--brand-main) !important;
-  box-shadow: 0 0 0 2px rgba(91,111,255,0.18) !important;
-}
-.dark-theme .ant-typography, .dark-theme .ant-typography h1, .dark-theme .ant-typography h2, .dark-theme .ant-typography h3, .dark-theme .ant-typography h4, .dark-theme .ant-typography h5 {
-  color: var(--brand-main) !important;
-}
-/* 讓 affix-wrapper 顯示藍色圓角邊框，內部 input 無邊框 */
-.login-card .ant-input-affix-wrapper {
-  border: 2px solid #90caf9 !important;
-  border-radius: 12px !important;
-  background: #f4faff !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  transition: border 0.2s, box-shadow 0.2s;
-}
-.login-card .ant-input-affix-wrapper:focus,
-.login-card .ant-input-affix-wrapper-focused {
-  border-color: #64b5f6 !important;
-  box-shadow: 0 0 0 2px rgba(100,181,246,0.10) !important;
-}
-.login-card .ant-input-affix-wrapper .ant-input {
-  border: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  color: #1976d2 !important;
-}
-.dark-theme .login-card .ant-input-affix-wrapper {
-  border: 2px solid #64b5f6 !important;
-  border-radius: 12px !important;
-  background: #232b39 !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-}
-.dark-theme .login-card .ant-input-affix-wrapper:focus,
-.dark-theme .login-card .ant-input-affix-wrapper-focused {
-  border-color: #90caf9 !important;
-  box-shadow: 0 0 0 2px rgba(100,181,246,0.18) !important;
-}
-.dark-theme .login-card .ant-input-affix-wrapper .ant-input {
-  border: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  color: #e3eafc !important;
-}
-/* ======= 登入頁專用按鈕與欄位邊框 ======= */
-.login-card .ant-btn, .login-card button {
-  border: 2px solid #90caf9 !important;
-  background: #f4faff !important;
-  color: #1976d2 !important;
-  box-shadow: 0 2px 8px 0 rgba(25, 118, 210, 0.06) !important;
-  transition: background 0.2s, color 0.2s, border 0.2s, box-shadow 0.2s;
-}
-.login-card .ant-btn-primary, .login-card button.ant-btn-primary {
-  background: linear-gradient(90deg, #64b5f6 60%, #90caf9 100%) !important;
+.ant-menu-item-selected, .ant-menu-item-active, .ant-tabs-tab-active {
+  background: var(--main-light) !important;
   color: #fff !important;
-  border: 2px solid #90caf9 !important;
-  box-shadow: 0 4px 16px 0 rgba(100, 181, 246, 0.12) !important;
-}
-.login-card .ant-btn:hover, .login-card button:hover {
-  background: #e3f2fd !important;
-  color: #1565c0 !important;
-  border-color: #64b5f6 !important;
-  box-shadow: 0 6px 24px 0 rgba(100, 181, 246, 0.18) !important;
-}
-.login-card .ant-input, .login-card .ant-input-password, .login-card .ant-select-selector {
-  border: 2px solid #90caf9 !important;
-  background: #f4faff !important;
-  color: #1976d2 !important;
-  transition: background 0.2s, color 0.2s, border 0.2s;
-}
-.dark-theme .login-card .ant-input, .dark-theme .login-card .ant-input-password, .dark-theme .login-card .ant-select-selector {
-  border: 2px solid #64b5f6 !important;
-  background: #232b39 !important;
-  color: #e3eafc !important;
-}
-.dark-theme body {
-  --project-bg: #181a20;
-}
-body {
-  --project-bg: #e3eafc;
-}
-/* 深色主題自訂樣式 */
-.dark-theme {
-  background: #181a20 !important;
-  color: #e3eafc !important;
-}
-.dark-theme body {
-  background: #181a20 !important;
-  color: #e3eafc !important;
-}
-.dark-theme .ant-layout {
-  background: #181a20 !important;
-}
-.dark-theme .ant-layout-header {
-  background: #23262f !important;
-  color: #e3eafc !important;
-}
-.dark-theme .ant-layout-content {
-  background: #181a20 !important;
-  color: #e3eafc !important;
-}
-.dark-theme .ant-card {
-  background: #23262f !important;
-  color: #e3eafc !important;
-  border-color: #23262f !important;
-}
-.dark-theme .ant-card-bordered {
-  border: 1px solid #23262f !important;
-}
-.dark-theme .ant-btn {
-  background: #23262f !important;
-  color: #e3eafc !important;
-  border-color: #23262f !important;
-}
-.dark-theme .ant-btn-primary {
-  background: #1976d2 !important;
-  color: #fff !important;
-  border-color: #1976d2 !important;
-}
-.dark-theme .ant-input, .dark-theme .ant-input-password, .dark-theme .ant-select-selector, .dark-theme .ant-select-dropdown {
-  background: #23262f !important;
-  color: #e3eafc !important;
-  border-color: #23262f !important;
-}
-.dark-theme .ant-typography, .dark-theme .ant-typography h1, .dark-theme .ant-typography h2, .dark-theme .ant-typography h3, .dark-theme .ant-typography h4, .dark-theme .ant-typography h5 {
-  color: #e3eafc !important;
-}
-.dark-theme .ant-dropdown-menu {
-  background: #23262f !important;
-  color: #e3eafc !important;
-}
-.dark-theme .ant-modal-content {
-  background: #23262f !important;
-  color: #e3eafc !important;
-}
-.dark-theme .ant-modal-header {
-  background: #23262f !important;
-  color: #e3eafc !important;
-}
-.dark-theme .ant-modal-title {
-  color: #e3eafc !important;
 }
 
-.dark-theme .login-card,
-.dark-theme .register-card {
-  background: #23262f !important;
-  color: #e3eafc !important;
-  box-shadow: 0 4px 24px 0 #111a2f !important;
+/* 其他元件細節 */
+.ant-message-notice-content, .ant-notification-notice, .ant-tooltip-inner {
+  border-radius: var(--radius) !important;
+  background: var(--bg-card) !important;
+  color: var(--text) !important;
+  box-shadow: var(--shadow) !important;
 }
-.dark-theme body {
-  --register-bg: #181a20;
+.ant-form-item-label > label {
+  color: var(--text-light) !important;
+  font-weight: 700;
 }
-.dark-theme body {
-  --login-bg: #181a20;
-  --register-bg: #181a20;
-  --login-card-bg: #23262f;
-  --register-card-bg: #23262f;
+.ant-switch {
+  background: var(--border) !important;
 }
-body {
-  --login-bg: #e3eafc;
-  --register-bg: #e3eafc;
-  --login-card-bg: #fff;
-  --register-card-bg: #fff;
+.ant-switch-checked {
+  background: var(--main-light) !important;
 }
-.dark-theme .ant-select-item-option-content {
-  color: #e3eafc !important;
+.ant-progress-bg, .ant-slider-track, .ant-spin-dot-item, .ant-timeline-item-head {
+  background: var(--main-light) !important;
 }
-.dark-theme .ant-message-notice-content {
-  background: #23262f !important;
-  color: #e3eafc !important;
+.ant-radio-inner, .ant-checkbox-inner {
+  background: var(--bg-card) !important;
+  border-color: var(--main-light) !important;
 }
-.dark-theme .ant-form-item-label > label {
-  color: #e3eafc !important;
-}
-.dark-theme .ant-drawer-content {
-  background: #23262f !important;
-  color: #e3eafc !important;
-}
-.dark-theme .ant-drawer-header {
-  background: #23262f !important;
-  color: #e3eafc !important;
-}
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.ant-radio-checked .ant-radio-inner, .ant-checkbox-checked .ant-checkbox-inner {
+  background: var(--main-light) !important;
+  border-color: var(--main-light) !important;
 }
 
+/* 連結 */
 a {
+  color: var(--main-light);
+  text-decoration: none;
   font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: var(--main);
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
+/* 基本間距與排版 */
 #app {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
 }
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em #f7df1eaa);
-}
-
 .card {
   padding: 2em;
 }
 
-.read-the-docs {
-  color: #888;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-
-/* ProjectMaintainSetting 欄位外框與日曆樣式覆蓋 */
-.ant-btn, .ant-btn-primary {background: rgba(25, 118, 210, 0.15) !important;}
-/* 強化 selector，確保三個欄位有藍色邊框 */
-.ant-input[name="name"],
-.ant-input[name="unit"],
-.ant-input[name="directions"],
-textarea[name="directions"] {resize: none !important;}
-/* directions 外層也加外框 */
-.ant-form-item-control-input-content textarea[name="directions"] {border: 2px solid #1976d2 !important;border-radius: 8px !important;box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.08) !important;}
-.ant-form-item-control-input-content textarea[name="directions"]:focus {border-color: #1565c0 !important;box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.15) !important;}
-.ant-input-affix-wrapper input[name="name"],
-.ant-input-affix-wrapper input[name="unit"] {border: 2px solid #1976d2 !important;border-radius: 8px !important;box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.08) !important;background: transparent;}
-.ant-input[name="name"]:focus,
-.ant-input[name="unit"]:focus,
-.ant-input[name="directions"]:focus,
-.ant-input-affix-wrapper input[name="name"]:focus,
-.ant-input-affix-wrapper input[name="unit"]:focus {border-color: #1565c0 !important;box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.15) !important;}
-.ant-input-affix-wrapper[name="name"],
-.ant-input-affix-wrapper[name="unit"] {border: 2px solid #1976d2 !important;border-radius: 8px !important;box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.08) !important;}
-.ant-input-affix-wrapper[name="name"]:focus-within,
-.ant-input-affix-wrapper[name="unit"]:focus-within {border-color: #1565c0 !important;box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.15) !important;}
-/* DatePicker 月曆 header 及所有按鈕移除背景與邊框 */
-.ant-picker-panel .ant-picker-header button,
-.ant-picker-panel .ant-picker-header,
-.ant-picker-panel .ant-picker-super-prev-icon,
-.ant-picker-panel .ant-picker-super-next-icon,
-.ant-picker-panel .ant-picker-prev-icon,
-.ant-picker-panel .ant-picker-next-icon,
-.ant-picker-panel .ant-picker-month-btn,
-.ant-picker-panel .ant-picker-year-btn {background: none !important;box-shadow: none !important;border: none !important;}
-.ant-picker-panel .ant-picker-header button:active,
-.ant-picker-panel .ant-picker-header button:focus {background: none !important;border: none !important;}
-/* 強制案場名稱與檢查單位欄位有藍色邊框 */
-.ant-input[name="name"],
-.ant-input[name="unit"],
-.ant-input-affix-wrapper input[name="name"],
-.ant-input-affix-wrapper input[name="unit"] {
-  border: 2px solid #1976d2 !important;
-  border-radius: 8px !important;
-  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.08) !important;
-  background: #fff;
-}
+/* 其他細節可依需求再擴充 */

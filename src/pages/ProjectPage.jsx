@@ -88,7 +88,7 @@ export default function ProjectPage() {
         projectName={project.name}
         id={id}
         onUserClick={handleUserClick}
-        onHomeClick={handleHomeClick}
+        onHomeClick={() => navigate('/home')}
         onHistory={handleHistory}
         onSeasonSetting={handleSeasonSetting}
         onInfoSetting={handleInfoSetting}

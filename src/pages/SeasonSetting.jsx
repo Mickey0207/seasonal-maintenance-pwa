@@ -142,6 +142,7 @@ export default function SeasonSetting() {
         projectName={projectInfo.name}
         id={id}
         onUserClick={handleUserClick}
+        onHomeClick={() => navigate('/home')}
         onHistory={handleHistory}
         onSeasonSetting={handleSeasonSetting}
         onInfoSetting={handleInfoSetting}
@@ -172,7 +173,7 @@ export default function SeasonSetting() {
                 <Input disabled />
               </Form.Item>
               <Form.Item label="檢查說明" name="directions">
-                <Input.TextArea disabled autoSize />
+                <Input.TextArea disabled autoSize style={{ MozAppearance: 'textfield' }} />
               </Form.Item>
               <Form.Item label="季別" name="year_q" rules={[{ required: true, message: '請輸入季別' }]}> 
                 <Input placeholder="例如：2024 Q3" />

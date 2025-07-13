@@ -89,7 +89,7 @@ export default function History() {
         projectName={project.name}
         id={id}
         onUserClick={handleUserClick}
-        onHomeClick={handleHomeClick}
+        onHomeClick={() => navigate('/home')}
         onHistory={handleHistory}
         onSeasonSetting={handleSeasonSetting}
         onInfoSetting={handleInfoSetting}
