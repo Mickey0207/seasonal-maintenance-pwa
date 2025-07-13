@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import RegisterForm from '../components/RegisterForm';
 import ThemeSwitchBtn from '../components/ThemeSwitchBtn';
 import { useNavigate } from 'react-router-dom';
@@ -7,11 +7,17 @@ export default function Register() {
   const navigate = useNavigate();
   const [success, setSuccess] = useState(false);
 
+  useEffect(() => {
+    document.body.classList.add('register-page');
+    return () => {
+      document.body.classList.remove('register-page');
+    };
+  }, []);
+
   return (
     <div style={{
       position: 'relative',
       minHeight: '100vh',
-      background: 'var(--register-bg, #e3eafc)',
       width: '100vw',
       overflow: 'hidden',
     }}>
@@ -27,3 +33,4 @@ export default function Register() {
     </div>
   );
 }
+

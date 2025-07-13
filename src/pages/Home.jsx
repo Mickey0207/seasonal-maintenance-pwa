@@ -142,20 +142,7 @@ export default function Home() {
     <div style={{ minHeight: '100vh', background: 'var(--main-bg, #e3f0ff)' }}>
       <Layout style={{ minHeight: '100vh', background: 'transparent' }}>
         {/* 頂端列 */}
-        <div style={{
-          background: '#fff',
-          boxShadow: '0 4px 16px 0 #e3e3e3',
-          borderRadius: 0,
-          margin: 0,
-          padding: '0 32px',
-          height: 72,
-          width: '100vw',
-          maxWidth: '100vw',
-          display: 'flex',
-          alignItems: 'center',
-          position: 'relative',
-          zIndex: 10
-        }}>
+        <div className={`home-top-bar${theme === 'dark' ? ' dark-theme' : ''}`}> 
           {/* 左側：功能選單按鈕 */}
           <Button type="text" icon={<MenuOutlined />} style={{ fontSize: 24, marginRight: 16 }} onClick={() => setDrawerOpen(true)} />
           {/* 中間：標題 */}

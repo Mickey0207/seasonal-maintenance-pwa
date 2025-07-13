@@ -25,7 +25,7 @@ export default function ProjectTopBar({ userName, projectName, onUserClick, onHi
   if (isMobile) {
     return (
       <>
-        <Layout.Header style={{ background: theme === 'dark' ? '#181818' : '#fff', boxShadow: '0 2px 8px #e3e3e3', padding: '0 16px', display: 'flex', alignItems: 'center', height: 64 }}>
+        <Layout.Header className={`project-top-bar${theme === 'dark' ? ' dark-theme' : ''}`.replace('project-top-bar dark-theme', 'project-top-bar dark-theme')}> 
           <Button type="text" icon={<MenuOutlined />} style={{ fontSize: 24, marginRight: 8 }} onClick={() => setDrawerOpen(true)} />
           <Typography.Title level={4} style={{ margin: 0, flex: 1, textAlign: 'center', color: '#1976d2', fontWeight: 800, letterSpacing: 2 }}>{projectName}</Typography.Title>
           <Button
@@ -46,7 +46,7 @@ export default function ProjectTopBar({ userName, projectName, onUserClick, onHi
   // 桌機版
   return (
     <>
-      <Layout.Header style={{ background: theme === 'dark' ? '#181818' : '#fff', boxShadow: '0 2px 8px #e3e3e3', padding: '0 24px', display: 'flex', alignItems: 'center', height: 64 }}>
+      <Layout.Header className={`project-top-bar${theme === 'dark' ? ' dark-theme' : ''}`.replace('project-top-bar dark-theme', 'project-top-bar dark-theme')}> 
         {/* 左側：功能選單按鈕 */}
         <Button type="text" icon={<MenuOutlined />} style={{ fontSize: 24, marginRight: 16 }} onClick={() => setDrawerOpen(true)} />
         {/* 中間：專案名稱 */}
