@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import { App as AntdApp } from 'antd';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';

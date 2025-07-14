@@ -29,13 +29,14 @@ export default function RegisterForm({ onRegisterSuccess }) {
       return;
     }
     setLoading(false);
-    setError('註冊成功，請至信箱完成驗證後再登入！');
     if (onRegisterSuccess) onRegisterSuccess();
   };
 
   return (
     <>
-      <Typography.Title level={2} style={{ textAlign: 'center', marginBottom: 32, color: '#1976d2', fontWeight: 800, letterSpacing: 2, fontSize: 28 }}>註冊新帳號</Typography.Title>
+      <Typography.Title className="register-title">
+        註冊新帳號
+      </Typography.Title>
       <Form
         form={form}
         layout="vertical"
@@ -43,31 +44,77 @@ export default function RegisterForm({ onRegisterSuccess }) {
         onFinish={handleRegister}
         autoComplete="off"
       >
-        <Form.Item label={<span style={{ fontWeight: 600, fontSize: 18 }}>Email</span>} name="email" rules={[{ required: true, message: '請輸入Email' }, { type: 'email', message: 'Email格式錯誤' }]} style={{ marginBottom: 24 }}>
-          <Input style={{ height: 48, fontSize: 18, borderRadius: 8 }} autoFocus />
+        <Form.Item 
+          className="modern-form-item"
+          label="Email" 
+          name="email" 
+          rules={[
+            { required: true, message: '請輸入Email' }, 
+            { type: 'email', message: 'Email格式錯誤' }
+          ]}
+        >
+          <Input 
+            className="modern-input"
+            placeholder="請輸入您的Email"
+            autoFocus 
+          />
         </Form.Item>
-        <Form.Item label={<span style={{ fontWeight: 600, fontSize: 18 }}>密碼</span>} name="password" rules={[{ required: true, message: '請輸入密碼' }]} style={{ marginBottom: 24 }}>
-          <Input.Password style={{ height: 48, fontSize: 18, borderRadius: 8, border: 'none', boxShadow: 'none', outline: 'none', background: 'var(--bg-input, #232b39)' }} autoComplete="new-password" />
+        
+        <Form.Item 
+          className="modern-form-item"
+          label="密碼" 
+          name="password" 
+          rules={[{ required: true, message: '請輸入密碼' }]}
+        >
+          <Input.Password 
+            className="modern-password"
+            placeholder="請輸入密碼"
+            autoComplete="new-password" 
+          />
         </Form.Item>
-        <Form.Item label={<span style={{ fontWeight: 600, fontSize: 18 }}>確認密碼</span>} name="confirmPassword" dependencies={["password"]} rules={[
-          { required: true, message: '請再次輸入密碼' },
-          ({ getFieldValue }) => ({
-            validator(_, value) {
-              if (!value || getFieldValue('password') === value) {
-                return Promise.resolve();
-              }
-              return Promise.reject(new Error('密碼與確認密碼不一致'));
-            },
-          }),
-        ]} style={{ marginBottom: 24 }}>
-          <Input.Password style={{ height: 48, fontSize: 18, borderRadius: 8, border: 'none', boxShadow: 'none', outline: 'none', background: 'var(--bg-input, #232b39)' }} autoComplete="new-password" />
+        
+        <Form.Item 
+          className="modern-form-item"
+          label="確認密碼" 
+          name="confirmPassword" 
+          dependencies={["password"]} 
+          rules={[
+            { required: true, message: '請再次輸入密碼' },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue('password') === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error('密碼與確認密碼不一致'));
+              },
+            }),
+          ]}
+        >
+          <Input.Password 
+            className="modern-password"
+            placeholder="請再次輸入密碼"
+            autoComplete="new-password" 
+          />
         </Form.Item>
-        {error && <Typography.Text type="danger" style={{ fontWeight: 600, fontSize: 16 }}>{error}</Typography.Text>}
-        <Form.Item style={{ marginTop: 8 }}>
-          <Button type="primary" htmlType="submit" block loading={loading} style={{ height: 48, fontSize: 18, borderRadius: 8, fontWeight: 700 }}>
+        
+        {error && (
+          <div className="error-message">
+            {error}
+          </div>
+        )}
+        
+        <div style={{ marginTop: 32 }}>
+          <Button 
+            className="login-btn-primary"
+            type="primary" 
+            htmlType="submit" 
+            block 
+            loading={loading}
+            size="large"
+          >
             註冊
           </Button>
-        </Form.Item>
+        </div>
       </Form>
     </>
   );

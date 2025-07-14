@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import RegisterForm from '../components/RegisterForm';
 import { useNavigate } from 'react-router-dom';
+import { Button } from 'antd';
+import RegisterForm from '../components/RegisterForm';
+import { ROUTES } from '../config/constants';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -13,31 +15,56 @@ export default function Register() {
     };
   }, []);
 
-  return (
-    <div style={{
-      position: 'relative',
-      minHeight: '100vh',
-      width: '100vw',
-      overflow: 'hidden',
-    }}>
-      {success ? (
-        <div style={{ background: '#fff', padding: 32, borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }}>
-          <h2>註冊成功！</h2>
-          <button onClick={() => navigate('/login')} style={{ marginTop: 16, padding: 10, background: '#1976d2', color: '#fff', border: 'none', borderRadius: 8, fontSize: 16 }}>前往登入</button>
-        </div>
-      ) : (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
-          <div className="register-card">
-            <RegisterForm onRegisterSuccess={() => setSuccess(true)} />
-            <button
-              className="register-back-btn"
-              onClick={() => navigate('/login')}
-              type="button"
-            >返回登入頁</button>
+  if (success) {
+    return (
+      <>
+        <div className="animated-bg"></div>
+        <div className="register-container">
+          <div className="register-card-modern glass-effect">
+            <h2 style={{ 
+              color: 'var(--text-primary)', 
+              textAlign: 'center',
+              marginBottom: 24 
+            }}>
+              註冊成功！
+            </h2>
+            <p style={{ 
+              color: 'var(--text-secondary)', 
+              textAlign: 'center',
+              marginBottom: 32 
+            }}>
+              請至信箱完成驗證後再登入
+            </p>
+            <Button 
+              className="modern-btn-primary"
+              type="primary"
+              block
+              size="large"
+              onClick={() => navigate(ROUTES.LOGIN)}
+            >
+              前往登入
+            </Button>
           </div>
         </div>
-      )}
-    </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div className="animated-bg"></div>
+      <div className="register-container">
+        <div className="register-card-modern glass-effect">
+          <RegisterForm onRegisterSuccess={() => setSuccess(true)} />
+          <Button
+            className="back-to-login-btn"
+            onClick={() => navigate(ROUTES.LOGIN)}
+            type="button"
+          >
+            返回登入頁
+          </Button>
+        </div>
+      </div>
+    </>
   );
 }
-

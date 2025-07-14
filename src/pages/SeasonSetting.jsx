@@ -179,10 +179,18 @@ export default function SeasonSetting() {
                 <Input placeholder="例如：2024 Q3" />
               </Form.Item>
               <Form.Item label="保養時間起" name="time_start" rules={[{ required: true, message: '請選擇保養開始時間' }]}> 
-                <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />
+                <DatePicker 
+                  style={{ width: '100%' }} 
+                  format="YYYY-MM-DD"
+                  className="dark-datepicker"
+                />
               </Form.Item>
               <Form.Item label="保養時間迄" name="time_finish" rules={[{ required: true, message: '請選擇保養結束時間' }]}> 
-                <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />
+                <DatePicker 
+                  style={{ width: '100%' }} 
+                  format="YYYY-MM-DD"
+                  className="dark-datepicker"
+                />
               </Form.Item>
               <Form.Item>
                 <Button type="primary" htmlType="submit" block loading={loading}>儲存</Button>
@@ -191,6 +199,7 @@ export default function SeasonSetting() {
                 <Button
                   danger
                   block
+                  className="dark-danger-btn"
                   onClick={async () => {
                     if (!projectInfo.name) {
                       message.error('找不到案場名稱');

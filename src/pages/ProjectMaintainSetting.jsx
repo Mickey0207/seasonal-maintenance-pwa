@@ -73,9 +73,15 @@ export default function ProjectMaintainSetting() {
         setProjectInfo(projectData);
         if (projectData.photo_path) {
           setPhotoPath(projectData.photo_path);
-          // 若是 storage 路徑，轉 publicUrl
-          const publicUrl = supabase.storage.from('home-project-card-photo').getPublicUrl(projectData.photo_path).publicUrl;
-          setPreviewUrl(publicUrl);
+          // 使用與 ProjectCard 相同的方式生成圖片 URL
+          try {
+            const { data } = supabase.storage.from('home-project-card-photo').getPublicUrl(projectData.photo_path);
+            if (data?.publicUrl) {
+              setPreviewUrl(data.publicUrl);
+            }
+          } catch (error) {
+            console.error('獲取圖片 URL 失敗:', error);
+          }
         }
       }
       setLoading(false);
@@ -187,6 +193,7 @@ export default function ProjectMaintainSetting() {
                     type="file"
                     accept="image/*"
                     capture="environment"
+                    className="dark-file-input"
                     onChange={e => {
                       const file = e.target.files[0];
                       if (file) {
@@ -199,8 +206,15 @@ export default function ProjectMaintainSetting() {
                       } else {
                         // 若沒有選擇新檔案，若資料庫有圖片則顯示 publicUrl
                         if (photoPath) {
-                          const publicUrl = supabase.storage.from('home-project-card-photo').getPublicUrl(photoPath).publicUrl;
-                          setPreviewUrl(publicUrl);
+                          try {
+                            const { data } = supabase.storage.from('home-project-card-photo').getPublicUrl(photoPath);
+                            if (data?.publicUrl) {
+                              setPreviewUrl(data.publicUrl);
+                            }
+                          } catch (error) {
+                            console.error('獲取圖片 URL 失敗:', error);
+                            setPreviewUrl(null);
+                          }
                         } else {
                           setPreviewUrl(null);
                         }
@@ -213,7 +227,7 @@ export default function ProjectMaintainSetting() {
                   {previewUrl && <img src={previewUrl} alt="預覽" style={{ maxWidth: '100%', marginTop: 8 }} />}
                 </Form.Item>
                 <Form.Item>
-                  <Button type="primary" htmlType="submit" block loading={loading} style={{ background: 'rgba(25, 118, 210, 0.15)' }}>儲存</Button>
+                  <Button type="primary" htmlType="submit" block loading={loading} className="dark-primary-btn">儲存</Button>
                 </Form.Item>
                 {/* 已移除重置此案場的所有保養時間按鈕 */}
               </Form>

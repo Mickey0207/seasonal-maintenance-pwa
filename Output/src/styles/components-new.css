@@ -1,0 +1,407 @@
+/* 頂端導航列 */
+.modern-topbar {
+  background: var(--bg-glass) !important;
+  backdrop-filter: blur(20px);
+  border: none !important;
+  border-bottom: 1px solid var(--border-primary) !important;
+  box-shadow: var(--shadow-card);
+  height: 70px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 24px !important;
+  position: relative;
+  z-index: 1000;
+}
+
+.modern-topbar .ant-layout-header {
+  background: transparent !important;
+  padding: 0 !important;
+  height: 100% !important;
+  line-height: normal !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+}
+
+/* 頂端列左側區域 */
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.menu-trigger-btn {
+  background: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-primary) !important;
+  color: var(--text-primary) !important;
+  border-radius: 12px !important;
+  width: 44px !important;
+  height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: var(--transition-smooth) !important;
+}
+
+.menu-trigger-btn:hover {
+  background: var(--bg-card) !important;
+  border-color: var(--border-accent) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+/* 頂端列中間標題 */
+.topbar-title {
+  color: var(--text-primary) !important;
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  margin: 0 !important;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: fadeInUp 0.6s ease-out;
+  text-align: center;
+  flex: 1;
+}
+
+/* 頂端列右側用戶區域 */
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-menu-trigger {
+  background: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-primary) !important;
+  color: var(--text-primary) !important;
+  border-radius: 12px !important;
+  padding: 8px 16px !important;
+  height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  transition: var(--transition-smooth) !important;
+  font-weight: 500 !important;
+}
+
+.user-menu-trigger:hover {
+  background: var(--bg-card) !important;
+  border-color: var(--border-accent) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+  color: var(--text-primary) !important;
+}
+
+/* 用戶下拉選單 */
+.user-dropdown {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--shadow-intense) !important;
+  backdrop-filter: blur(20px);
+  padding: 8px !important;
+  min-width: 200px !important;
+}
+
+.user-dropdown .ant-dropdown-menu {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.user-dropdown .ant-dropdown-menu-item {
+  background: transparent !important;
+  color: var(--text-primary) !important;
+  border-radius: 12px !important;
+  margin: 4px 0 !important;
+  padding: 12px 16px !important;
+  transition: var(--transition-smooth) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.user-dropdown .ant-dropdown-menu-item:hover {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-accent) !important;
+  transform: translateX(4px);
+}
+
+.user-dropdown .ant-dropdown-menu-item.logout-item:hover {
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #ef4444 !important;
+}
+
+/* 側邊欄 */
+.modern-sidebar {
+  background: var(--bg-glass) !important;
+  backdrop-filter: blur(20px);
+  border-right: 1px solid var(--border-primary) !important;
+  box-shadow: var(--shadow-card);
+}
+
+.modern-sidebar .ant-drawer-content {
+  background: var(--bg-glass) !important;
+  backdrop-filter: blur(20px);
+}
+
+.modern-sidebar .ant-drawer-body {
+  padding: 24px !important;
+  background: transparent !important;
+}
+
+.sidebar-title {
+  color: var(--text-primary) !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  margin: 0 0 32px 0 !important;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: slideInLeft 0.6s ease-out;
+}
+
+.sidebar-menu-item {
+  background: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-primary) !important;
+  color: var(--text-primary) !important;
+  border-radius: 12px !important;
+  margin-bottom: 12px !important;
+  padding: 12px 16px !important;
+  height: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  transition: var(--transition-smooth) !important;
+  font-weight: 500 !important;
+  text-align: left !important;
+  justify-content: flex-start !important;
+}
+
+.sidebar-menu-item:hover {
+  background: var(--bg-card) !important;
+  border-color: var(--border-accent) !important;
+  color: var(--text-accent) !important;
+  transform: translateX(8px);
+  box-shadow: var(--shadow-glow);
+}
+
+.sidebar-menu-item .anticon {
+  font-size: 18px !important;
+}
+
+/* 卡片樣式 */
+.modern-card {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: 20px !important;
+  box-shadow: var(--shadow-card) !important;
+  transition: var(--transition-smooth) !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+.modern-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-intense);
+  border-color: var(--border-accent);
+}
+
+.modern-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--primary-gradient);
+  opacity: 0;
+  transition: var(--transition-smooth);
+}
+
+.modern-card:hover::before {
+  opacity: 1;
+}
+
+.modern-card .ant-card-body {
+  background: transparent !important;
+  color: var(--text-primary) !important;
+  padding: 24px !important;
+}
+
+.modern-card .ant-card-meta-title {
+  color: var(--text-primary) !important;
+  font-weight: 600 !important;
+  margin-bottom: 8px !important;
+}
+
+.modern-card .ant-card-meta-description {
+  color: var(--text-secondary) !important;
+}
+
+/* 新增項目卡片 */
+.add-project-card {
+  background: var(--bg-tertiary) !important;
+  border: 2px dashed var(--border-accent) !important;
+  border-radius: 20px !important;
+  transition: var(--transition-bounce) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 280px !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.add-project-card:hover {
+  background: var(--bg-card) !important;
+  border-color: var(--text-accent) !important;
+  transform: scale(1.02);
+  box-shadow: var(--shadow-glow);
+}
+
+.add-project-card .add-content {
+  text-align: center;
+  color: var(--text-accent) !important;
+  transition: var(--transition-smooth);
+}
+
+.add-project-card:hover .add-content {
+  transform: scale(1.1);
+}
+
+.add-project-card .anticon {
+  font-size: 48px !important;
+  margin-bottom: 16px !important;
+  animation: float 3s ease-in-out infinite;
+}
+
+.add-project-card .add-text {
+  font-size: 18px !important;
+  font-weight: 600 !important;
+}
+
+/* 按鈕樣式 */
+.modern-btn-primary {
+  background: var(--primary-gradient) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  color: var(--text-primary) !important;
+  font-weight: 600 !important;
+  height: 48px !important;
+  transition: var(--transition-smooth) !important;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
+}
+
+.modern-btn-primary:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
+  color: var(--text-primary) !important;
+}
+
+.modern-btn-secondary {
+  background: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: 12px !important;
+  color: var(--text-primary) !important;
+  font-weight: 500 !important;
+  transition: var(--transition-smooth) !important;
+}
+
+.modern-btn-secondary:hover {
+  background: var(--bg-card) !important;
+  border-color: var(--border-accent) !important;
+  color: var(--text-accent) !important;
+  transform: translateY(-2px);
+}
+
+/* 載入動畫 */
+.modern-loading {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 400px !important;
+  color: var(--text-primary) !important;
+}
+
+.modern-loading .ant-spin-dot {
+  color: var(--text-accent) !important;
+}
+
+.modern-loading .ant-spin-text {
+  color: var(--text-secondary) !important;
+  margin-top: 16px !important;
+  font-size: 16px !important;
+}
+
+/* Ant Design 全域覆蓋樣式 */
+.ant-layout {
+  background: transparent !important;
+}
+
+.ant-layout-header {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+.ant-layout-content {
+  background: transparent !important;
+}
+
+.ant-card {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: 16px !important;
+}
+
+.ant-card-body {
+  background: transparent !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-typography {
+  color: var(--text-primary) !important;
+}
+
+.ant-btn {
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  transition: var(--transition-smooth) !important;
+}
+
+.ant-btn-primary {
+  background: var(--primary-gradient) !important;
+  border: none !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-btn-primary:hover {
+  background: var(--primary-gradient) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-input {
+  background: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-primary) !important;
+  color: var(--text-primary) !important;
+  border-radius: 8px !important;
+}
+
+.ant-input:hover,
+.ant-input:focus {
+  border-color: var(--border-accent) !important;
+  background: var(--bg-card) !important;
+}
+
+.ant-input::placeholder {
+  color: var(--text-muted) !important;
+}
