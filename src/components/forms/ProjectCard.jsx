@@ -52,7 +52,8 @@ const ProjectCard = ({ project, onClick, style = {} }) => {
       }
       onClick={() => onClick(project)}
       style={{ 
-        height: 320,
+        minHeight: 320,
+        height: 'auto',
         cursor: 'pointer',
         transition: 'var(--transition-bounce)',
         ...style 
@@ -71,7 +72,10 @@ const ProjectCard = ({ project, onClick, style = {} }) => {
               margin: 0,
               fontSize: '1.2rem',
               fontWeight: 600,
-              marginBottom: '12px'
+              marginBottom: '12px',
+              whiteSpace: 'normal',
+              wordWrap: 'break-word',
+              lineHeight: 1.3
             }}
           >
             {project.name}
@@ -92,7 +96,7 @@ const ProjectCard = ({ project, onClick, style = {} }) => {
               fontSize: 14, 
               lineHeight: 1.5,
               display: '-webkit-box',
-              WebkitLineClamp: 2,
+              WebkitLineClamp: 3,
               WebkitBoxOrient: 'vertical',
               overflow: 'hidden'
             }}>

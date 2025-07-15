@@ -16,6 +16,7 @@ import ProjectMaintainSetting from './pages/ProjectMaintainSetting';
 import Register from './pages/Register';
 import AddMaintenanceData from './pages/AddMaintenanceData';
 import ViewMaintenanceData from './pages/ViewMaintenanceData';
+import ExportExcel from './pages/ExportExcel';
 
 // Components
 import ModernLoginForm from './components/ModernLoginForm';
@@ -56,6 +57,11 @@ export default function App() {
             <Route path={ROUTES.PROJECT_VIEW_MAINTENANCE_DATA} element={
               <ProtectedRoute>
                 <ViewMaintenanceData />
+              </ProtectedRoute>
+            } />
+            <Route path={ROUTES.PROJECT_EXPORT_EXCEL} element={
+              <ProtectedRoute>
+                <ExportExcel />
               </ProtectedRoute>
             } />
             <Route path="*" element={<Navigate to={ROUTES.LOGIN} replace />} />

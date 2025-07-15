@@ -1,128 +1,33 @@
-# 設定指南
+從 Supabase 生成 Excel 檔案的完整流程說明
+基本需求分析
+您需要將 Supabase 資料庫中的 maintainance_photo 表格資料匯出到根目錄的 Excel 檔案中，並按照特定格式排列。
 
-## Supabase 後端設定
+資料庫表格結構
+表格名稱：季保養Excel輸出
 
-### 1. 創建 Supabase 項目
-1. 前往 [Supabase](https://supabase.com) 並創建新項目
-2. 記下項目的 URL 和 anon key
+主要欄位：
 
-### 2. 設定環境變數
-複製 `.env.example` 為 `.env` 並填入您的 Supabase 資訊：
+thing：物品名稱
 
-```bash
-cp .env.example .env
-```
+photo_path：照片路徑（指向 Supabase Storage 的 maintainance-data-photo 儲存桶）
 
-編輯 `.env` 文件：
-```
-VITE_SUPABASE_URL=https://your-project-id.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key-here
-```
+location：位置資訊
 
-### 3. 創建資料表
+Excel 檔案結構設計
+第一個物品區塊：
 
-在 Supabase SQL 編輯器中執行以下 SQL：
+A2~D2：合併儲存格，填入第一個 thing 值
 
-```sql
--- 創建用戶名稱表
-CREATE TABLE user_names (
-  id SERIAL PRIMARY KEY,
-  user VARCHAR(255) UNIQUE NOT NULL,
-  email VARCHAR(255) UNIQUE NOT NULL,
-  created_at TIMESTAMP DEFAULT NOW()
-);
+A4~An：序號欄（1、2、3...），僅在 B 欄有資料時填入
 
--- 創建項目卡片表
-CREATE TABLE home_project_card (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  unit VARCHAR(255),
-  directions TEXT,
-  photo_path VARCHAR(500),
-  created_at TIMESTAMP DEFAULT NOW()
-);
+B4~Bn：照片欄，插入從 Supabase Storage 下載的實際照片
 
--- 創建維護記錄表
-CREATE TABLE maintainance (
-  id SERIAL PRIMARY KEY,
-  project_id INTEGER REFERENCES home_project_card(id),
-  time_start TIMESTAMP,
-  time_finish TIMESTAMP,
-  created_at TIMESTAMP DEFAULT NOW()
-);
+C4~Cn：位置欄，填入對應的 location 值
 
--- 創建維護設定表
-CREATE TABLE maintainance_setting (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(255),
-  year_q VARCHAR(50),
-  time_start DATE,
-  time_finish DATE,
-  created_at TIMESTAMP DEFAULT NOW()
-);
+多個物品處理：
 
--- 創建維護資料表
-CREATE TABLE maintainance_data (
-  id SERIAL PRIMARY KEY,
-  thing VARCHAR(255),
-  location VARCHAR(255),
-  floor VARCHAR(100),
-  creat_at DATE,
-  user VARCHAR(255),
-  project VARCHAR(255),
-  company VARCHAR(255),
-  direction TEXT,
-  maintainance_user VARCHAR(255),
-  maintainance_time DATE,
-  photo_path VARCHAR(500),
-  created_at TIMESTAMP DEFAULT NOW()
-);
+若資料庫中有多個不同的 thing 值，則為每個 thing 創建獨立區塊
 
--- 插入測試數據
-INSERT INTO user_names (user, email) VALUES 
-('testuser', 'test@example.com'),
-('admin', 'admin@example.com');
+每個新區塊複製 A~D 欄的結構，向下順移排列
 
-INSERT INTO home_project_card (name, unit, directions) VALUES 
-('測試案場', '測試單位', '這是一個測試項目');
-```
-
-### 4. 設定 RLS (Row Level Security)
-
-```sql
--- 啟用 RLS
-ALTER TABLE user_names ENABLE ROW LEVEL SECURITY;
-ALTER TABLE home_project_card ENABLE ROW LEVEL SECURITY;
-ALTER TABLE maintainance ENABLE ROW LEVEL SECURITY;
-ALTER TABLE maintainance_setting ENABLE ROW LEVEL SECURITY;
-ALTER TABLE maintainance_data ENABLE ROW LEVEL SECURITY;
-
--- 創建政策（允許所有操作，您可以根據需要調整）
-CREATE POLICY "Allow all operations" ON user_names FOR ALL USING (true);
-CREATE POLICY "Allow all operations" ON home_project_card FOR ALL USING (true);
-CREATE POLICY "Allow all operations" ON maintainance FOR ALL USING (true);
-CREATE POLICY "Allow all operations" ON maintainance_setting FOR ALL USING (true);
-CREATE POLICY "Allow all operations" ON maintainance_data FOR ALL USING (true);
-```
-
-### 5. 創建測試用戶
-
-在 Supabase Authentication 中創建測試用戶：
-- Email: test@example.com
-- Password: test123456
-
-### 6. 測試連接
-
-啟動應用程式後，點擊登入頁面的「測試連接」按鈕來驗證 Supabase 連接是否正常。
-
-## 故障排除
-
-### 連接失敗
-- 檢查 `.env` 文件中的 URL 和 Key 是否正確
-- 確認 Supabase 項目是否啟用
-- 檢查網路連接
-
-### 登入失敗
-- 確認用戶已在 Supabase Authentication 中創建
-- 檢查密碼是否正確
-- 查看瀏覽器控制台的錯誤訊息
+每個區塊的合併儲存格填入對應的 thing 值

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Typography, Spin, Alert, Tabs, Empty } from 'antd';
-import { EyeOutlined, WarningOutlined } from '@ant-design/icons';
+import { Card, Typography, Spin, Alert, Tabs, Empty, Checkbox, Button, Modal, message, App } from 'antd';
+import { EyeOutlined, WarningOutlined, DeleteOutlined, SelectOutlined } from '@ant-design/icons';
 import PageLayout from '../components/layout/PageLayout';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import ErrorMessage from '../components/ui/ErrorMessage';
@@ -17,9 +17,13 @@ export default function ViewMaintenanceData() {
   const navigate = useNavigate();
   const { userName } = useAuth();
   const { project, loading, error } = useProject(id);
+  const { modal } = App.useApp();
   const [maintenanceData, setMaintenanceData] = useState([]);
   const [dataLoading, setDataLoading] = useState(true);
   const [groupedData, setGroupedData] = useState({});
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   useEffect(() => {
     if (project) {
@@ -29,12 +33,40 @@ export default function ViewMaintenanceData() {
 
   const fetchMaintenanceData = async () => {
     try {
-      const { data, error } = await dbUtils.maintenanceData.getByProject(project.name);
+      // Fetch all maintenance_data records
+      const { data: maintenanceDataRecords, error: dataError } = await dbUtils.maintenanceData.getByProject(project.name);
+      if (dataError) throw dataError;
 
-      if (error) throw error;
+      // Fetch all maintenance_photo records
+      const { data: maintenancePhotoRecords, error: photoError } = await dbUtils.maintenancePhoto.getByProject(project.name);
+      if (photoError) throw photoError;
 
-      setMaintenanceData(data || []);
-      groupDataByLocation(data || []);
+      // Create a map for quick lookup of photos by a composite key
+      const photoMap = new Map();
+      maintenancePhotoRecords.forEach(photoItem => {
+        // 使用 project, floor, thing, location 作為複合鍵
+        const key = `${photoItem.project}_${photoItem.floor}_${photoItem.thing}_${photoItem.location}`;
+        photoMap.set(key, photoItem);
+      });
+
+      // Combine data
+      const combinedData = maintenanceDataRecords.map(dataItem => {
+        const key = `${dataItem.project}_${dataItem.floor}_${dataItem.thing}_${dataItem.location}`;
+        const photoItem = photoMap.get(key);
+
+        return {
+          ...dataItem, // All fields from maintenance_data
+          photo_path: photoItem ? photoItem.photo_path : null, // Add photo_path if found
+          photo_record_id: photoItem ? photoItem.id : null, // Store photo's ID
+          // 使用 photoItem 的 maintainance_user 和 maintainance_time，如果沒有則使用 dataItem 的 creat_user 和 creat_at
+          maintainance_user: photoItem ? photoItem.maintainance_user : dataItem.creat_user,
+          maintainance_time: photoItem ? photoItem.maintainance_time : dataItem.creat_at,
+        };
+      });
+
+      setMaintenanceData(combinedData || []);
+      groupDataByLocation(combinedData || []);
+
     } catch (error) {
       console.error('獲取保養資料失敗:', error);
     } finally {
@@ -46,8 +78,14 @@ export default function ViewMaintenanceData() {
     const grouped = {};
     
     data.forEach(item => {
-      // 按檢查位置前綴分組
-      const locationPrefix = item.location ? item.location.split(' ')[0] : '未分類';
+      // 只取 location 中的中文部分作為分類標題
+      let locationPrefix = '未分類';
+      if (item.location) {
+        // 使用正則表達式匹配第一個出現的連續中文字符
+        const chineseMatch = item.location.match(/[\u4e00-\u9fff]+/);
+        locationPrefix = chineseMatch ? chineseMatch[0] : '未分類';
+      }
+      
       if (!grouped[locationPrefix]) {
         grouped[locationPrefix] = [];
       }
@@ -93,11 +131,132 @@ export default function ViewMaintenanceData() {
     return dbUtils.storage.getImageUrl('maintainance-data-photo', path);
   };
 
+  // 切換選擇模式
+  const toggleSelectionMode = () => {
+    console.log('toggleSelectionMode 被調用', !isSelectionMode);
+    setIsSelectionMode(!isSelectionMode);
+    setSelectedItems([]);
+  };
+
+  // 處理單個項目選擇
+  const handleItemSelect = (itemId, checked) => {
+    if (checked) {
+      setSelectedItems(prev => [...prev, itemId]);
+    } else {
+      setSelectedItems(prev => prev.filter(id => id !== itemId));
+    }
+  };
+
+  // 全選/取消全選
+  const handleSelectAll = (checked) => {
+    if (checked) {
+      setSelectedItems(maintenanceData.map(item => item.id));
+    } else {
+      setSelectedItems([]);
+    }
+  };
+
+  // 批量刪除季保養項目 (maintainance_data)
+  const handleBatchDeleteData = async () => {
+    console.log('handleBatchDeleteData 被調用', selectedItems);
+    if (selectedItems.length === 0) {
+      message.warning('請先選擇要刪除的項目');
+      return;
+    }
+
+    console.log('準備顯示刪除季保養項目確認對話框');
+    
+    modal.confirm({
+      title: <span style={{ color: 'var(--text-primary)' }}><DeleteOutlined /> 確認刪除季保養項目</span>,
+      content: <span style={{ color: 'var(--text-secondary)' }}>您確定要刪除選中的 <strong style={{ color: 'var(--text-accent)' }}>{selectedItems.length}</strong> 個季保養項目嗎？這將刪除 maintainance_data 表中的資料記錄。</span>,
+      okText: '確認',
+      cancelText: '取消',
+      okButtonProps: { danger: true },
+      centered: true,
+      className: 'modern-modal',
+      onOk: async () => {
+      console.log('用戶確認刪除季保養項目');
+      setDeleteLoading(true);
+      try {
+        // 只刪除 maintainance_data 記錄
+        for (const itemId of selectedItems) {
+          await dbUtils.maintenanceData.delete(itemId);
+        }
+        
+        message.success(`成功刪除 ${selectedItems.length} 個季保養項目`);
+        setSelectedItems([]);
+        setIsSelectionMode(false);
+        // 重新獲取資料
+        fetchMaintenanceData();
+      } catch (error) {
+        console.error('刪除季保養項目失敗:', error);
+        message.error('刪除失敗，請稍後再試');
+      } finally {
+        setDeleteLoading(false);
+      }
+    },
+    });
+  };
+
+  // 批量刪除本次季保養資料 (maintainance_photo)
+  const handleBatchDeletePhoto = async () => {
+    console.log('handleBatchDeletePhoto 被調用', selectedItems);
+    if (selectedItems.length === 0) {
+      message.warning('請先選擇要刪除的項目');
+      return;
+    }
+
+    console.log('準備顯示刪除本次季保養資料確認對話框');
+    
+    modal.confirm({
+      title: <span style={{ color: 'var(--text-primary)' }}><DeleteOutlined /> 確認刪除本次季保養資料</span>,
+      content: <span style={{ color: 'var(--text-secondary)' }}>您確定要刪除選中的 <strong style={{ color: 'var(--text-accent)' }}>{selectedItems.length}</strong> 個項目的照片資料嗎？這將刪除 maintainance_photo 表中的資料和相關照片文件。</span>,
+      okText: '確認',
+      cancelText: '取消',
+      okButtonProps: { danger: true },
+      centered: true,
+      className: 'modern-modal',
+      onOk: async () => {
+      console.log('用戶確認刪除本次季保養資料');
+      setDeleteLoading(true);
+      try {
+        // 刪除照片文件和 maintainance_photo 記錄
+        for (const itemId of selectedItems) {
+          const item = maintenanceData.find(data => data.id === itemId);
+          if (item && item.photo_record_id) {
+            // 刪除照片文件（如果存在）
+            if (item.photo_path) {
+              await dbUtils.storage.deleteImage('maintainance-data-photo', item.photo_path);
+            }
+            // 刪除 maintainance_photo 記錄
+            await dbUtils.maintenancePhoto.delete(item.photo_record_id);
+          }
+        }
+        
+        message.success(`成功刪除 ${selectedItems.length} 個本次季保養資料`);
+        setSelectedItems([]);
+        setIsSelectionMode(false);
+        // 重新獲取資料
+        fetchMaintenanceData();
+      } catch (error) {
+        console.error('刪除本次季保養資料失敗:', error);
+        message.error('刪除失敗，請稍後再試');
+      } finally {
+        setDeleteLoading(false);
+      }
+    },
+    });
+  };
+
   const renderMaintenanceCard = (item) => {
     const hasPhoto = item.photo_path;
+    const isSelected = selectedItems.includes(item.id);
     const cardStyle = {
       minWidth: 280,
-      flexShrink: 0
+      flexShrink: 0,
+      position: 'relative',
+      border: isSelected ? '2px solid #1890ff' : undefined,
+      boxShadow: isSelected ? '0 0 10px rgba(24, 144, 255, 0.3)' : undefined
     };
 
     return (
@@ -105,24 +264,45 @@ export default function ViewMaintenanceData() {
         key={item.id}
         className={`modern-card ${hasPhoto ? '' : 'maintenance-card-missing'}`}
         style={cardStyle}
-        cover={hasPhoto ? (
-          <img
-            alt="保養照片"
-            src={getImageUrl(item.photo_path)}
-            style={{ height: 160, objectFit: 'cover' }}
-          />
-        ) : (
-          <div style={{ 
-            height: 160, 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center',
-            backgroundColor: 'rgba(255, 77, 79, 0.2)',
-            color: '#ff4d4f'
-          }}>
-            <WarningOutlined style={{ fontSize: 48 }} />
+        cover={
+          <div style={{ position: 'relative' }}>
+            {isSelectionMode && (
+              <Checkbox
+                checked={isSelected}
+                onChange={(e) => handleItemSelect(item.id, e.target.checked)}
+                style={{
+                  position: 'absolute',
+                  top: 8,
+                  right: 8,
+                  zIndex: 10,
+                  backgroundColor: 'var(--bg-secondary)',
+                  borderRadius: '4px',
+                  padding: '2px',
+                  border: '1px solid var(--border-primary)',
+                  boxShadow: 'var(--shadow-sm)'
+                }}
+              />
+            )}
+            {hasPhoto ? (
+              <img
+                alt="保養照片"
+                src={getImageUrl(item.photo_path)}
+                style={{ height: 160, objectFit: 'cover' }}
+              />
+            ) : (
+              <div style={{ 
+                height: 160, 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                backgroundColor: 'rgba(255, 77, 79, 0.2)',
+                color: '#ff4d4f'
+              }}>
+                <WarningOutlined style={{ fontSize: 48 }} />
+              </div>
+            )}
           </div>
-        )}
+        }
       >
         <Card.Meta
           title={
@@ -141,7 +321,7 @@ export default function ViewMaintenanceData() {
               </Text>
               <br />
               <Text style={{ color: 'var(--text-muted)' }}>
-                新增日期：{item.create_at}
+                新增日期：{item.maintainance_time}
               </Text>
               <br />
               <Text style={{ color: 'var(--text-muted)' }}>
@@ -245,14 +425,64 @@ export default function ViewMaintenanceData() {
         <Card 
           className="modern-card glass-morphism animate-fadeInUp"
           title={
-            <div className="gradient-text" style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: 8,
-              fontSize: '1.5rem',
-              fontWeight: 600
-            }}>
-              👁️ 查看季保養資料
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div className="gradient-text" style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: 8,
+                fontSize: '1.5rem',
+                fontWeight: 600
+              }}>
+                👁️ 查看季保養資料
+              </div>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                {isSelectionMode && (
+                  <>
+                    <Checkbox
+                      checked={selectedItems.length === maintenanceData.length && maintenanceData.length > 0}
+                      indeterminate={selectedItems.length > 0 && selectedItems.length < maintenanceData.length}
+                      onChange={(e) => handleSelectAll(e.target.checked)}
+                      style={{ color: 'var(--text-primary)' }}
+                    >
+                      全選 ({selectedItems.length}/{maintenanceData.length})
+                    </Checkbox>
+                    <Button
+                      type="primary"
+                      danger
+                      icon={<DeleteOutlined />}
+                      onClick={() => {
+                        console.log('刪除季保養項目按鈕被點擊');
+                        handleBatchDeleteData();
+                      }}
+                      loading={deleteLoading}
+                      disabled={selectedItems.length === 0}
+                      style={{ marginRight: 8 }}
+                    >
+                      刪除季保養項目 ({selectedItems.length})
+                    </Button>
+                    <Button
+                      type="primary"
+                      danger
+                      icon={<DeleteOutlined />}
+                      onClick={() => {
+                        console.log('刪除本次季保養資料按鈕被點擊');
+                        handleBatchDeletePhoto();
+                      }}
+                      loading={deleteLoading}
+                      disabled={selectedItems.length === 0}
+                    >
+                      刪除本次季保養資料 ({selectedItems.length})
+                    </Button>
+                  </>
+                )}
+                <Button
+                  type={isSelectionMode ? "default" : "primary"}
+                  icon={<SelectOutlined />}
+                  onClick={toggleSelectionMode}
+                >
+                  {isSelectionMode ? '取消選擇' : '批量選擇'}
+                </Button>
+              </div>
             </div>
           }
           style={{ marginBottom: 24 }}

@@ -17,9 +17,11 @@
     "@vitejs/plugin-react": "^4.6.0",
     "antd": "^5.26.4",
     "dayjs": "^1.11.10",
+    "exceljs": "^4.4.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-responsive": "^10.0.1",
-    "react-router-dom": "^7.6.3"
+    "react-router-dom": "^7.6.3",
+    "xlsx": "^0.18.5"
   }
 }

@@ -82,13 +82,15 @@ export const dbUtils = {
         .select('floor, thing, location')
         .eq('project', projectName);
       
-      if (error) return { data: { floors: [], things: [], locations: [] }, error };
-      
-      const floors = [...new Set(data.map(item => item.floor).filter(Boolean))];
-      const things = [...new Set(data.map(item => item.thing).filter(Boolean))];
-      const locations = [...new Set(data.map(item => item.location).filter(Boolean))];
-      
-      return { data: { floors, things, locations }, error: null };
+      return { data: data || [], error };
+    },
+
+    async delete(id) {
+      const { data, error } = await supabase
+        .from('maintainance_data')
+        .delete()
+        .eq('id', id);
+      return { data, error };
     }
   },
 
@@ -122,6 +124,14 @@ export const dbUtils = {
       const locations = [...new Set(data.map(item => item.location).filter(Boolean))];
       
       return { data: { floors, things, locations }, error: null };
+    },
+
+    async delete(id) {
+      const { data, error } = await supabase
+        .from('maintainance_photo')
+        .delete()
+        .eq('id', id);
+      return { data, error };
     }
   },
 
@@ -164,6 +174,13 @@ export const dbUtils = {
       const { data, error } = await supabase.storage
         .from(bucket)
         .upload(path, file);
+      return { data, error };
+    },
+
+    async deleteImage(bucket, path) {
+      const { data, error } = await supabase.storage
+        .from(bucket)
+        .remove([path]);
       return { data, error };
     }
   }

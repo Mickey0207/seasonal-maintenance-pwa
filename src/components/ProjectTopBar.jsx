@@ -1,10 +1,11 @@
 import React from 'react';
-import { Layout, Button, Typography, Dropdown, Drawer } from 'antd';
-import { UserOutlined, SettingOutlined, LogoutOutlined, HistoryOutlined, ToolOutlined, MenuOutlined, HomeOutlined, FormOutlined, PlusOutlined, EyeOutlined } from '@ant-design/icons';
+import { Layout, Button, Typography, Dropdown, Drawer, message, Modal } from 'antd';
+import { UserOutlined, SettingOutlined, LogoutOutlined, HistoryOutlined, ToolOutlined, MenuOutlined, HomeOutlined, FormOutlined, PlusOutlined, EyeOutlined, FileExcelOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { useMediaQuery } from 'react-responsive';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../config/constants';
 import { authUtils } from '../utils/auth';
+import { dbUtils } from '../utils/database';
 
 function ProjectTopBar({
   projectName = '',
@@ -18,6 +19,47 @@ function ProjectTopBar({
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const navigate = useNavigate();
   const isMobile = useMediaQuery({ maxWidth: 767 });
+
+  const handleDeleteAllMaintenanceData = () => {
+    Modal.confirm({
+      title: '確認刪除所有季保養暫存資料',
+      icon: <ExclamationCircleOutlined />,
+      content: '您確定要刪除所有季保養暫存資料嗎？這將永久刪除 maintainance_data 和 maintainance_photo 表中的所有記錄，以及相關的照片文件。此操作無法復原！',
+      okText: '確認刪除',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk: async () => {
+        try {
+          // 刪除 maintainance_data 中的所有資料
+          const { data: allMaintenanceData, error: dataFetchError } = await dbUtils.maintenanceData.getByProject(projectName);
+          if (dataFetchError) throw dataFetchError;
+          for (const item of allMaintenanceData) {
+            await dbUtils.maintenanceData.delete(item.id);
+          }
+
+          // 刪除 maintainance_photo 中的所有資料及相關照片
+          const { data: allMaintenancePhotos, error: photoFetchError } = await dbUtils.maintenancePhoto.getByProject(projectName);
+          if (photoFetchError) throw photoFetchError;
+          for (const item of allMaintenancePhotos) {
+            if (item.photo_path) {
+              await dbUtils.storage.deleteImage('maintainance-data-photo', item.photo_path);
+            }
+            await dbUtils.maintenancePhoto.delete(item.id);
+          }
+
+          message.success('所有季保養暫存資料已成功刪除！');
+          setDrawerOpen(false);
+          window.location.reload(); // 重新載入頁面以更新資料
+        } catch (error) {
+          console.error('刪除所有季保養暫存資料失敗:', error);
+          message.error(`刪除失敗: ${error.message || '未知錯誤'}`);
+        }
+      },
+      onCancel() {
+        console.log('取消刪除');
+      },
+    });
+  };
 
   // 處理側邊欄關閉
   const handleDrawerClose = () => {
@@ -128,6 +170,23 @@ function ProjectTopBar({
       >
         查看季保養資料
       </Button>
+      <Button 
+        className="sidebar-menu-item" 
+        type="text" 
+        icon={<FileExcelOutlined />} 
+        onClick={() => {
+          setDrawerOpen(false);
+          if (window.location.pathname === `/project/${id}/export-excel`) {
+            // 同頁面：重載網頁
+            window.location.reload();
+          } else {
+            // 不同頁面：導向其他網頁
+            navigate(`/project/${id}/export-excel`);
+          }
+        }}
+      >
+        Excel匯出
+      </Button>
       <div style={{ height: 16 }} />
       <Button 
         className="sidebar-menu-item" 
@@ -162,6 +221,22 @@ function ProjectTopBar({
         }}
       >
         保養資訊設定
+      </Button>
+      <div style={{ height: 16 }} />
+      <Button 
+        className="sidebar-menu-item" 
+        type="text" 
+        icon={<ExclamationCircleOutlined />} 
+        onClick={handleDeleteAllMaintenanceData}
+        style={{
+          background: 'var(--danger-gradient)',
+          color: 'white',
+          borderRadius: '8px',
+          margin: '4px 0',
+          fontWeight: 600
+        }}
+      >
+        刪除所有季保養暫存資料
       </Button>
       <div style={{ flex: 1 }} />
       <div style={{ textAlign: 'center', marginTop: 24 }}>

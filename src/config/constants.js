@@ -14,7 +14,8 @@ export const ROUTES = {
   PROJECT_SEASON_SETTING: '/project/:id/season-setting',
   PROJECT_MAINTAIN_SETTING: '/project/:id/maintain-setting',
   PROJECT_ADD_MAINTENANCE_DATA: '/project/:id/addmaintainancedata',
-  PROJECT_VIEW_MAINTENANCE_DATA: '/project/:id/viewmaintainancedata'
+  PROJECT_VIEW_MAINTENANCE_DATA: '/project/:id/viewmaintainancedata',
+  PROJECT_EXPORT_EXCEL: '/project/:id/export-excel'
 };
 
 export const STORAGE_KEYS = {
