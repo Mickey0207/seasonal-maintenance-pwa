@@ -14,7 +14,7 @@ const PageLayout = ({
   return (
     <>
       <div className="animated-bg"></div>
-      <Layout style={{ minHeight: '100vh', background }}>
+      <Layout className="page-enter" style={{ minHeight: '100vh', background }}>
         <ProjectTopBar
           userName={userName}
           projectName={projectName}
@@ -27,9 +27,13 @@ const PageLayout = ({
         <Layout.Content style={{ 
           padding: '32px 24px',
           minHeight: 'calc(100vh - 70px)',
-          background: 'transparent'
+          background: 'transparent',
+          position: 'relative',
+          zIndex: 1
         }}>
-          {children}
+          <div className="animate-fadeInUp">
+            {children}
+          </div>
         </Layout.Content>
       </Layout>
     </>

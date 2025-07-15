@@ -12,8 +12,9 @@ export const ROUTES = {
   REGISTER: '/register',
   PROJECT: '/project/:id',
   PROJECT_SEASON_SETTING: '/project/:id/season-setting',
-  PROJECT_HISTORY: '/project/:id/history',
-  PROJECT_MAINTAIN_SETTING: '/project/:id/maintain-setting'
+  PROJECT_MAINTAIN_SETTING: '/project/:id/maintain-setting',
+  PROJECT_ADD_MAINTENANCE_DATA: '/project/:id/addmaintainancedata',
+  PROJECT_VIEW_MAINTENANCE_DATA: '/project/:id/viewmaintainancedata'
 };
 
 export const STORAGE_KEYS = {

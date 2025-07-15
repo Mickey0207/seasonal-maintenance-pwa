@@ -33,20 +33,43 @@ export default function RegisterForm({ onRegisterSuccess }) {
   };
 
   return (
-    <>
-      <Typography.Title className="register-title">
+    <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+      <div className="neon-glow animate-rotateIn" style={{
+        width: '80px',
+        height: '80px',
+        borderRadius: '50%',
+        background: 'var(--success-gradient)',
+        margin: '0 auto 24px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '2rem',
+        fontWeight: 'bold',
+        color: 'white'
+      }}>
+        👤
+      </div>
+      <Typography.Title level={2} className="gradient-text" style={{ 
+        marginBottom: '8px',
+        fontSize: '2rem',
+        fontWeight: 700
+      }}>
         註冊新帳號
       </Typography.Title>
+      
       <Form
         form={form}
         layout="vertical"
-        size="large"
         onFinish={handleRegister}
-        autoComplete="off"
+        className="animate-fadeInUp"
+        style={{
+          marginTop: '24px',
+          animationDelay: '0.3s',
+          animationFillMode: 'both'
+        }}
       >
         <Form.Item 
-          className="modern-form-item"
-          label="Email" 
+          label={<span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>📧 Email</span>}
           name="email" 
           rules={[
             { required: true, message: '請輸入Email' }, 
@@ -54,28 +77,34 @@ export default function RegisterForm({ onRegisterSuccess }) {
           ]}
         >
           <Input 
-            className="modern-input"
             placeholder="請輸入您的Email"
-            autoFocus 
+            className="interactive-hover"
+            style={{
+              height: '48px',
+              borderRadius: '12px',
+              fontSize: '16px'
+            }}
           />
         </Form.Item>
         
         <Form.Item 
-          className="modern-form-item"
-          label="密碼" 
+          label={<span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>🔒 密碼</span>}
           name="password" 
           rules={[{ required: true, message: '請輸入密碼' }]}
         >
           <Input.Password 
-            className="modern-password"
             placeholder="請輸入密碼"
-            autoComplete="new-password" 
+            className="interactive-hover"
+            style={{
+              height: '48px',
+              borderRadius: '12px',
+              fontSize: '16px'
+            }}
           />
         </Form.Item>
         
         <Form.Item 
-          className="modern-form-item"
-          label="確認密碼" 
+          label={<span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>🔐 確認密碼</span>}
           name="confirmPassword" 
           dependencies={["password"]} 
           rules={[
@@ -91,31 +120,53 @@ export default function RegisterForm({ onRegisterSuccess }) {
           ]}
         >
           <Input.Password 
-            className="modern-password"
             placeholder="請再次輸入密碼"
-            autoComplete="new-password" 
+            className="interactive-hover"
+            style={{
+              height: '48px',
+              borderRadius: '12px',
+              fontSize: '16px'
+            }}
           />
         </Form.Item>
         
         {error && (
-          <div className="error-message">
-            {error}
+          <div className="animate-slideInLeft" style={{
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: '1px solid var(--border-danger)',
+            borderRadius: '12px',
+            padding: '12px 16px',
+            color: 'var(--text-danger)',
+            marginBottom: '24px',
+            textAlign: 'center',
+            fontWeight: 500,
+            backdropFilter: 'blur(10px)'
+          }}>
+            ⚠️ {error}
           </div>
         )}
         
-        <div style={{ marginTop: 32 }}>
-          <Button 
-            className="login-btn-primary"
-            type="primary" 
-            htmlType="submit" 
-            block 
-            loading={loading}
-            size="large"
-          >
-            註冊
-          </Button>
-        </div>
+        <Button 
+          type="primary" 
+          htmlType="submit" 
+          block 
+          loading={loading}
+          className="interactive-click neon-glow"
+          style={{
+            height: '52px',
+            fontSize: '18px',
+            fontWeight: 600,
+            borderRadius: '12px',
+            background: 'var(--success-gradient)',
+            border: 'none',
+            boxShadow: 'var(--shadow-success)',
+            transition: 'var(--transition-bounce)',
+            marginBottom: '12px'
+          }}
+        >
+          立即註冊
+        </Button>
       </Form>
-    </>
+    </div>
   );
 }

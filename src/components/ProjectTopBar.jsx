@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout, Button, Typography, Dropdown, Drawer } from 'antd';
-import { UserOutlined, SettingOutlined, LogoutOutlined, HistoryOutlined, ToolOutlined, MenuOutlined, HomeOutlined, FormOutlined } from '@ant-design/icons';
+import { UserOutlined, SettingOutlined, LogoutOutlined, HistoryOutlined, ToolOutlined, MenuOutlined, HomeOutlined, FormOutlined, PlusOutlined, EyeOutlined } from '@ant-design/icons';
 import { useMediaQuery } from 'react-responsive';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../config/constants';
@@ -19,6 +19,16 @@ function ProjectTopBar({
   const navigate = useNavigate();
   const isMobile = useMediaQuery({ maxWidth: 767 });
 
+  // 處理側邊欄關閉
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
+    // 如果直接關閉側邊欄（沒有點擊按鈕），重載網頁
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
+  };
+
+
   // 用戶下拉選單
   const userMenuItems = [
     {
@@ -36,18 +46,33 @@ function ProjectTopBar({
         await authUtils.logout(); 
         navigate(ROUTES.LOGIN); 
       },
+      style: {
+        background: 'var(--danger-gradient)',
+        color: 'white',
+        borderRadius: '8px',
+        margin: '4px 0',
+        fontWeight: 600
+      }
     },
   ];
 
   // 側邊欄內容
   const sideMenu = customSideMenu ? customSideMenu : (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <div className="sidebar-title">{projectName}</div>
       <Button 
         className="sidebar-menu-item" 
         type="text" 
         icon={<HomeOutlined />} 
-        onClick={onHomeClick}
+        onClick={() => {
+          setDrawerOpen(false);
+          if (window.location.pathname === '/home') {
+            // 同頁面：重載網頁
+            window.location.reload();
+          } else {
+            // 不同頁面：導向其他網頁
+            navigate('/home');
+          }
+        }}
       >
         主畫面
       </Button>
@@ -56,24 +81,68 @@ function ProjectTopBar({
         className="sidebar-menu-item" 
         type="text" 
         icon={<FormOutlined />} 
-        onClick={() => navigate(`/project/${id}`)}
+        onClick={() => {
+          setDrawerOpen(false);
+          if (window.location.pathname === `/project/${id}`) {
+            // 同頁面：重載網頁
+            window.location.reload();
+          } else {
+            // 不同頁面：導向其他網頁
+            navigate(`/project/${id}`);
+          }
+        }}
       >
         本次季保養表單
       </Button>
       <Button 
         className="sidebar-menu-item" 
         type="text" 
-        icon={<HistoryOutlined />} 
-        onClick={() => navigate(`/project/${id}/history`)}
+        icon={<PlusOutlined />} 
+        onClick={() => {
+          setDrawerOpen(false);
+          if (window.location.pathname === `/project/${id}/addmaintainancedata`) {
+            // 同頁面：重載網頁
+            window.location.reload();
+          } else {
+            // 不同頁面：導向其他網頁
+            navigate(`/project/${id}/addmaintainancedata`);
+          }
+        }}
       >
-        本次季保養歷史
+        新增季保養資料
+      </Button>
+      <Button 
+        className="sidebar-menu-item" 
+        type="text" 
+        icon={<EyeOutlined />} 
+        onClick={() => {
+          setDrawerOpen(false);
+          if (window.location.pathname === `/project/${id}/viewmaintainancedata`) {
+            // 同頁面：重載網頁
+            window.location.reload();
+          } else {
+            // 不同頁面：導向其他網頁
+            navigate(`/project/${id}/viewmaintainancedata`);
+          }
+        }}
+      >
+        查看季保養資料
       </Button>
       <div style={{ height: 16 }} />
       <Button 
         className="sidebar-menu-item" 
         type="text" 
         icon={<SettingOutlined />} 
-        onClick={() => navigate(`/project/${id}/season-setting`)}
+        onClick={() => {
+          setDrawerOpen(false);
+          if (window.location.pathname === `/project/${id}/season-setting`) {
+            // 同頁面：重載網頁
+            window.location.reload();
+          } else {
+            // 不同頁面：導向其他網頁
+            navigate(`/project/${id}/season-setting`);
+          }
+        }}
       >
         本次季保養設定
       </Button>
@@ -81,7 +150,16 @@ function ProjectTopBar({
         className="sidebar-menu-item" 
         type="text" 
         icon={<ToolOutlined />} 
-        onClick={() => navigate(`/project/${id}/maintain-setting`)}
+        onClick={() => {
+          setDrawerOpen(false);
+          if (window.location.pathname === `/project/${id}/maintain-setting`) {
+            // 同頁面：重載網頁
+            window.location.reload();
+          } else {
+            // 不同頁面：導向其他網頁
+            navigate(`/project/${id}/maintain-setting`);
+          }
+        }}
       >
         保養資訊設定
       </Button>
@@ -111,16 +189,23 @@ function ProjectTopBar({
           />
         </div>
         
-        <Typography.Title className="topbar-title" level={4}>
-          {projectName}
-        </Typography.Title>
+        <div className="topbar-center" style={{ 
+          position: 'absolute',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          textAlign: 'center'
+        }}>
+          <Typography.Title className="topbar-title" level={4}>
+            {projectName}
+          </Typography.Title>
+        </div>
         
-        <div className="topbar-right">
+        <div className="topbar-right" style={{ marginLeft: 'auto' }}>
           <Dropdown 
             menu={{ items: userMenuItems }}
             trigger={["click"]} 
             placement="bottomRight"
-            dropdownRender={(menu) => (
+            popupRender={(menu) => (
               <div className="user-dropdown">
                 {menu}
               </div>
@@ -134,10 +219,11 @@ function ProjectTopBar({
       </Layout.Header>
       
       <Drawer 
+        title="選單"
         className="modern-sidebar"
         placement="left" 
         open={drawerOpen} 
-        onClose={() => setDrawerOpen(false)}
+        onClose={handleDrawerClose}
         width={280}
       >
         {sideMenu}

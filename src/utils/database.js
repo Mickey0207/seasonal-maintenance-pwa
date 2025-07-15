@@ -25,15 +25,6 @@ export const dbUtils = {
       return { data, error };
     },
 
-    async createDefault() {
-      const defaultProject = {
-        name: '預設案場',
-        unit: '預設單位',
-        directions: '這是自動建立的預設專案卡片',
-        photo_path: '',
-      };
-      return await this.create(defaultProject);
-    }
   },
 
   // 用戶相關
@@ -67,21 +58,64 @@ export const dbUtils = {
     }
   },
 
-  // 維護記錄相關
-  maintenance: {
+
+  // 保養資料相關
+  maintenanceData: {
     async create(record) {
       const { data, error } = await supabase
-        .from('maintainance')
+        .from('maintainance_data')
         .insert(record);
       return { data, error };
     },
 
-    async getByProjectId(projectId) {
+    async getByProject(projectName) {
       const { data, error } = await supabase
-        .from('maintainance')
+        .from('maintainance_data')
         .select('*')
-        .eq('project_id', projectId);
+        .eq('project', projectName);
       return { data: data || [], error };
+    },
+
+    async getOptions(projectName) {
+      const { data, error } = await supabase
+        .from('maintainance_data')
+        .select('floor, thing, location')
+        .eq('project', projectName);
+      
+      if (error) return { data: { floors: [], things: [], locations: [] }, error };
+      
+      const floors = [...new Set(data.map(item => item.floor).filter(Boolean))];
+      const things = [...new Set(data.map(item => item.thing).filter(Boolean))];
+      const locations = [...new Set(data.map(item => item.location).filter(Boolean))];
+      
+      return { data: { floors, things, locations }, error: null };
+    }
+  },
+
+  // 保養設定相關
+  maintenanceSettings: {
+    async getByProject(projectName) {
+      const { data, error } = await supabase
+        .from('maintainance_setting')
+        .select('*')
+        .eq('name', projectName)
+        .single();
+      return { data, error };
+    },
+
+    async create(setting) {
+      const { data, error } = await supabase
+        .from('maintainance_setting')
+        .insert(setting);
+      return { data, error };
+    },
+
+    async update(projectName, setting) {
+      const { data, error } = await supabase
+        .from('maintainance_setting')
+        .upsert(setting)
+        .eq('name', projectName);
+      return { data, error };
     }
   },
 
@@ -91,6 +125,13 @@ export const dbUtils = {
       if (!path) return '';
       const { data } = supabase.storage.from(bucket).getPublicUrl(path);
       return data?.publicUrl || '';
+    },
+
+    async uploadFile(bucket, path, file) {
+      const { data, error } = await supabase.storage
+        .from(bucket)
+        .upload(path, file);
+      return { data, error };
     }
   }
 };

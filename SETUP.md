@@ -61,6 +61,23 @@ CREATE TABLE maintainance_setting (
   created_at TIMESTAMP DEFAULT NOW()
 );
 
+-- 創建維護資料表
+CREATE TABLE maintainance_data (
+  id SERIAL PRIMARY KEY,
+  thing VARCHAR(255),
+  location VARCHAR(255),
+  floor VARCHAR(100),
+  creat_at DATE,
+  user VARCHAR(255),
+  project VARCHAR(255),
+  company VARCHAR(255),
+  direction TEXT,
+  maintainance_user VARCHAR(255),
+  maintainance_time DATE,
+  photo_path VARCHAR(500),
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
 -- 插入測試數據
 INSERT INTO user_names (user, email) VALUES 
 ('testuser', 'test@example.com'),
@@ -78,12 +95,14 @@ ALTER TABLE user_names ENABLE ROW LEVEL SECURITY;
 ALTER TABLE home_project_card ENABLE ROW LEVEL SECURITY;
 ALTER TABLE maintainance ENABLE ROW LEVEL SECURITY;
 ALTER TABLE maintainance_setting ENABLE ROW LEVEL SECURITY;
+ALTER TABLE maintainance_data ENABLE ROW LEVEL SECURITY;
 
 -- 創建政策（允許所有操作，您可以根據需要調整）
 CREATE POLICY "Allow all operations" ON user_names FOR ALL USING (true);
 CREATE POLICY "Allow all operations" ON home_project_card FOR ALL USING (true);
 CREATE POLICY "Allow all operations" ON maintainance FOR ALL USING (true);
 CREATE POLICY "Allow all operations" ON maintainance_setting FOR ALL USING (true);
+CREATE POLICY "Allow all operations" ON maintainance_data FOR ALL USING (true);
 ```
 
 ### 5. 創建測試用戶

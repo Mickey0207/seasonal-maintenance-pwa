@@ -17,7 +17,7 @@ const ErrorMessage = ({
   };
 
   return (
-    <div style={{ 
+    <div className="glass-morphism animate-fadeInUp" style={{ 
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -25,28 +25,53 @@ const ErrorMessage = ({
       minHeight: '400px',
       padding: '40px',
       textAlign: 'center',
-      color: 'var(--text-primary)'
+      color: 'var(--text-primary)',
+      margin: '20px',
+      maxWidth: '500px',
+      marginLeft: 'auto',
+      marginRight: 'auto'
     }}>
-      <ExclamationCircleOutlined style={{ 
-        fontSize: 64, 
-        color: '#ef4444', 
-        marginBottom: 24,
-        animation: 'pulse 2s ease-in-out infinite'
-      }} />
-      <Typography.Title level={4} style={{ 
-        color: 'var(--text-primary)', 
-        marginBottom: 16 
+      <div className="animate-bounce" style={{ marginBottom: '24px' }}>
+        <div style={{
+          width: '80px',
+          height: '80px',
+          borderRadius: '50%',
+          background: 'var(--danger-gradient)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '2rem',
+          color: 'white',
+          boxShadow: 'var(--shadow-danger)',
+          animation: 'pulse 2s ease-in-out infinite'
+        }}>
+          ⚠️
+        </div>
+      </div>
+      <Typography.Title level={4} className="gradient-text" style={{ 
+        marginBottom: 16,
+        fontSize: '1.5rem'
       }}>
         {message}
       </Typography.Title>
       {showBackButton && (
         <Button 
-          className="modern-btn-primary"
           type="primary"
           onClick={handleBack}
           size="large"
+          className="interactive-click"
+          style={{
+            height: '48px',
+            fontSize: '16px',
+            fontWeight: 600,
+            borderRadius: '12px',
+            background: 'var(--primary-gradient)',
+            border: 'none',
+            boxShadow: 'var(--shadow-glow)',
+            padding: '0 32px'
+          }}
         >
-          {backText}
+          🏠 {backText}
         </Button>
       )}
     </div>

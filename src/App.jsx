@@ -13,11 +13,12 @@ import Home from './pages/Home';
 import ProjectPage from './pages/ProjectPage';
 import SeasonSetting from './pages/SeasonSetting';
 import ProjectMaintainSetting from './pages/ProjectMaintainSetting';
-import History from './pages/History';
 import Register from './pages/Register';
+import AddMaintenanceData from './pages/AddMaintenanceData';
+import ViewMaintenanceData from './pages/ViewMaintenanceData';
 
 // Components
-import LoginForm from './components/LoginForm';
+import ModernLoginForm from './components/ModernLoginForm';
 
 export default function App() {
   return (
@@ -42,14 +43,19 @@ export default function App() {
                 <SeasonSetting />
               </ProtectedRoute>
             } />
-            <Route path={ROUTES.PROJECT_HISTORY} element={
-              <ProtectedRoute>
-                <History />
-              </ProtectedRoute>
-            } />
             <Route path={ROUTES.PROJECT_MAINTAIN_SETTING} element={
               <ProtectedRoute>
                 <ProjectMaintainSetting />
+              </ProtectedRoute>
+            } />
+            <Route path={ROUTES.PROJECT_ADD_MAINTENANCE_DATA} element={
+              <ProtectedRoute>
+                <AddMaintenanceData />
+              </ProtectedRoute>
+            } />
+            <Route path={ROUTES.PROJECT_VIEW_MAINTENANCE_DATA} element={
+              <ProtectedRoute>
+                <ViewMaintenanceData />
               </ProtectedRoute>
             } />
             <Route path="*" element={<Navigate to={ROUTES.LOGIN} replace />} />
@@ -63,5 +69,5 @@ export default function App() {
 // 包裝 LoginForm 以支援登入後導向
 function LoginWrapper() {
   const navigate = useNavigate();
-  return <LoginForm onLoginSuccess={() => navigate(ROUTES.HOME)} onAppSettings={() => navigate('/app-settings')} />;
+  return <ModernLoginForm onLoginSuccess={() => navigate(ROUTES.HOME)} />;
 }

@@ -5,7 +5,6 @@ import { SettingOutlined } from '@ant-design/icons';
 import { supabase } from '../lib/supabaseClient';
 import { dbUtils } from '../utils/database';
 import { ROUTES } from '../config/constants';
-import { testSupabaseConnection, testAuth } from '../utils/testConnection';
 
 // 登入表單元件
 export default function LoginForm({ onLoginSuccess, onAppSettings }) {
@@ -20,15 +19,9 @@ export default function LoginForm({ onLoginSuccess, onAppSettings }) {
 
   useEffect(() => {
     async function fetchUsers() {
-      const connectionTest = await testSupabaseConnection();
-      console.log('連接測試結果:', connectionTest);
-      
       const { data, error } = await dbUtils.users.getAll();
       if (!error && data) {
         setUsers(data);
-        console.log('用戶列表:', data);
-      } else {
-        console.error('獲取用戶列表失敗:', error);
       }
     }
     fetchUsers();
@@ -44,7 +37,6 @@ export default function LoginForm({ onLoginSuccess, onAppSettings }) {
 
     try {
       const { data: { user: currentUser } } = await supabase.auth.getUser();
-      console.log('Supabase 連接狀態:', currentUser);
 
       let loginEmail = account;
       
@@ -63,7 +55,6 @@ export default function LoginForm({ onLoginSuccess, onAppSettings }) {
         loginEmail = userNamesData.email;
       }
 
-      console.log('嘗試登入 email:', loginEmail);
       
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email: loginEmail,
@@ -80,7 +71,6 @@ export default function LoginForm({ onLoginSuccess, onAppSettings }) {
         return;
       }
 
-      console.log('登入成功:', data);
       if (onLoginSuccess) onLoginSuccess();
     } catch (err) {
       console.error('登入異常:', err);

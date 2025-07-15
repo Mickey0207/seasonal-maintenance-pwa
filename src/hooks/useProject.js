@@ -33,7 +33,7 @@ export const useProject = (projectId) => {
     fetchProject();
   }, [projectId]);
 
-  return { project, loading, error, refetch: () => fetchProject() };
+  return { project, loading, error };
 };
 
 // 自定義項目列表 Hook
@@ -51,14 +51,7 @@ export const useProjects = () => {
       if (fetchError) {
         setError(fetchError);
       } else {
-        if (data.length === 0) {
-          // 自動創建默認項目
-          await dbUtils.projects.createDefault();
-          const { data: newData } = await dbUtils.projects.getAll();
-          setProjects(newData || []);
-        } else {
-          setProjects(data);
-        }
+        setProjects(data || []);
       }
     } catch (err) {
       setError(err);
@@ -72,5 +65,5 @@ export const useProjects = () => {
     fetchProjects();
   }, []);
 
-  return { projects, loading, error, refetch: fetchProjects };
+  return { projects, loading, error };
 };

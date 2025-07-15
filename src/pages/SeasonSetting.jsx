@@ -3,6 +3,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, DatePicker, message, Card } from 'antd';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
+import SaveResultModal from '../components/ui/SaveResultModal';
 import { UserOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { supabase } from '../lib/supabaseClient';
@@ -12,6 +14,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 export default function SeasonSetting() {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
+  const [saveResultVisible, setSaveResultVisible] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(true);
+  const [saveMessage, setSaveMessage] = useState('');
   const [initialValues, setInitialValues] = useState({});
   const [projectInfo, setProjectInfo] = useState({ name: '', unit: '', directions: '' });
   const [userName, setUserName] = useState('');
@@ -33,7 +38,6 @@ export default function SeasonSetting() {
         if (userError) {
           console.error('取得 user 失敗:', userError);
         }
-        console.log('目前登入 user id:', userResult?.user?.id);
       } catch (e) {
         console.error('getUser 發生例外:', e);
       }
@@ -116,15 +120,18 @@ export default function SeasonSetting() {
       time_start: values.time_start ? values.time_start.format('YYYY-MM-DD') : null,
       time_finish: values.time_finish ? values.time_finish.format('YYYY-MM-DD') : null,
     };
-    console.log('寫入 maintainance_setting payload:', payload);
     const { error: settingError } = await supabase
       .from('maintainance_setting')
       .upsert(payload, { onConflict: ['name', 'year_q'] });
     if (settingError) {
       console.error('maintainance_setting upsert error:', settingError);
-      message.error('儲存失敗');
+      setSaveSuccess(false);
+      setSaveMessage('儲存失敗');
+      setSaveResultVisible(true);
     } else {
-      message.success('儲存成功');
+      setSaveSuccess(true);
+      setSaveMessage('儲存成功');
+      setSaveResultVisible(true);
     }
     setLoading(false);
   };
@@ -151,10 +158,24 @@ export default function SeasonSetting() {
       />
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         {(!projectInfo.name && !projectInfo.unit && !projectInfo.directions) ? (
-          <div style={{ color: '#888', fontSize: 18 }}>載入中...</div>
+          <LoadingSpinner tip="載入專案資料中..." />
         ) : (
-          <Card style={{ width: 440, borderRadius: 16, boxShadow: '0 2px 16px rgba(0,0,0,0.08)' }}>
-            <h2 style={{ textAlign: 'center', marginBottom: 24 }}>本次季保養設定</h2>
+          <Card className="glass-morphism animate-fadeInUp" style={{ 
+            width: 440, 
+            borderRadius: 16, 
+            boxShadow: 'var(--shadow-intense)',
+            background: 'var(--bg-glass)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid var(--border-primary)'
+          }}>
+            <h2 className="gradient-text" style={{ 
+              textAlign: 'center', 
+              marginBottom: 24,
+              fontSize: '1.5rem',
+              fontWeight: 600
+            }}>
+              ⚙️ 本次季保養設定
+            </h2>
             <Form
               layout="vertical"
               key={projectInfo.name + projectInfo.unit + projectInfo.directions + (initialValues.year_q || '')}
@@ -166,43 +187,126 @@ export default function SeasonSetting() {
               }}
               onFinish={onFinish}
             >
-              <Form.Item label="案場名稱" name="name">
-                <Input disabled />
-              </Form.Item>
-              <Form.Item label="檢查單位" name="unit">
-                <Input disabled />
-              </Form.Item>
-              <Form.Item label="檢查說明" name="directions">
-                <Input.TextArea disabled autoSize style={{ MozAppearance: 'textfield' }} />
-              </Form.Item>
-              <Form.Item label="季別" name="year_q" rules={[{ required: true, message: '請輸入季別' }]}> 
-                <Input placeholder="例如：2024 Q3" />
-              </Form.Item>
-              <Form.Item label="保養時間起" name="time_start" rules={[{ required: true, message: '請選擇保養開始時間' }]}> 
-                <DatePicker 
-                  style={{ width: '100%' }} 
-                  format="YYYY-MM-DD"
-                  className="dark-datepicker"
+              <Form.Item 
+                label={<span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>🏢 案場名稱</span>}
+                name="name"
+              >
+                <Input 
+                  disabled 
+                  style={{
+                    height: '48px',
+                    borderRadius: '12px',
+                    fontSize: '16px',
+                    background: 'var(--bg-secondary)',
+                    color: 'var(--text-secondary)'
+                  }}
                 />
               </Form.Item>
-              <Form.Item label="保養時間迄" name="time_finish" rules={[{ required: true, message: '請選擇保養結束時間' }]}> 
+              <Form.Item 
+                label={<span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>🏭 檢查單位</span>}
+                name="unit"
+              >
+                <Input 
+                  disabled 
+                  style={{
+                    height: '48px',
+                    borderRadius: '12px',
+                    fontSize: '16px',
+                    background: 'var(--bg-secondary)',
+                    color: 'var(--text-secondary)'
+                  }}
+                />
+              </Form.Item>
+              <Form.Item 
+                label={<span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>📋 檢查說明</span>}
+                name="directions"
+              >
+                <Input.TextArea 
+                  disabled 
+                  autoSize 
+                  style={{ 
+                    borderRadius: '12px',
+                    fontSize: '16px',
+                    background: 'var(--bg-secondary)',
+                    color: 'var(--text-secondary)'
+                  }} 
+                />
+              </Form.Item>
+              <Form.Item 
+                label={<span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>📊 季別</span>}
+                name="year_q" 
+                rules={[{ required: true, message: '請輸入季別' }]}
+              > 
+                <Input 
+                  placeholder="例如：2024 Q3" 
+                  className="interactive-hover"
+                  style={{
+                    height: '48px',
+                    borderRadius: '12px',
+                    fontSize: '16px'
+                  }}
+                />
+              </Form.Item>
+              <Form.Item 
+                label={<span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>📅 保養時間起</span>}
+                name="time_start" 
+                rules={[{ required: true, message: '請選擇保養開始時間' }]}
+              > 
                 <DatePicker 
-                  style={{ width: '100%' }} 
+                  style={{ 
+                    width: '100%',
+                    height: '48px',
+                    borderRadius: '12px'
+                  }} 
                   format="YYYY-MM-DD"
-                  className="dark-datepicker"
+                  className="interactive-hover"
+                />
+              </Form.Item>
+              <Form.Item 
+                label={<span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>📅 保養時間迄</span>}
+                name="time_finish" 
+                rules={[{ required: true, message: '請選擇保養結束時間' }]}
+              > 
+                <DatePicker 
+                  style={{ 
+                    width: '100%',
+                    height: '48px',
+                    borderRadius: '12px'
+                  }} 
+                  format="YYYY-MM-DD"
+                  className="interactive-hover"
                 />
               </Form.Item>
               <Form.Item>
-                <Button type="primary" htmlType="submit" block loading={loading}>儲存</Button>
+                <Button 
+                  type="primary" 
+                  htmlType="submit" 
+                  block 
+                  loading={loading}
+                  className="interactive-click neon-glow"
+                  style={{
+                    height: '52px',
+                    fontSize: '18px',
+                    fontWeight: 600,
+                    borderRadius: '12px',
+                    background: 'var(--success-gradient)',
+                    border: 'none',
+                    boxShadow: 'var(--shadow-success)'
+                  }}
+                >
+                  儲存設定
+                </Button>
               </Form.Item>
               <Form.Item>
                 <Button
                   danger
                   block
-                  className="dark-danger-btn"
+                  className="interactive-click"
                   onClick={async () => {
                     if (!projectInfo.name) {
-                      message.error('找不到案場名稱');
+                      setSaveSuccess(false);
+                      setSaveMessage('找不到案場名稱');
+                      setSaveResultVisible(true);
                       return;
                     }
                     setLoading(true);
@@ -212,24 +316,46 @@ export default function SeasonSetting() {
                         .delete()
                         .eq('name', projectInfo.name);
                       if (error) {
-                        message.error('重置失敗');
+                        setSaveSuccess(false);
+                        setSaveMessage('重置失敗');
+                        setSaveResultVisible(true);
                       } else {
-                        message.success('已重置所有保養時間');
+                        setSaveSuccess(true);
+                        setSaveMessage('已重置所有保養時間');
+                        setSaveResultVisible(true);
                       }
                     } catch (e) {
-                      message.error('重置時發生錯誤');
+                      setSaveSuccess(false);
+                      setSaveMessage('重置時發生錯誤');
+                      setSaveResultVisible(true);
                     }
                     setLoading(false);
                   }}
-                  style={{ marginTop: 8 }}
+                  style={{ 
+                    marginTop: 16,
+                    background: 'var(--danger-gradient)',
+                    borderColor: 'transparent',
+                    boxShadow: 'var(--shadow-danger)',
+                    animation: 'redGlow 2s ease-in-out infinite',
+                    fontWeight: 600,
+                    height: '48px',
+                    borderRadius: '12px'
+                  }}
                 >
-                  重置此案場的所有保養時間
+                  🗑️ 重置此案場的所有保養時間
                 </Button>
               </Form.Item>
             </Form>
           </Card>
         )}
       </div>
+      
+      <SaveResultModal
+        visible={saveResultVisible}
+        onClose={() => setSaveResultVisible(false)}
+        success={saveSuccess}
+        message={saveMessage}
+      />
     </div>
   );
 }
