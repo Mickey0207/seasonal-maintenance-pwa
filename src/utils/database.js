@@ -92,6 +92,39 @@ export const dbUtils = {
     }
   },
 
+  // 保養照片相關 (專門給 /project/1 使用)
+  maintenancePhoto: {
+    async create(record) {
+      const { data, error } = await supabase
+        .from('maintainance_photo')
+        .insert(record);
+      return { data, error };
+    },
+
+    async getByProject(projectName) {
+      const { data, error } = await supabase
+        .from('maintainance_photo')
+        .select('*')
+        .eq('project', projectName);
+      return { data: data || [], error };
+    },
+
+    async getOptions(projectName) {
+      const { data, error } = await supabase
+        .from('maintainance_photo')
+        .select('floor, thing, location')
+        .eq('project', projectName);
+      
+      if (error) return { data: { floors: [], things: [], locations: [] }, error };
+      
+      const floors = [...new Set(data.map(item => item.floor).filter(Boolean))];
+      const things = [...new Set(data.map(item => item.thing).filter(Boolean))];
+      const locations = [...new Set(data.map(item => item.location).filter(Boolean))];
+      
+      return { data: { floors, things, locations }, error: null };
+    }
+  },
+
   // 保養設定相關
   maintenanceSettings: {
     async getByProject(projectName) {

@@ -221,7 +221,7 @@ export default function ProjectPage() {
       console.log('用戶名稱:', userName);
       console.log('專案資料:', project);
 
-      const { error } = await dbUtils.maintenanceData.create(payload);
+      const { error } = await dbUtils.maintenancePhoto.create(payload);
 
       if (error) throw error;
 

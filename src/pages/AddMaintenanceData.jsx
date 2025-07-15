@@ -42,8 +42,7 @@ export default function AddMaintenanceData() {
         location: values.location,
         floor: values.floor,
         creat_at: values.create_at.format('YYYY-MM-DD'),  // 修正欄位名稱為 creat_at
-        creat_user: userName,  // 添加 creat_user 欄位
-        maintainance_user: userName,  // 根據 ViewMaintenanceData.jsx 使用 maintainance_user
+        creat_user: userName,  // 新增者欄位
         project: project.name,
         company: project.unit,
         direction: project.directions
