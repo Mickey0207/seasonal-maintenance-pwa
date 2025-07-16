@@ -96,11 +96,186 @@ export const dbUtils = {
 
   // 保養照片相關 (專門給 /project/1 使用)
   maintenancePhoto: {
+    async getByProject(projectName) {
+      try {
+        const { data, error } = await supabase
+          .from('maintainance_photo')
+          .select('*')
+          .eq('project', projectName)
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('獲取保養照片資料失敗:', error);
+          return { data: null, error };
+        }
+
+        return { data, error: null };
+      } catch (error) {
+        console.error('獲取保養照片資料失敗:', error);
+        return { data: null, error };
+      }
+    },
     async create(record) {
-      const { data, error } = await supabase
-        .from('maintainance_photo')
-        .insert(record);
-      return { data, error };
+      try {
+        const { files, addWatermark, ...recordData } = record;
+        
+        if (!files || files.length === 0) {
+          return { success: false, error: '沒有檔案需要上傳' };
+        }
+
+        // Upload files to storage first
+        const uploadedFiles = [];
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${Date.now()}_${i}.${fileExt}`;
+          const filePath = `${recordData.project_name}/${fileName}`;
+
+          // Convert file to actual File object if needed
+          let fileToUpload = file.originFileObj || file;
+          
+          // Add watermark if requested
+          if (addWatermark && fileToUpload.type.startsWith('image/')) {
+            console.log('Adding watermark to image:', fileToUpload.name, 'with data:', recordData);
+            try {
+              fileToUpload = await dbUtils.maintenancePhoto.addWatermarkToImage(fileToUpload, recordData);
+              console.log('Watermark added successfully');
+            } catch (error) {
+              console.error('Failed to add watermark:', error);
+              // Continue with original file if watermark fails
+            }
+          } else {
+            console.log('Watermark not added. addWatermark:', addWatermark, 'fileType:', fileToUpload.type);
+          }
+
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('maintainance-data-photo')
+            .upload(filePath, fileToUpload);
+
+          if (uploadError) {
+            console.error('檔案上傳失敗:', uploadError);
+            return { success: false, error: `檔案上傳失敗: ${uploadError.message}` };
+          }
+
+          uploadedFiles.push({
+            ...recordData,
+            photo_path: filePath,
+            photo_name: file.name
+          });
+        }
+
+        // Insert records into database
+        const { data, error } = await supabase
+          .from('maintainance_photo')
+          .insert(uploadedFiles);
+
+        if (error) {
+          console.error('資料庫插入失敗:', error);
+          return { success: false, error: `資料庫插入失敗: ${error.message}` };
+        }
+
+        return { success: true, data };
+      } catch (error) {
+        console.error('建立保養照片記錄失敗:', error);
+        return { success: false, error: error.message };
+      }
+    },
+
+    async addWatermarkToImage(file, recordData) {
+      return new Promise((resolve, reject) => {
+        console.log('=== WATERMARK START ===');
+        console.log('File:', file.name, 'Type:', file.type, 'Size:', file.size);
+        console.log('Record data:', recordData);
+        
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        
+        img.onload = () => {
+          try {
+            console.log('Image loaded successfully:', img.width, 'x', img.height);
+            
+            canvas.width = img.width;
+            canvas.height = img.height;
+            
+            // Draw original image
+            ctx.drawImage(img, 0, 0);
+            console.log('Original image drawn to canvas');
+            
+            // Calculate font size
+            const fontSize = Math.max(20, Math.min(img.width / 25, 50));
+            console.log('Font size calculated:', fontSize);
+            
+            // Set up text style
+            ctx.font = `bold ${fontSize}px Arial`;
+            ctx.fillStyle = 'white';
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 4;
+            ctx.textAlign = 'left';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+            ctx.shadowBlur = 4;
+            ctx.shadowOffsetX = 2;
+            ctx.shadowOffsetY = 2;
+            
+            // Create watermark text
+            const line1 = `${recordData.project_name || 'N/A'} - ${recordData.floor || 'N/A'} - ${recordData.thing || 'N/A'} - ${recordData.location || 'N/A'}`;
+            const line2 = `日期: ${recordData.maintainance_time || 'N/A'} | 人員: ${recordData.maintainance_user || 'N/A'}`;
+            
+            console.log('Watermark line 1:', line1);
+            console.log('Watermark line 2:', line2);
+            
+            // Position text
+            const x = 30;
+            const y1 = canvas.height - fontSize - 30;
+            const y2 = canvas.height - 15;
+            
+            // Draw first line
+            ctx.strokeText(line1, x, y1);
+            ctx.fillText(line1, x, y1);
+            
+            // Draw second line
+            ctx.strokeText(line2, x, y2);
+            ctx.fillText(line2, x, y2);
+            
+            console.log('Watermark text drawn at positions:', x, y1, 'and', x, y2);
+            
+            // Convert to blob
+            canvas.toBlob((blob) => {
+              if (blob) {
+                console.log('Canvas converted to blob successfully, size:', blob.size);
+                const watermarkedFile = new File([blob], file.name, { 
+                  type: file.type,
+                  lastModified: Date.now()
+                });
+                console.log('=== WATERMARK SUCCESS ===');
+                resolve(watermarkedFile);
+              } else {
+                console.error('=== WATERMARK FAILED: No blob created ===');
+                reject(new Error('Failed to create blob from canvas'));
+              }
+            }, file.type, 0.95);
+            
+          } catch (error) {
+            console.error('=== WATERMARK ERROR in onload ===', error);
+            reject(error);
+          }
+        };
+        
+        img.onerror = (error) => {
+          console.error('=== WATERMARK ERROR: Image load failed ===', error);
+          reject(error);
+        };
+        
+        // Create object URL and load image
+        const objectUrl = URL.createObjectURL(file);
+        console.log('Object URL created:', objectUrl);
+        img.src = objectUrl;
+        
+        // Clean up object URL after a delay
+        setTimeout(() => {
+          URL.revokeObjectURL(objectUrl);
+        }, 10000);
+      });
     },
 
     async getByProject(projectName) {

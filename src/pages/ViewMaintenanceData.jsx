@@ -8,6 +8,7 @@ import ErrorMessage from '../components/ui/ErrorMessage';
 import { useAuth } from '../hooks/useAuth';
 import { useProject } from '../hooks/useProject';
 import { dbUtils } from '../utils/database';
+import { supabase } from '../lib/supabaseClient';
 import { ROUTES } from '../config/constants';
 
 const { Title, Text } = Typography;
@@ -64,8 +65,21 @@ export default function ViewMaintenanceData() {
         };
       });
 
-      setMaintenanceData(combinedData || []);
-      groupDataByLocation(combinedData || []);
+      // 將有圖片的記錄排在最右側（最後面）
+      const sortedData = (combinedData || []).sort((a, b) => {
+        const aHasPhoto = a.photo_path && a.photo_path.trim() !== '';
+        const bHasPhoto = b.photo_path && b.photo_path.trim() !== '';
+        
+        // 沒有圖片的排在前面（左側），有圖片的排在後面（右側）
+        if (!aHasPhoto && bHasPhoto) return -1;
+        if (aHasPhoto && !bHasPhoto) return 1;
+        
+        // 如果都有圖片或都沒有圖片，按建立時間排序（新的在前）
+        return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+      });
+
+      setMaintenanceData(sortedData);
+      groupDataByLocation(sortedData);
 
     } catch (error) {
       console.error('獲取保養資料失敗:', error);
@@ -128,7 +142,23 @@ export default function ViewMaintenanceData() {
   };
 
   const getImageUrl = (path) => {
-    return dbUtils.storage.getImageUrl('maintainance-data-photo', path);
+    if (!path) {
+      console.log('圖片路徑為空:', path);
+      return null;
+    }
+    
+    try {
+      // 直接從 Supabase Storage 獲取公開 URL
+      const { data } = supabase.storage
+        .from('maintainance-data-photo')
+        .getPublicUrl(path);
+      
+      console.log('生成的圖片 URL:', path, '->', data.publicUrl);
+      return data.publicUrl;
+    } catch (error) {
+      console.error('生成圖片 URL 失敗:', path, error);
+      return null;
+    }
   };
 
   // 切換選擇模式
@@ -287,7 +317,13 @@ export default function ViewMaintenanceData() {
               <img
                 alt="保養照片"
                 src={getImageUrl(item.photo_path)}
-                style={{ height: 160, objectFit: 'cover' }}
+                style={{ height: 160, objectFit: 'cover', width: '100%' }}
+                onLoad={() => console.log('圖片載入成功:', item.photo_path)}
+                onError={(e) => {
+                  console.error('圖片載入失敗:', item.photo_path, e);
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'flex';
+                }}
               />
             ) : (
               <div style={{ 
