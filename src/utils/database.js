@@ -97,23 +97,13 @@ export const dbUtils = {
   // 保養照片相關 (專門給 /project/1 使用)
   maintenancePhoto: {
     async getByProject(projectName) {
-      try {
-        const { data, error } = await supabase
-          .from('maintainance_photo')
-          .select('*')
-          .eq('project', projectName)
-          .order('created_at', { ascending: false });
-
-        if (error) {
-          console.error('獲取保養照片資料失敗:', error);
-          return { data: null, error };
-        }
-
-        return { data, error: null };
-      } catch (error) {
-        console.error('獲取保養照片資料失敗:', error);
-        return { data: null, error };
-      }
+      const { data, error } = await supabase
+        .from('maintainance_photo')
+        .select('*')
+        .eq('project', projectName)
+        .order('created_at', { ascending: false })
+        .limit(10000); // Increase row limit to fetch all records
+      return { data: data || [], error };
     },
     async create(record) {
       try {

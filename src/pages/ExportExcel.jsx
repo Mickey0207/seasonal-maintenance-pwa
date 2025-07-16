@@ -91,159 +91,134 @@ export default function ExportExcel() {
   // Helper function to prepare horizontal preview data
   const prepareHorizontalPreviewData = (groupedData) => {
     const categories = Object.keys(groupedData);
-    const maxRows = Math.max(...categories.map(cat => groupedData[cat].length));
-    const previewRows = [];
+    const previewData = {};
 
-    // Row 1: Photo counts
-    const countRow = { key: 'count-row', rowType: 'count' };
-    categories.forEach((category, index) => {
-      const baseCol = index * 4;
-      countRow[`col_${baseCol}`] = `照片數量: ${groupedData[category].length}`;
-      countRow[`col_${baseCol + 1}`] = '';
-      countRow[`col_${baseCol + 2}`] = '';
-      countRow[`col_${baseCol + 3}`] = '';
-    });
-    previewRows.push(countRow);
+    for (const category of categories) {
+      const categoryData = groupedData[category];
+      const maxRows = categoryData.length;
+      const previewRows = [];
 
-    // Row 2: Category names (merged cells simulation)
-    const categoryRow = { key: 'category-row', rowType: 'category' };
-    categories.forEach((category, index) => {
-      const baseCol = index * 4;
-      categoryRow[`col_${baseCol}`] = category;
-      categoryRow[`col_${baseCol + 1}`] = '';
-      categoryRow[`col_${baseCol + 2}`] = '';
-      categoryRow[`col_${baseCol + 3}`] = '';
-    });
-    previewRows.push(categoryRow);
+      // Row 1: Photo counts
+      const countRow = { key: 'count-row', rowType: 'count' };
+      countRow[`col_0`] = `照片數量: ${maxRows}`;
+      countRow[`col_1`] = '';
+      countRow[`col_2`] = '';
+      countRow[`col_3`] = '';
+      previewRows.push(countRow);
 
-    // Row 3: Headers
-    const headerRow = { key: 'header-row', rowType: 'header' };
-    categories.forEach((category, index) => {
-      const baseCol = index * 4;
-      headerRow[`col_${baseCol}`] = '項次';
-      headerRow[`col_${baseCol + 1}`] = '照片';
-      headerRow[`col_${baseCol + 2}`] = '位置';
-      headerRow[`col_${baseCol + 3}`] = '備註';
-    });
-    previewRows.push(headerRow);
+      // Row 2: Headers
+      const headerRow = { key: 'header-row', rowType: 'header' };
+      headerRow[`col_0`] = '項次';
+      headerRow[`col_1`] = '照片';
+      headerRow[`col_2`] = '位置';
+      headerRow[`col_3`] = '備註';
+      previewRows.push(headerRow);
 
-    // Data rows
-    for (let rowIndex = 0; rowIndex < maxRows; rowIndex++) {
-      const dataRow = { key: `data-row-${rowIndex}`, rowType: 'data' };
-      
-      categories.forEach((category, catIndex) => {
-        const baseCol = catIndex * 4;
-        const item = groupedData[category][rowIndex];
-        
+      // Data rows
+      for (let rowIndex = 0; rowIndex < maxRows; rowIndex++) {
+        const dataRow = { key: `data-row-${rowIndex}`, rowType: 'data' };
+        const item = categoryData[rowIndex];
+
         if (item) {
-          dataRow[`col_${baseCol}`] = rowIndex + 1; // 項次
-          dataRow[`col_${baseCol + 1}`] = item.photo_path; // 照片路徑
-          dataRow[`col_${baseCol + 2}`] = item.location || ''; // 位置
-          dataRow[`col_${baseCol + 3}`] = ''; // 備註 (空白)
+          dataRow[`col_0`] = rowIndex + 1;
+          dataRow[`col_1`] = item.photo_path;
+          dataRow[`col_2`] = item.location || '';
+          dataRow[`col_3`] = '';
         } else {
-          dataRow[`col_${baseCol}`] = '';
-          dataRow[`col_${baseCol + 1}`] = '';
-          dataRow[`col_${baseCol + 2}`] = '';
-          dataRow[`col_${baseCol + 3}`] = '';
+          dataRow[`col_0`] = '';
+          dataRow[`col_1`] = '';
+          dataRow[`col_2`] = '';
+          dataRow[`col_3`] = '';
         }
-      });
-      
-      previewRows.push(dataRow);
+        previewRows.push(dataRow);
+      }
+      previewData[category] = previewRows;
     }
 
-    return previewRows;
+    return previewData;
   };
 
   // Helper function to create dynamic columns
-  const createDynamicColumns = (categories) => {
+  const createDynamicColumns = (category) => {
     const columns = [];
-    
-    categories.forEach((category, index) => {
-      const baseCol = index * 4;
-      
-      // 項次 column
-      columns.push({
-        title: `${category} - 項次`,
-        dataIndex: `col_${baseCol}`,
-        key: `col_${baseCol}`,
-        width: 50, // 符合 SETUP.md 規範：項次欄寬度 5 的比例調整
-        align: 'center',
-        render: (text, record) => {
-          if (record.rowType === 'count') {
-            return { children: text, props: { colSpan: 4 } };
-          } else if (record.rowType === 'category') {
-            return { children: text, props: { colSpan: 4, style: { backgroundColor: '#f0f0f0', fontWeight: 'bold', textAlign: 'center' } } };
-          } else if (record.rowType === 'header') {
-            return { children: text, props: { style: { backgroundColor: '#fafafa', fontWeight: 'bold' } } };
-          }
-          return text;
+    const baseCol = 0;
+
+    columns.push({
+      title: '項次',
+      dataIndex: `col_${baseCol}`,
+      key: `col_${baseCol}`,
+      width: 50,
+      align: 'center',
+      render: (text, record) => {
+        if (record.rowType === 'count') {
+          return { children: text, props: { colSpan: 4 } };
+        } else if (record.rowType === 'header') {
+          return { children: text, props: { style: { backgroundColor: '#fafafa', fontWeight: 'bold' } } };
         }
-      });
-      
-      // 照片 column
-      columns.push({
-        title: `${category} - 照片`,
-        dataIndex: `col_${baseCol + 1}`,
-        key: `col_${baseCol + 1}`,
-        width: 280, // Adjust width to better match Excel
-        align: 'center',
-        render: (text, record) => {
-          if (record.rowType === 'count' || record.rowType === 'category') {
-            return { children: '', props: { colSpan: 0 } };
-          } else if (record.rowType === 'header') {
-            return { children: text, props: { style: { backgroundColor: '#fafafa', fontWeight: 'bold' } } };
-          } else if (text && record.rowType === 'data') {
-            return <img 
-              src={dbUtils.storage.getImageUrl('maintainance-data-photo', text)} 
-              alt="照片" 
-              style={{ 
-                width: 267, 
-                height: 199, 
-                objectFit: 'contain',
-                border: '1px solid #d9d9d9',
-                borderRadius: '4px'
-              }} 
-            />;
-          }
-          return text;
-        }
-      });
-      
-      // 位置 column
-      columns.push({
-        title: `${category} - 位置`,
-        dataIndex: `col_${baseCol + 2}`,
-        key: `col_${baseCol + 2}`,
-        width: 96, // 符合 SETUP.md 規範：位置欄寬度 12 的比例調整
-        align: 'center',
-        render: (text, record) => {
-          if (record.rowType === 'count' || record.rowType === 'category') {
-            return { children: '', props: { colSpan: 0 } };
-          } else if (record.rowType === 'header') {
-            return { children: text, props: { style: { backgroundColor: '#fafafa', fontWeight: 'bold' } } };
-          }
-          return text;
-        }
-      });
-      
-      // 備註 column
-      columns.push({
-        title: `${category} - 備註`,
-        dataIndex: `col_${baseCol + 3}`,
-        key: `col_${baseCol + 3}`,
-        width: 96, // 符合 SETUP.md 規範：備註欄寬度 12 的比例調整
-        align: 'center',
-        render: (text, record) => {
-          if (record.rowType === 'count' || record.rowType === 'category') {
-            return { children: '', props: { colSpan: 0 } };
-          } else if (record.rowType === 'header') {
-            return { children: text, props: { style: { backgroundColor: '#fafafa', fontWeight: 'bold' } } };
-          }
-          return text;
-        }
-      });
+        return text;
+      }
     });
-    
+
+    columns.push({
+      title: '照片',
+      dataIndex: `col_${baseCol + 1}`,
+      key: `col_${baseCol + 1}`,
+      width: 280,
+      align: 'center',
+      render: (text, record) => {
+        if (record.rowType === 'count') {
+          return { children: '', props: { colSpan: 0 } };
+        } else if (record.rowType === 'header') {
+          return { children: text, props: { style: { backgroundColor: '#fafafa', fontWeight: 'bold' } } };
+        } else if (text && record.rowType === 'data') {
+          return <img
+            src={dbUtils.storage.getImageUrl('maintainance-data-photo', text)}
+            alt="照片"
+            style={{
+              width: 267,
+              height: 199,
+              objectFit: 'contain',
+              border: '1px solid #d9d9d9',
+              borderRadius: '4px'
+            }}
+          />;
+        }
+        return text;
+      }
+    });
+
+    columns.push({
+      title: '位置',
+      dataIndex: `col_${baseCol + 2}`,
+      key: `col_${baseCol + 2}`,
+      width: 96,
+      align: 'center',
+      render: (text, record) => {
+        if (record.rowType === 'count') {
+          return { children: '', props: { colSpan: 0 } };
+        } else if (record.rowType === 'header') {
+          return { children: text, props: { style: { backgroundColor: '#fafafa', fontWeight: 'bold' } } };
+        }
+        return text;
+      }
+    });
+
+    columns.push({
+      title: '備註',
+      dataIndex: `col_${baseCol + 3}`,
+      key: `col_${baseCol + 3}`,
+      width: 96,
+      align: 'center',
+      render: (text, record) => {
+        if (record.rowType === 'count') {
+          return { children: '', props: { colSpan: 0 } };
+        } else if (record.rowType === 'header') {
+          return { children: text, props: { style: { backgroundColor: '#fafafa', fontWeight: 'bold' } } };
+        }
+        return text;
+      }
+    });
+
     return columns;
   };
 
@@ -415,8 +390,8 @@ export default function ExportExcel() {
               {Object.keys(groupedData).map(category => (
                 <Tabs.TabPane tab={category} key={category}>
                   <Table
-                    columns={createDynamicColumns([category])}
-                    dataSource={prepareHorizontalPreviewData({ [category]: groupedData[category] })}
+                    columns={createDynamicColumns(category)}
+                    dataSource={previewData[category]}
                     loading={loading}
                     pagination={false}
                     bordered
