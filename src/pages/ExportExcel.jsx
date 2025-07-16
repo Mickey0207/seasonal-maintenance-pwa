@@ -19,7 +19,7 @@ export default function ExportExcel() {
   const navigate = useNavigate();
   const { userName } = useAuth();
   const { project, loading: projectLoading, error: projectError } = useProject(id);
-  const { message } = App.useApp();
+  const { message, modal } = App.useApp();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [previewData, setPreviewData] = useState([]);
@@ -340,7 +340,11 @@ export default function ExportExcel() {
       link.download = `${project.name}_季保養.xlsx`;
       link.click();
 
-      message.success('Excel 文件已成功下載');
+      modal.success({
+        title: <span style={{ color: 'white' }}>Excel 文件已成功下載</span>,
+        content: <span style={{ color: 'white' }}>檔案 ${project.name}_季保養.xlsx 已經可以開啟。</span>,
+        className: 'custom-success-modal',
+      });
 
     } catch (err) {
       setError('無法獲取或處理數據');
@@ -362,7 +366,7 @@ export default function ExportExcel() {
       projectName={project?.name}
       projectId={id}
     >
-      <div style={{ padding: '20px' }}>
+      <div style={{ padding: '20px', color: 'white' }}>
         <h1>匯出 Excel</h1>
         <p>點擊下面的按鈕來下載季保養資料的 Excel 檔案。</p>
         <p style={{ fontSize: '0.9em', color: 'var(--text-secondary)' }}>
