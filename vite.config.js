@@ -20,5 +20,8 @@ export default defineConfig({
       },
       registerType: 'autoUpdate'
     })
-  ]
+  ],
+  build: {
+    outDir: 'Output'
+  }
 })
