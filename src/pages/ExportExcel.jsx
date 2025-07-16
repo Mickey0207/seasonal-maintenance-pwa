@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Spin, Alert, Table, App } from 'antd';
+import { Button, Spin, Alert, Table, App, Tabs } from 'antd';
 import ExcelJS from 'exceljs';
 import { useParams, useNavigate } from 'react-router-dom';
 import PageLayout from '../components/layout/PageLayout';
@@ -24,6 +24,8 @@ export default function ExportExcel() {
   const [error, setError] = useState(null);
   const [previewData, setPreviewData] = useState([]);
   const [previewColumns, setPreviewColumns] = useState([]);
+  const [activeTab, setActiveTab] = useState('');
+  const [groupedData, setGroupedData] = useState({});
 
   // Function to fetch data and prepare for preview/excel generation
   const fetchAndPrepareData = async () => {
@@ -62,6 +64,7 @@ export default function ExportExcel() {
         return acc;
       }, {});
       console.log('Grouped data:', groupedData);
+      setGroupedData(groupedData);
 
       // Prepare preview data in new format (horizontal layout)
       const previewData = prepareHorizontalPreviewData(groupedData);
@@ -71,6 +74,10 @@ export default function ExportExcel() {
       const categories = Object.keys(groupedData);
       const dynamicColumns = createDynamicColumns(categories);
       setPreviewColumns(dynamicColumns);
+
+      if (categories.length > 0) {
+        setActiveTab(categories[0]);
+      }
 
     } catch (err) {
       setError('無法獲取或處理數據');
@@ -178,7 +185,7 @@ export default function ExportExcel() {
         title: `${category} - 照片`,
         dataIndex: `col_${baseCol + 1}`,
         key: `col_${baseCol + 1}`,
-        width: 220, // 調整欄寬以配合縮小的圖片
+        width: 280, // Adjust width to better match Excel
         align: 'center',
         render: (text, record) => {
           if (record.rowType === 'count' || record.rowType === 'category') {
@@ -190,8 +197,8 @@ export default function ExportExcel() {
               src={dbUtils.storage.getImageUrl('maintainance-data-photo', text)} 
               alt="照片" 
               style={{ 
-                width: 200, 
-                height: 280, 
+                width: 267, 
+                height: 199, 
                 objectFit: 'contain',
                 border: '1px solid #d9d9d9',
                 borderRadius: '4px'
@@ -262,76 +269,31 @@ export default function ExportExcel() {
       const { data, error: dbError } = await dbUtils.maintenancePhoto.getByProject(project.name);
       if (dbError) throw dbError;
 
-      if (!data || data.length === 0) {
-        message.warning('沒有資料可供匯出。');
-        setLoading(false);
-        return;
-      }
-
-      const groupedData = data.reduce((acc, item) => {
-        const key = item.thing || '未分類';
-        if (!acc[key]) {
-          acc[key] = [];
-        }
-        acc[key].push(item);
-        return acc;
-      }, {});
-
       const workbook = new ExcelJS.Workbook();
-      const worksheet = workbook.addWorksheet('維護照片記錄');
 
-      const categories = Object.keys(groupedData);
-      const maxRows = Math.max(...categories.map(cat => groupedData[cat].length));
-
-      // Set column widths (4 columns per category) - 符合 SETUP.md 規範
-      const totalColumns = categories.length * 4;
-      for (let i = 1; i <= totalColumns; i++) {
-        const colIndex = (i - 1) % 4;
-        if (colIndex === 0) worksheet.getColumn(i).width = 5;   // 項次 - A欄
-        else if (colIndex === 1) worksheet.getColumn(i).width = 40;  // 照片 - B欄
-        else if (colIndex === 2) worksheet.getColumn(i).width = 12;  // 位置 - C欄
-        else worksheet.getColumn(i).width = 12; // 備註 - D欄
-      }
-
-      let currentRow = 1;
-
-      // Row 1: Photo counts
-      categories.forEach((category, index) => {
-        const startCol = index * 4 + 1;
-        const cell = worksheet.getCell(currentRow, startCol);
-        cell.value = `照片數量: ${groupedData[category].length}`;
-        cell.alignment = { horizontal: 'center', vertical: 'middle' };
-        cell.font = { bold: true };
+      for (const category of Object.keys(groupedData)) {
+        const worksheet = workbook.addWorksheet(category);
+        const categoryData = groupedData[category];
         
-        // Merge cells for photo count
-        worksheet.mergeCells(currentRow, startCol, currentRow, startCol + 3);
-      });
-      currentRow++;
+        // Set column widths
+        worksheet.getColumn(1).width = 5;   // 項次
+        worksheet.getColumn(2).width = 40;  // 照片
+        worksheet.getColumn(3).width = 12;  // 位置
+        worksheet.getColumn(4).width = 12;  // 備註
 
-      // Row 2: Category names
-      categories.forEach((category, index) => {
-        const startCol = index * 4 + 1;
-        const cell = worksheet.getCell(currentRow, startCol);
-        cell.value = category;
-        cell.alignment = { horizontal: 'center', vertical: 'middle' };
-        cell.font = { bold: true };
-        cell.fill = {
-          type: 'pattern',
-          pattern: 'solid',
-          fgColor: { argb: 'FFF0F0F0' }
-        };
-        
-        // Merge cells for category name
-        worksheet.mergeCells(currentRow, startCol, currentRow, startCol + 3);
-      });
-      currentRow++;
+        let currentRow = 1;
 
-      // Row 3: Headers
-      categories.forEach((category, index) => {
-        const startCol = index * 4 + 1;
-        
-        ['項次', '照片', '位置', '備註'].forEach((header, headerIndex) => {
-          const cell = worksheet.getCell(currentRow, startCol + headerIndex);
+        // Photo count
+        const countCell = worksheet.getCell(currentRow, 1);
+        countCell.value = `照片數量: ${categoryData.length}`;
+        countCell.alignment = { horizontal: 'center', vertical: 'middle' };
+        countCell.font = { bold: true };
+        worksheet.mergeCells(currentRow, 1, currentRow, 4);
+        currentRow++;
+
+        // Headers
+        ['項次', '照片', '位置', '備註'].forEach((header, index) => {
+          const cell = worksheet.getCell(currentRow, index + 1);
           cell.value = header;
           cell.alignment = { horizontal: 'center', vertical: 'middle' };
           cell.font = { bold: true };
@@ -347,94 +309,53 @@ export default function ExportExcel() {
             right: { style: 'thin' }
           };
         });
-      });
-      currentRow++;
+        currentRow++;
 
-      // Data rows
-      for (let rowIndex = 0; rowIndex < maxRows; rowIndex++) {
-        let maxRowHeight = 388; // 515像素 ≈ 388點數 (515 * 0.75)
-        
-        for (let catIndex = 0; catIndex < categories.length; catIndex++) {
-          const category = categories[catIndex];
-          const startCol = catIndex * 4 + 1;
-          const item = groupedData[category][rowIndex];
-          
-          if (item) {
-            // 項次
-            const seqCell = worksheet.getCell(currentRow, startCol);
-            seqCell.value = rowIndex + 1;
-            seqCell.alignment = { horizontal: 'center', vertical: 'middle' };
-            seqCell.border = {
-              top: { style: 'thin' },
-              left: { style: 'thin' },
-              bottom: { style: 'thin' },
-              right: { style: 'thin' }
-            };
+        // Data rows
+        for (const [rowIndex, item] of categoryData.entries()) {
+          let maxRowHeight = 387;
 
-            // 照片
-            const photoCell = worksheet.getCell(currentRow, startCol + 1);
-            if (item.photo_path) {
-              try {
-                const imageUrl = dbUtils.storage.getImageUrl('maintainance-data-photo', item.photo_path);
-                const imageBuffer = await urlToBuffer(imageUrl);
-                const imageId = workbook.addImage({
-                  buffer: imageBuffer,
-                  extension: 'jpeg',
-                });
-                worksheet.addImage(imageId, {
-                  tl: { col: startCol + 0.05, row: currentRow - 1 + 0.1 }, // Add margin
-                  ext: { width: 267, height: 199 },
-                });
-                // 5.29cm height is approx 150 points in Excel
-                maxRowHeight = Math.max(maxRowHeight, 150);
-              } catch (imgError) {
-                console.error(`Could not add image for ${item.photo_path}:`, imgError);
-                photoCell.value = '無法載入圖片';
-              }
-            }
-            photoCell.border = {
-              top: { style: 'thin' },
-              left: { style: 'thin' },
-              bottom: { style: 'thin' },
-              right: { style: 'thin' }
-            };
+          // 項次
+          const seqCell = worksheet.getCell(currentRow, 1);
+          seqCell.value = rowIndex + 1;
+          seqCell.alignment = { horizontal: 'center', vertical: 'middle' };
+          seqCell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
 
-            // 位置
-            const locationCell = worksheet.getCell(currentRow, startCol + 2);
-            locationCell.value = item.location || '';
-            locationCell.alignment = { horizontal: 'center', vertical: 'middle' };
-            locationCell.border = {
-              top: { style: 'thin' },
-              left: { style: 'thin' },
-              bottom: { style: 'thin' },
-              right: { style: 'thin' }
-            };
-
-            // 備註
-            const remarkCell = worksheet.getCell(currentRow, startCol + 3);
-            remarkCell.value = '';
-            remarkCell.border = {
-              top: { style: 'thin' },
-              left: { style: 'thin' },
-              bottom: { style: 'thin' },
-              right: { style: 'thin' }
-            };
-          } else {
-            // Empty cells with borders
-            for (let i = 0; i < 4; i++) {
-              const cell = worksheet.getCell(currentRow, startCol + i);
-              cell.border = {
-                top: { style: 'thin' },
-                left: { style: 'thin' },
-                bottom: { style: 'thin' },
-                right: { style: 'thin' }
-              };
+          // 照片
+          const photoCell = worksheet.getCell(currentRow, 2);
+          if (item.photo_path) {
+            try {
+              const imageUrl = dbUtils.storage.getImageUrl('maintainance-data-photo', item.photo_path);
+              const imageBuffer = await urlToBuffer(imageUrl);
+              const imageId = workbook.addImage({
+                buffer: imageBuffer,
+                extension: 'jpeg',
+              });
+              worksheet.addImage(imageId, {
+                tl: { col: 1.05, row: currentRow - 1 + 0.1 },
+                ext: { width: 267, height: 199 },
+              });
+            } catch (imgError) {
+              console.error(`Could not add image for ${item.photo_path}:`, imgError);
+              photoCell.value = '無法載入圖片';
             }
           }
+          photoCell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+
+          // 位置
+          const locationCell = worksheet.getCell(currentRow, 3);
+          locationCell.value = item.location || '';
+          locationCell.alignment = { horizontal: 'center', vertical: 'middle' };
+          locationCell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+
+          // 備註
+          const remarkCell = worksheet.getCell(currentRow, 4);
+          remarkCell.value = '';
+          remarkCell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+          
+          worksheet.getRow(currentRow).height = maxRowHeight;
+          currentRow++;
         }
-        
-        worksheet.getRow(currentRow).height = maxRowHeight;
-        currentRow++;
       }
 
       const buffer = await workbook.xlsx.writeBuffer();
@@ -490,30 +411,27 @@ export default function ExportExcel() {
             所有分類橫向排列在同一個工作表中。
           </p>
           <div style={{ overflowX: 'auto' }}>
-            <style>
-              {`
-                .ant-table-tbody > tr.data-row-height > td {
-                  height: 585px !important;
-                  vertical-align: middle !important;
-                }
-              `}
-            </style>
-            <Table
-              columns={previewColumns}
-              dataSource={previewData}
-              loading={loading}
-              pagination={false}
-              bordered
-              size="small"
-              scroll={{ x: 'max-content' }}
-              rowClassName={(record) => {
-                // 為資料列設定高度樣式
-                if (record.rowType === 'data') {
-                  return 'data-row-height';
-                }
-                return '';
-              }}
-            />
+            <Tabs activeKey={activeTab} onChange={setActiveTab}>
+              {Object.keys(groupedData).map(category => (
+                <Tabs.TabPane tab={category} key={category}>
+                  <Table
+                    columns={createDynamicColumns([category])}
+                    dataSource={prepareHorizontalPreviewData({ [category]: groupedData[category] })}
+                    loading={loading}
+                    pagination={false}
+                    bordered
+                    size="small"
+                    scroll={{ x: 'max-content' }}
+                    rowClassName={(record) => {
+                      if (record.rowType === 'data') {
+                        return 'data-row-height';
+                      }
+                      return '';
+                    }}
+                  />
+                </Tabs.TabPane>
+              ))}
+            </Tabs>
           </div>
         </div>
       </div>
