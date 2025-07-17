@@ -455,8 +455,7 @@ export default function ExportExcel() {
       projectId={id}
     >
       <div style={{ padding: '20px', color: 'white' }}>
-        <h1>匯出 Excel - SETUP.md 格式</h1>
-        <p>按照 SETUP.md 的完整格式生成季保養資料 Excel 檔案。</p>
+        <h1>匯出 Excel</h1>
         
         {/* 輸出選項 */}
         <Card 
@@ -480,7 +479,7 @@ export default function ExportExcel() {
                   <strong>合併輸出</strong>
                   <br />
                   <small style={{ color: 'var(--text-secondary)' }}>
-                    不分類，直接匯出所有 maintainance_photo 資料到單一工作表
+                    不分類，直接匯出所有資料到單一工作表
                   </small>
                 </span>
               </Checkbox>
@@ -495,7 +494,7 @@ export default function ExportExcel() {
                   <strong>分類輸出</strong>
                   <br />
                   <small style={{ color: 'var(--text-secondary)' }}>
-                    根據 thing 欄位分類，每個不同值創建一個工作表
+                    根據保養項目分類，每個不同的保養項目創建一個工作表
                   </small>
                 </span>
               </Checkbox>
@@ -611,7 +610,6 @@ export default function ExportExcel() {
         }}>
           <h3>📋 範本格式說明</h3>
           <ul style={{ margin: '8px 0', paddingLeft: '20px' }}>
-            <li>完全按照 SETUP.md 的格式規範</li>
             <li>全部列高：19.5，全部欄寬：5.26</li>
             <li>字體：Microsoft YaHei UI</li>
             <li>標題列：決裁編號、工程名稱、專案名稱、驗收照片、日期</li>
@@ -623,7 +621,6 @@ export default function ExportExcel() {
         <div style={{ marginTop: '24px', fontSize: '14px', color: 'var(--text-secondary)' }}>
           <p>📊 資料統計：共 {maintenanceData.length} 筆保養照片記錄</p>
           <p>📁 檔案格式：Excel (.xlsx)</p>
-          <p>🎯 範本版本：1008-範本 (與 Excel.py 完全一致)</p>
           {exportType === 'categorized' && (
             <p>📂 分類統計：將創建 {Object.keys(groupedData).length} 個工作表</p>
           )}
