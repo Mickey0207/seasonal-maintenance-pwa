@@ -1,0 +1,19 @@
+name = "seasonal-maintenance-pwa"
+compatibility_date = "2024-01-15"
+
+[build]
+command = "npm run build"
+cwd = "."
+watch_dir = "src"
+
+[[build.upload.rules]]
+type = "ESModule"
+globs = ["**/*.js"]
+
+[build.upload]
+format = "modules"
+dir = "Output"
+main = "./index.js"
+
+[env.production.vars]
+NODE_ENV = "production"

@@ -21,7 +21,29 @@ export default defineConfig({
       registerType: 'autoUpdate'
     })
   ],
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production')
+  },
   build: {
-    outDir: 'Output'
+    outDir: 'dist',
+    assetsDir: 'assets',
+    sourcemap: false,
+    minify: 'terser',
+    target: 'es2015',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          antd: ['antd'],
+          supabase: ['@supabase/supabase-js'],
+          router: ['react-router-dom'],
+          utils: ['dayjs', 'exceljs', 'xlsx']
+        }
+      }
+    }
+  },
+  base: './',
+  esbuild: {
+    drop: ['console', 'debugger']
   }
 })
