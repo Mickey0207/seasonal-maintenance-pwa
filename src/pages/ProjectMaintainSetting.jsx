@@ -29,7 +29,7 @@ export default function ProjectMaintainSetting() {
     const fetchData = async () => {
       setLoading(true);
       // 固定使用 id = 1 (數字)
-      const projectId = 1;
+      const projectId = id;
       // 取得目前登入者 user 資訊
       let userResult = null;
       let userError = null;

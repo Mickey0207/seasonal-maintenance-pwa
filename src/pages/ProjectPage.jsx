@@ -456,7 +456,7 @@ export default function ProjectPage() {
               <Button
                 size="small"
                 type="primary"
-                onClick={() => navigate(`${ROUTES.PROJECT_MAINTAIN_SETTING}/${id}`)}
+                onClick={() => navigate(`/project/${id}/season-setting`)}
               >
                 前往設定
               </Button>
