@@ -22,21 +22,15 @@ function ProjectTopBar({
 
   const handleDeleteAllMaintenanceData = () => {
     Modal.confirm({
-      title: '確認刪除所有季保養暫存資料',
+      title: '確認刪除所有季保養照片資料',
       icon: <ExclamationCircleOutlined />,
-      content: '您確定要刪除所有季保養暫存資料嗎？這將永久刪除 maintainance_data 和 maintainance_photo 表中的所有記錄，以及相關的照片文件。此操作無法復原！',
+      content: '您確定要刪除所有季保養照片資料嗎？這將永久刪除 maintainance_photo 表中的所有記錄以及相關的照片文件，但會保留 maintainance_data 表中的保養記錄。此操作無法復原！',
       okText: '確認刪除',
       okType: 'danger',
       cancelText: '取消',
+      className: 'modern-modal',
       onOk: async () => {
         try {
-          // 刪除 maintainance_data 中的所有資料
-          const { data: allMaintenanceData, error: dataFetchError } = await dbUtils.maintenanceData.getByProject(projectName);
-          if (dataFetchError) throw dataFetchError;
-          for (const item of allMaintenanceData) {
-            await dbUtils.maintenanceData.delete(item.id);
-          }
-
           // 刪除 maintainance_photo 中的所有資料及相關照片
           const { data: allMaintenancePhotos, error: photoFetchError } = await dbUtils.maintenancePhoto.getByProject(projectName);
           if (photoFetchError) throw photoFetchError;
@@ -47,12 +41,22 @@ function ProjectTopBar({
             await dbUtils.maintenancePhoto.delete(item.id);
           }
 
-          message.success('所有季保養暫存資料已成功刪除！');
-          setDrawerOpen(false);
-          window.location.reload(); // 重新載入頁面以更新資料
+          Modal.success({
+            title: '刪除成功',
+            content: '所有季保養照片資料已成功刪除！保養記錄已保留。',
+            className: 'custom-success-modal',
+            onOk: () => {
+              setDrawerOpen(false);
+              window.location.reload(); // 重新載入頁面以更新資料
+            }
+          });
         } catch (error) {
-          console.error('刪除所有季保養暫存資料失敗:', error);
-          message.error(`刪除失敗: ${error.message || '未知錯誤'}`);
+          console.error('刪除所有季保養照片資料失敗:', error);
+          Modal.error({
+            title: '刪除失敗',
+            content: `操作失敗: ${error.message || '未知錯誤'}`,
+            className: 'modern-modal'
+          });
         }
       },
       onCancel() {
@@ -187,7 +191,7 @@ function ProjectTopBar({
       >
         Excel匯出
       </Button>
-      <div style={{ height: 16 }} />
+      <div className="sidebar-divider" />
       <Button 
         className="sidebar-menu-item" 
         type="text" 
@@ -222,9 +226,9 @@ function ProjectTopBar({
       >
         保養資訊設定
       </Button>
-      <div style={{ height: 16 }} />
+      <div className="sidebar-divider" />
       <Button 
-        className="sidebar-menu-item" 
+        className="sidebar-menu-item delete-all-data-btn" 
         type="text" 
         icon={<ExclamationCircleOutlined />} 
         onClick={handleDeleteAllMaintenanceData}
@@ -233,10 +237,13 @@ function ProjectTopBar({
           color: 'white',
           borderRadius: '8px',
           margin: '4px 0',
-          fontWeight: 600
+          fontWeight: 600,
+          boxShadow: 'var(--shadow-danger)',
+          border: '1px solid var(--border-danger)',
+          transition: 'var(--transition-smooth)'
         }}
       >
-        刪除所有季保養暫存資料
+        刪除所有季保養照片資料
       </Button>
       <div style={{ flex: 1 }} />
       <div style={{ textAlign: 'center', marginTop: 24 }}>

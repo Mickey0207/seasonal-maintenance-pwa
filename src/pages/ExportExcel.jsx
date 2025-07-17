@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Spin, Alert, Table, App, Tabs } from 'antd';
+import { Button, Spin, Alert, Table, App, Tabs, Modal } from 'antd';
 import ExcelJS from 'exceljs';
 import { useParams, useNavigate } from 'react-router-dom';
 import PageLayout from '../components/layout/PageLayout';
@@ -235,7 +235,11 @@ export default function ExportExcel() {
     setLoading(true);
     setError(null);
     if (!project || !project.name) {
-      message.error('專案資料尚未載入，無法生成 Excel。');
+      Modal.error({
+        title: '無法生成 Excel',
+        content: '專案資料尚未載入，請稍後再試。',
+        className: 'modern-modal'
+      });
       setLoading(false);
       return;
     }
@@ -340,16 +344,20 @@ export default function ExportExcel() {
       link.download = `${project.name}_季保養.xlsx`;
       link.click();
 
-      modal.success({
-        title: <span style={{ color: 'white' }}>Excel 文件已成功下載</span>,
-        content: <span style={{ color: 'white' }}>檔案 ${project.name}_季保養.xlsx 已經可以開啟。</span>,
+      Modal.success({
+        title: 'Excel 文件已成功下載',
+        content: `檔案 ${project.name}_季保養.xlsx 已經可以開啟。`,
         className: 'custom-success-modal',
       });
 
     } catch (err) {
       setError('無法獲取或處理數據');
       console.error(err);
-      message.error('操作失敗，請稍後再試');
+      Modal.error({
+        title: '操作失敗',
+        content: '請稍後再試',
+        className: 'modern-modal'
+      });
     } finally {
       setLoading(false);
     }

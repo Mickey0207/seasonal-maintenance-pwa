@@ -232,8 +232,14 @@ html, body, #root {
   transform: scale(1.02) !important;
 }
 
+/* 增強的 Modal 樣式 */
 .ant-modal {
   background: transparent !important;
+}
+
+.ant-modal-mask {
+  background: rgba(0, 0, 0, 0.7) !important;
+  backdrop-filter: blur(8px) !important;
 }
 
 .ant-modal-content {
@@ -242,89 +248,527 @@ html, body, #root {
   border: 1px solid var(--border-primary) !important;
   border-radius: 16px !important;
   box-shadow: var(--shadow-intense) !important;
+  overflow: hidden !important;
 }
 
 .ant-modal-header {
   background: transparent !important;
   border-bottom: 1px solid var(--border-primary) !important;
+  padding: 20px 24px 16px !important;
 }
 
 .ant-modal-title {
   color: var(--text-primary) !important;
+  font-weight: 600 !important;
+  font-size: 18px !important;
 }
 
 .ant-modal-body {
   background: transparent !important;
   color: var(--text-primary) !important;
+  padding: 16px 24px !important;
+  line-height: 1.6 !important;
 }
 
 .ant-modal-footer {
   background: transparent !important;
   border-top: 1px solid var(--border-primary) !important;
+  padding: 16px 24px 20px !important;
 }
 
 .ant-modal-close {
   color: var(--text-primary) !important;
+  top: 16px !important;
+  right: 16px !important;
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 8px !important;
+  transition: var(--transition-smooth) !important;
 }
 
 .ant-modal-close:hover {
   color: var(--text-accent) !important;
+  background: var(--bg-hover) !important;
 }
 
-/* 側邊欄樣式 */
-.ant-drawer {
-  background: var(--bg-primary) !important;
-  z-index: 1000 !important;
+.ant-modal-close .ant-modal-close-x {
+  width: 32px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+  font-size: 16px !important;
 }
 
-.ant-drawer .ant-drawer-content {
-  background: var(--bg-primary) !important;
+/* Modal 按鈕樣式 */
+.ant-modal-footer .ant-btn {
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  height: 40px !important;
+  padding: 0 20px !important;
+  transition: var(--transition-smooth) !important;
+}
+
+.ant-modal-footer .ant-btn-primary {
+  background: var(--primary-gradient) !important;
+  border: none !important;
+  color: white !important;
+  box-shadow: var(--shadow-card) !important;
+}
+
+.ant-modal-footer .ant-btn-primary:hover {
+  background: var(--primary-gradient) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-glow) !important;
+  color: white !important;
+}
+
+.ant-modal-footer .ant-btn-default {
+  background: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-modal-footer .ant-btn-default:hover {
+  background: var(--bg-card) !important;
+  border-color: var(--border-accent) !important;
+  color: var(--text-primary) !important;
+  transform: translateY(-2px) !important;
+}
+
+.ant-modal-footer .ant-btn-dangerous {
+  background: var(--danger-gradient) !important;
+  border: none !important;
+  color: white !important;
+  box-shadow: var(--shadow-danger) !important;
+}
+
+.ant-modal-footer .ant-btn-dangerous:hover {
+  background: var(--danger-gradient) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.6), 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+  color: white !important;
+}
+
+/* 確認對話框樣式 */
+.ant-modal-confirm-body .ant-modal-confirm-title {
+  color: var(--text-primary) !important;
+  font-weight: 600 !important;
+  margin-left: 16px !important;
+}
+
+.ant-modal-confirm-body .ant-modal-confirm-content {
+  color: var(--text-secondary) !important;
+  margin-left: 46px !important;
+  margin-top: 8px !important;
+  line-height: 1.6 !important;
+}
+
+.ant-modal-confirm .ant-modal-confirm-btns {
+  margin-top: 24px !important;
+  text-align: right !important;
+}
+
+.ant-modal-confirm .ant-modal-confirm-btns .ant-btn + .ant-btn {
+  margin-left: 12px !important;
+}
+
+/* 不同類型 Modal 的圖標顏色 */
+.ant-modal-confirm-success .ant-modal-confirm-body .anticon {
+  color: var(--text-success) !important;
+}
+
+.ant-modal-confirm-error .ant-modal-confirm-body .anticon {
+  color: var(--text-danger) !important;
+}
+
+.ant-modal-confirm-warning .ant-modal-confirm-body .anticon {
+  color: var(--text-warning) !important;
+}
+
+.ant-modal-confirm-info .ant-modal-confirm-body .anticon {
+  color: var(--text-accent) !important;
+}
+
+/* 自定義 Modal 類別樣式 */
+.modern-modal .ant-modal-content {
+  background: var(--bg-glass) !important;
   backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--border-accent) !important;
+  box-shadow: var(--shadow-glow) !important;
+}
+
+.save-result-modal .ant-modal-content {
+  background: var(--bg-glass) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: 20px !important;
+  box-shadow: var(--shadow-intense) !important;
+}
+
+.save-result-modal .ant-modal-body {
+  padding: 32px 24px !important;
+}
+
+.custom-success-modal .ant-modal-content {
+  background: var(--bg-glass) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--border-success) !important;
+  box-shadow: var(--shadow-success) !important;
+}
+
+.custom-success-modal .ant-modal-header {
+  border-bottom: 1px solid var(--border-success) !important;
+}
+
+.custom-success-modal .ant-modal-title {
+  color: var(--text-success) !important;
+}
+
+/* Modal 動畫增強 */
+.ant-modal {
+  animation: modalFadeIn 0.3s ease-out !important;
+}
+
+.ant-modal-content {
+  animation: modalSlideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalSlideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Message 組件主題樣式 */
+.ant-message {
+  z-index: 2000 !important;
+}
+
+.ant-message .ant-message-notice {
+  background: var(--bg-glass) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--shadow-card) !important;
+  padding: 16px 20px !important;
+  margin-bottom: 12px !important;
+}
+
+.ant-message .ant-message-notice-content {
+  color: var(--text-primary) !important;
+  font-weight: 500 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.ant-message-success .ant-message-notice {
+  border-color: var(--border-success) !important;
+  box-shadow: var(--shadow-success) !important;
+}
+
+.ant-message-success .ant-message-notice-content .anticon {
+  color: var(--text-success) !important;
+}
+
+.ant-message-error .ant-message-notice {
+  border-color: var(--border-danger) !important;
+  box-shadow: var(--shadow-danger) !important;
+}
+
+.ant-message-error .ant-message-notice-content .anticon {
+  color: var(--text-danger) !important;
+}
+
+.ant-message-warning .ant-message-notice {
+  border-color: var(--border-warning) !important;
+  box-shadow: var(--shadow-warning) !important;
+}
+
+.ant-message-warning .ant-message-notice-content .anticon {
+  color: var(--text-warning) !important;
+}
+
+.ant-message-info .ant-message-notice {
+  border-color: var(--border-accent) !important;
+  box-shadow: var(--shadow-glow) !important;
+}
+
+.ant-message-info .ant-message-notice-content .anticon {
+  color: var(--text-accent) !important;
+}
+
+.ant-message-loading .ant-message-notice {
+  border-color: var(--border-accent) !important;
+  box-shadow: var(--shadow-glow) !important;
+}
+
+.ant-message-loading .ant-message-notice-content .anticon {
+  color: var(--text-accent) !important;
+}
+
+/* Notification 組件主題樣式 */
+.ant-notification {
+  z-index: 2000 !important;
+}
+
+.ant-notification .ant-notification-notice {
+  background: var(--bg-glass) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--shadow-card) !important;
+  padding: 20px !important;
+  margin-bottom: 16px !important;
+}
+
+.ant-notification .ant-notification-notice-message {
+  color: var(--text-primary) !important;
+  font-weight: 600 !important;
+  margin-bottom: 8px !important;
+}
+
+.ant-notification .ant-notification-notice-description {
+  color: var(--text-secondary) !important;
+  line-height: 1.5 !important;
+}
+
+.ant-notification .ant-notification-notice-close {
+  color: var(--text-muted) !important;
+  transition: var(--transition-smooth) !important;
+}
+
+.ant-notification .ant-notification-notice-close:hover {
+  color: var(--text-primary) !important;
+}
+
+.ant-notification-success .ant-notification-notice {
+  border-color: var(--border-success) !important;
+  box-shadow: var(--shadow-success) !important;
+}
+
+.ant-notification-success .ant-notification-notice-icon .anticon {
+  color: var(--text-success) !important;
+}
+
+.ant-notification-error .ant-notification-notice {
+  border-color: var(--border-danger) !important;
+  box-shadow: var(--shadow-danger) !important;
+}
+
+.ant-notification-error .ant-notification-notice-icon .anticon {
+  color: var(--text-danger) !important;
+}
+
+.ant-notification-warning .ant-notification-notice {
+  border-color: var(--border-warning) !important;
+  box-shadow: var(--shadow-warning) !important;
+}
+
+.ant-notification-warning .ant-notification-notice-icon .anticon {
+  color: var(--text-warning) !important;
+}
+
+.ant-notification-info .ant-notification-notice {
+  border-color: var(--border-accent) !important;
+  box-shadow: var(--shadow-glow) !important;
+}
+
+.ant-notification-info .ant-notification-notice-icon .anticon {
+  color: var(--text-accent) !important;
+}
+
+/* Modal 內的其他元素樣式 */
+.ant-modal .ant-checkbox-wrapper {
+  color: var(--text-primary) !important;
+}
+
+.ant-modal .ant-checkbox-wrapper:hover .ant-checkbox-inner {
+  border-color: var(--border-accent) !important;
+}
+
+.ant-modal .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: var(--text-accent) !important;
+  border-color: var(--text-accent) !important;
+}
+
+.ant-modal .ant-input {
+  background: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-primary) !important;
+  color: var(--text-primary) !important;
+  border-radius: 8px !important;
+}
+
+.ant-modal .ant-input:focus {
+  border-color: var(--border-accent) !important;
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2) !important;
+}
+
+.ant-modal .ant-select {
+  color: var(--text-primary) !important;
+}
+
+.ant-modal .ant-select .ant-select-selector {
+  background: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-primary) !important;
+  color: var(--text-primary) !important;
+  border-radius: 8px !important;
+}
+
+.ant-modal .ant-select:not(.ant-select-disabled):hover .ant-select-selector {
+  border-color: var(--border-accent) !important;
+}
+
+.ant-modal .ant-select-focused .ant-select-selector {
+  border-color: var(--border-accent) !important;
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2) !important;
+}
+
+/* 增強的側邊欄樣式 */
+.ant-drawer {
+  z-index: 1500 !important;
+}
+
+.ant-drawer .ant-drawer-mask {
+  background: rgba(0, 0, 0, 0.7) !important;
+  backdrop-filter: blur(8px) !important;
 }
 
 .ant-drawer .ant-drawer-content-wrapper {
-  background: var(--bg-primary) !important;
+  box-shadow: var(--shadow-intense) !important;
 }
 
-.ant-drawer .ant-drawer-body {
-  padding: 24px !important;
-  background: var(--bg-primary) !important;
+.ant-drawer .ant-drawer-content {
+  background: var(--bg-glass) !important;
+  backdrop-filter: blur(20px) !important;
+  border-right: 1px solid var(--border-primary) !important;
 }
 
 .ant-drawer .ant-drawer-header {
-  background: var(--bg-primary) !important;
+  background: transparent !important;
   border-bottom: 1px solid var(--border-primary) !important;
+  padding: 20px 24px 16px !important;
+  position: relative !important;
 }
 
-.ant-drawer .ant-drawer-close {
-  color: var(--text-primary) !important;
+.ant-drawer .ant-drawer-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--primary-gradient);
+  opacity: 0.6;
 }
 
 .ant-drawer .ant-drawer-title {
   color: var(--text-primary) !important;
+  font-weight: 700 !important;
+  font-size: 20px !important;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.ant-drawer .ant-drawer-mask {
-  background: rgba(0, 0, 0, 0.45) !important;
+.ant-drawer .ant-drawer-close {
+  color: var(--text-primary) !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 8px !important;
+  transition: var(--transition-smooth) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
-.modern-sidebar .ant-drawer-content {
-  background: var(--bg-primary) !important;
-  backdrop-filter: blur(20px) !important;
+.ant-drawer .ant-drawer-close:hover {
+  color: var(--text-accent) !important;
+  background: var(--bg-hover) !important;
+  transform: scale(1.1) !important;
 }
 
-.modern-sidebar .ant-drawer-body {
+.ant-drawer .ant-drawer-close .ant-drawer-close-x {
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  font-size: 18px !important;
+}
+
+.ant-drawer .ant-drawer-body {
   padding: 24px !important;
-  background: var(--bg-primary) !important;
+  background: transparent !important;
+  position: relative !important;
+}
+
+.ant-drawer .ant-drawer-body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(96, 165, 250, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* 現代化側邊欄樣式 */
+.modern-sidebar .ant-drawer-content {
+  background: var(--bg-glass) !important;
+  backdrop-filter: blur(20px) !important;
+  border-right: 1px solid var(--border-accent) !important;
+  box-shadow: var(--shadow-glow) !important;
 }
 
 .modern-sidebar .ant-drawer-header {
-  background: var(--bg-primary) !important;
-  border-bottom: 1px solid var(--border-primary) !important;
+  background: transparent !important;
+  border-bottom: 1px solid var(--border-accent) !important;
+  position: relative !important;
+}
+
+.modern-sidebar .ant-drawer-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 24px;
+  right: 24px;
+  height: 2px;
+  background: var(--primary-gradient);
+  border-radius: 1px;
+}
+
+.modern-sidebar .ant-drawer-body {
+  background: transparent !important;
+  position: relative !important;
 }
 
 .modern-sidebar .ant-drawer-close {
-  color: var(--text-primary) !important;
+  background: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: 8px !important;
+}
+
+.modern-sidebar .ant-drawer-close:hover {
+  background: var(--bg-card) !important;
+  border-color: var(--border-accent) !important;
+  box-shadow: var(--shadow-glow) !important;
 }
 
 .sidebar-title {
@@ -342,8 +786,8 @@ html, body, #root {
 
 .sidebar-menu-item {
   width: 100% !important;
-  height: 48px !important;
-  margin-bottom: 8px !important;
+  height: 52px !important;
+  margin-bottom: 12px !important;
   background: var(--bg-tertiary) !important;
   border: 1px solid var(--border-primary) !important;
   border-radius: 12px !important;
@@ -351,20 +795,110 @@ html, body, #root {
   display: flex !important;
   align-items: center !important;
   justify-content: flex-start !important;
-  padding: 0 16px !important;
+  padding: 0 20px !important;
   transition: var(--transition-smooth) !important;
+  font-weight: 500 !important;
+  font-size: 15px !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.sidebar-menu-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(96, 165, 250, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.sidebar-menu-item:hover::before {
+  left: 100%;
 }
 
 .sidebar-menu-item:hover {
   background: var(--bg-card) !important;
   border-color: var(--border-accent) !important;
   color: var(--text-primary) !important;
-  transform: translateX(4px);
+  transform: translateX(8px) scale(1.02);
+  box-shadow: 0 4px 20px rgba(96, 165, 250, 0.2) !important;
+}
+
+.sidebar-menu-item:active {
+  transform: translateX(4px) scale(0.98);
 }
 
 .sidebar-menu-item .anticon {
-  margin-right: 12px !important;
-  font-size: 16px !important;
+  margin-right: 16px !important;
+  font-size: 18px !important;
+  transition: var(--transition-smooth) !important;
+}
+
+.sidebar-menu-item:hover .anticon {
+  color: var(--text-accent) !important;
+  transform: scale(1.1);
+}
+
+/* 側邊欄分隔線樣式 */
+.sidebar-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-primary), transparent);
+  margin: 20px 0;
+  position: relative;
+  opacity: 0.8;
+}
+
+.sidebar-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  background: var(--text-accent);
+  border-radius: 50%;
+  opacity: 0.7;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+}
+
+/* 側邊欄進入動畫 */
+.modern-sidebar .sidebar-menu-item {
+  animation: slideInFromLeft 0.3s ease-out;
+  animation-fill-mode: both;
+}
+
+.modern-sidebar .sidebar-menu-item:nth-child(1) { animation-delay: 0.1s; }
+.modern-sidebar .sidebar-menu-item:nth-child(2) { animation-delay: 0.15s; }
+.modern-sidebar .sidebar-menu-item:nth-child(3) { animation-delay: 0.2s; }
+.modern-sidebar .sidebar-menu-item:nth-child(4) { animation-delay: 0.25s; }
+.modern-sidebar .sidebar-menu-item:nth-child(5) { animation-delay: 0.3s; }
+.modern-sidebar .sidebar-menu-item:nth-child(6) { animation-delay: 0.35s; }
+.modern-sidebar .sidebar-menu-item:nth-child(7) { animation-delay: 0.4s; }
+.modern-sidebar .sidebar-menu-item:nth-child(8) { animation-delay: 0.45s; }
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* 動畫關鍵幀 */
@@ -1337,6 +1871,20 @@ html, body, #root {
 .ant-float-btn:hover {
   transform: scale(1.1) !important;
   box-shadow: var(--shadow-intense) !important;
+}
+
+/* 刪除所有季保養暫存資料按鈕特殊樣式 */
+.delete-all-data-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.6), 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+  background: var(--danger-gradient) !important;
+  color: white !important;
+  border-color: rgba(239, 68, 68, 0.5) !important;
+}
+
+.delete-all-data-btn:active {
+  transform: translateY(0px) !important;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.4) !important;
 }
 
 /* 動畫類別 */

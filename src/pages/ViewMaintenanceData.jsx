@@ -213,14 +213,22 @@ export default function ViewMaintenanceData() {
           await dbUtils.maintenanceData.delete(itemId);
         }
         
-        message.success(`成功刪除 ${selectedItems.length} 個季保養項目`);
+        Modal.success({
+          title: '刪除成功',
+          content: `成功刪除 ${selectedItems.length} 個季保養項目`,
+          className: 'custom-success-modal'
+        });
         setSelectedItems([]);
         setIsSelectionMode(false);
         // 重新獲取資料
         fetchMaintenanceData();
       } catch (error) {
         console.error('刪除季保養項目失敗:', error);
-        message.error('刪除失敗，請稍後再試');
+        Modal.error({
+          title: '刪除失敗',
+          content: '操作失敗，請稍後再試',
+          className: 'modern-modal'
+        });
       } finally {
         setDeleteLoading(false);
       }
@@ -263,14 +271,22 @@ export default function ViewMaintenanceData() {
           }
         }
         
-        message.success(`成功刪除 ${selectedItems.length} 個本次季保養資料`);
+        Modal.success({
+          title: '刪除成功',
+          content: `成功刪除 ${selectedItems.length} 個本次季保養資料`,
+          className: 'custom-success-modal'
+        });
         setSelectedItems([]);
         setIsSelectionMode(false);
         // 重新獲取資料
         fetchMaintenanceData();
       } catch (error) {
         console.error('刪除本次季保養資料失敗:', error);
-        message.error('刪除失敗，請稍後再試');
+        Modal.error({
+          title: '刪除失敗',
+          content: '操作失敗，請稍後再試',
+          className: 'modern-modal'
+        });
       } finally {
         setDeleteLoading(false);
       }

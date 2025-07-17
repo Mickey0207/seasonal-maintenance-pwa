@@ -224,7 +224,7 @@ export default function ProjectMaintainSetting() {
         okText="確認"
         cancelButtonProps={{ style: { display: 'none' } }}
         centered
-        className="sidebar"
+        className={modalType === 'success' ? 'custom-success-modal' : 'modern-modal'}
         bodyStyle={{ textAlign: 'center', fontSize: 18, padding: 32 }}
         title={modalType === 'success' ? '成功' : '錯誤'}
         afterClose={() => {

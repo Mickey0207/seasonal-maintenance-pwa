@@ -33,7 +33,7 @@ const SaveResultModal = ({
             <CheckCircleOutlined 
               style={{ 
                 fontSize: '64px', 
-                color: '#52c41a',
+                color: 'var(--text-success)',
                 animation: 'successPulse 0.6s ease-out'
               }} 
             />
@@ -41,7 +41,7 @@ const SaveResultModal = ({
             <CloseCircleOutlined 
               style={{ 
                 fontSize: '64px', 
-                color: '#ff4d4f',
+                color: 'var(--text-danger)',
                 animation: 'errorShake 0.6s ease-out'
               }} 
             />
