@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>環境變數除錯工具</title>
+</head>
+<body>
+    <h1>環境變數檢查</h1>
+    <div id="env-check"></div>
+    
+    <script type="module">
+        const envCheck = document.getElementById('env-check');
+        
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+        const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+        
+        envCheck.innerHTML = `
+            <h2>環境變數狀態:</h2>
+            <p><strong>VITE_SUPABASE_URL:</strong> ${supabaseUrl || '❌ 未設定'}</p>
+            <p><strong>VITE_SUPABASE_ANON_KEY:</strong> ${supabaseKey ? '✅ 已設定' : '❌ 未設定'}</p>
+            <p><strong>模式:</strong> ${import.meta.env.MODE}</p>
+            <p><strong>是否為範例值:</strong> ${supabaseUrl && supabaseUrl.includes('your-project') ? '❌ 是範例值' : '✅ 看起來正確'}</p>
+        `;
+        
+        // 測試 Supabase 連接
+        if (supabaseUrl && !supabaseUrl.includes('your-project')) {
+            fetch(supabaseUrl + '/rest/v1/', {
+                headers: {
+                    'apikey': supabaseKey,
+                    'Authorization': 'Bearer ' + supabaseKey
+                }
+            })
+            .then(response => {
+                envCheck.innerHTML += `<p><strong>Supabase 連接測試:</strong> ${response.ok ? '✅ 成功' : '❌ 失敗'}</p>`;
+            })
+            .catch(error => {
+                envCheck.innerHTML += `<p><strong>Supabase 連接測試:</strong> ❌ 錯誤 - ${error.message}</p>`;
+            });
+        }
+    </script>
+</body>
+</html>
