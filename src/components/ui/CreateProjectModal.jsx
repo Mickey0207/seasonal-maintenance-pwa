@@ -140,7 +140,17 @@ const CreateProjectModal = ({
                 <Text style={{ color: 'var(--text-secondary)' }}>{templatePreview.settingsCount} 項</Text>
               </div>
               <div>
-                <Text strong style={{ color: 'var(--text-primary)' }}>專案照片：</Text>
+                <Text strong style={{ color: 'var(--text-primary)' }}>保養資料項目：</Text>
+                <br />
+                <Text style={{ color: 'var(--text-secondary)' }}>{templatePreview.dataCount} 項</Text>
+              </div>
+              <div>
+                <Text strong style={{ color: 'var(--text-primary)' }}>保養照片結構：</Text>
+                <br />
+                <Text style={{ color: 'var(--text-secondary)' }}>{templatePreview.photoCount} 項</Text>
+              </div>
+              <div>
+                <Text strong style={{ color: 'var(--text-primary)' }}>專案封面：</Text>
                 <br />
                 <Text style={{ color: 'var(--text-secondary)' }}>
                   {templatePreview.hasPhoto ? '✓ 包含' : '✗ 無照片'}
@@ -181,14 +191,28 @@ const CreateProjectModal = ({
             display: 'block',
             marginTop: '8px'
           }}>
-            系統會自動在名稱後添加時間戳記以確保唯一性
+            請確保專案名稱的唯一性，避免與現有專案重複
           </Text>
         </div>
 
         {/* 說明文字 */}
         <Alert
           message="範本說明"
-          description="此功能會複製專案1的所有設定，包括保養項目設定、專案結構等，並創建一個全新的獨立專案。"
+          description={
+            <div>
+              <p>此功能會複製專案1的所有設定，創建一個全新的獨立專案，包括：</p>
+              <ul style={{ margin: '8px 0', paddingLeft: '20px' }}>
+                <li>專案基本資訊（home_project_card）</li>
+                <li>保養設定資料（maintainance_setting）</li>
+                <li>保養項目資料（maintainance_data）</li>
+                <li>保養照片結構（maintainance_photo，不含實際照片文件）</li>
+                <li>專案封面照片（如果存在）</li>
+              </ul>
+              <p style={{ margin: '8px 0 0 0', fontSize: '12px', color: 'var(--text-muted)' }}>
+                注意：保養照片的資料結構會被複製，但實際照片文件需要重新上傳。新專案不會包含任何密碼保護功能。
+              </p>
+            </div>
+          }
           type="info"
           showIcon
           style={{ marginBottom: '24px' }}

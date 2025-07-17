@@ -50,6 +50,7 @@ export const useProjects = () => {
       const { data, error: fetchError } = await dbUtils.projects.getAll();
       if (fetchError) {
         setError(fetchError);
+        setProjects([]);
       } else {
         setProjects(data || []);
       }
@@ -65,5 +66,5 @@ export const useProjects = () => {
     fetchProjects();
   }, []);
 
-  return { projects, loading, error };
+  return { projects, loading, error, fetchProjects };
 };

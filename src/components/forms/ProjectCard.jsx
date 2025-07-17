@@ -1,10 +1,15 @@
 import React from 'react';
 import { Card, Typography } from 'antd';
+import { LockOutlined } from '@ant-design/icons';
 import { dbUtils } from '../../utils/database';
 
 const ProjectCard = ({ project, onClick, style = {} }) => {
   const getImageUrl = (imgPath) => {
     return dbUtils.storage.getImageUrl('home-project-card-photo', imgPath);
+  };
+
+  const handleCardClick = (e) => {
+    onClick(project);
   };
 
   return (
@@ -31,6 +36,25 @@ const ProjectCard = ({ project, onClick, style = {} }) => {
             bottom: 0,
             opacity: 0.3
           }} />
+          {/* 專案1的密碼保護圖標 */}
+          {project.id === 1 && (
+            <div style={{
+              position: 'absolute',
+              top: 8,
+              left: 8,
+              background: 'rgba(0, 0, 0, 0.7)',
+              borderRadius: '50%',
+              padding: '6px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <LockOutlined style={{ 
+                color: '#ffd700', 
+                fontSize: '14px' 
+              }} />
+            </div>
+          )}
         </div> : 
         <div style={{ 
           height: 160, 
@@ -48,9 +72,28 @@ const ProjectCard = ({ project, onClick, style = {} }) => {
           }}>
             {project.name.charAt(0)}
           </Typography.Title>
+          {/* 專案1的密碼保護圖標 */}
+          {project.id === 1 && (
+            <div style={{
+              position: 'absolute',
+              top: 8,
+              left: 8,
+              background: 'rgba(0, 0, 0, 0.7)',
+              borderRadius: '50%',
+              padding: '6px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <LockOutlined style={{ 
+                color: '#ffd700', 
+                fontSize: '14px' 
+              }} />
+            </div>
+          )}
         </div>
       }
-      onClick={() => onClick(project)}
+      onClick={handleCardClick}
       style={{ 
         minHeight: 320,
         height: 'auto',
@@ -58,9 +101,11 @@ const ProjectCard = ({ project, onClick, style = {} }) => {
         transition: 'var(--transition-bounce)',
         ...style 
       }}
-      bodyStyle={{
-        padding: '20px',
-        background: 'transparent'
+      styles={{
+        body: {
+          padding: '20px',
+          background: 'transparent'
+        }
       }}
     >
       <Card.Meta

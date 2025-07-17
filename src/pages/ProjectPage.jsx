@@ -302,9 +302,10 @@ export default function ProjectPage() {
           ];
 
           // 計算字體大小和間距
-          const fontSize = Math.max(16, Math.min(img.width / 40, 24));
-          const lineHeight = fontSize + 4;
-          const padding = 20;
+          const baseFontSize = Math.max(16, Math.min(img.width / 40, 24));
+          const fontSize = baseFontSize * 1.25;
+          const lineHeight = fontSize + 6;
+          const padding = 30;
 
           // 計算浮水印背景尺寸
           ctx.font = `${fontSize}px Arial`;

@@ -5,7 +5,9 @@ export const dbUtils = {
   // 項目相關
   projects: {
     async getAll() {
-      const { data, error } = await supabase.from('home_project_card').select('*');
+      const { data, error } = await supabase
+        .from('home_project_card')
+        .select('*');
       return { data: data || [], error };
     },
 
@@ -24,6 +26,7 @@ export const dbUtils = {
         .insert([project]);
       return { data, error };
     },
+
 
   },
 
