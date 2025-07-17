@@ -36,7 +36,7 @@ class ErrorBoundary extends React.Component {
           </Typography.Text>
           <Button 
             type="primary" 
-            onClick={() => window.location.reload()}
+            onClick={() => window.location.href = '/'}
           >
             重新載入頁面
           </Button>

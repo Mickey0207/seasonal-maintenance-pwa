@@ -19,16 +19,29 @@ export default function RegisterForm({ onRegisterSuccess }) {
       return;
     }
     setLoading(true);
-    const { error: signUpError } = await supabase.auth.signUp({
+    const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/login`
+      }
     });
+    
     if (signUpError) {
       setError(signUpError.message);
       setLoading(false);
       return;
     }
+    
     setLoading(false);
+    
+    // 顯示註冊成功訊息
+    if (data.user && !data.session) {
+      setError('');
+      // 顯示需要驗證郵件的訊息
+      alert('註冊成功！請檢查您的郵箱並點擊驗證連結以完成註冊。');
+    }
+    
     if (onRegisterSuccess) onRegisterSuccess();
   };
 

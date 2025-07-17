@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../config/constants';
 import { authUtils } from '../utils/auth';
 import { dbUtils } from '../utils/database';
+import { supabase } from '../lib/supabaseClient';
 
 function ProjectTopBar({
   projectName = '',
@@ -22,18 +23,19 @@ function ProjectTopBar({
 
   const handleDeleteAllMaintenanceData = () => {
     Modal.confirm({
-      title: '確認刪除所有季保養照片資料',
+      title: '確認刪除所有季保養資料',
       icon: <ExclamationCircleOutlined />,
-      content: '您確定要刪除所有季保養照片資料嗎？這將永久刪除 maintainance_photo 表中的所有記錄以及相關的照片文件，但會保留 maintainance_data 表中的保養記錄。此操作無法復原！',
+      content: '您確定要刪除所有季保養資料嗎？這將永久刪除以下資料：\n• maintainance_photo 表中的所有照片記錄\n• maintainance_setting 表中的所有設定資料\n• 相關的照片文件\n\n此操作無法復原！',
       okText: '確認刪除',
       okType: 'danger',
       cancelText: '取消',
       className: 'modern-modal',
       onOk: async () => {
         try {
-          // 刪除 maintainance_photo 中的所有資料及相關照片
+          // 1. 刪除 maintainance_photo 中的所有資料及相關照片
           const { data: allMaintenancePhotos, error: photoFetchError } = await dbUtils.maintenancePhoto.getByProject(projectName);
           if (photoFetchError) throw photoFetchError;
+          
           for (const item of allMaintenancePhotos) {
             if (item.photo_path) {
               await dbUtils.storage.deleteImage('maintainance-data-photo', item.photo_path);
@@ -41,21 +43,31 @@ function ProjectTopBar({
             await dbUtils.maintenancePhoto.delete(item.id);
           }
 
-          Modal.success({
-            title: '刪除成功',
-            content: '所有季保養照片資料已成功刪除！保養記錄已保留。',
-            className: 'custom-success-modal',
-            onOk: () => {
-              setDrawerOpen(false);
-              window.location.reload(); // 重新載入頁面以更新資料
-            }
+          // 2. 刪除 maintainance_setting 中該專案的所有設定資料
+          const { error: settingDeleteError } = await supabase
+            .from('maintainance_setting')
+            .delete()
+            .eq('name', projectName);
+          
+          if (settingDeleteError) {
+            console.error('刪除設定資料失敗:', settingDeleteError);
+            throw settingDeleteError;
+          }
+
+          message.success({
+            content: '刪除成功！所有季保養資料（照片和設定）已成功刪除',
+            duration: 3
           });
+          setDrawerOpen(false);
+          // 使用 navigate 重新載入當前頁面，避免卡住
+          setTimeout(() => {
+            navigate(0);
+          }, 1000);
         } catch (error) {
-          console.error('刪除所有季保養照片資料失敗:', error);
-          Modal.error({
-            title: '刪除失敗',
-            content: `操作失敗: ${error.message || '未知錯誤'}`,
-            className: 'modern-modal'
+          console.error('刪除所有季保養資料失敗:', error);
+          message.error({
+            content: `刪除失敗: ${error.message || '未知錯誤'}`,
+            duration: 3
           });
         }
       },
@@ -68,10 +80,7 @@ function ProjectTopBar({
   // 處理側邊欄關閉
   const handleDrawerClose = () => {
     setDrawerOpen(false);
-    // 如果直接關閉側邊欄（沒有點擊按鈕），重載網頁
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
+    // 移除自動重載，避免網頁卡住
   };
 
 
@@ -111,13 +120,7 @@ function ProjectTopBar({
         icon={<HomeOutlined />} 
         onClick={() => {
           setDrawerOpen(false);
-          if (window.location.pathname === '/home') {
-            // 同頁面：重載網頁
-            window.location.reload();
-          } else {
-            // 不同頁面：導向其他網頁
-            navigate('/home');
-          }
+          navigate('/home');
         }}
       >
         主畫面
@@ -129,13 +132,7 @@ function ProjectTopBar({
         icon={<FormOutlined />} 
         onClick={() => {
           setDrawerOpen(false);
-          if (window.location.pathname === `/project/${id}`) {
-            // 同頁面：重載網頁
-            window.location.reload();
-          } else {
-            // 不同頁面：導向其他網頁
-            navigate(`/project/${id}`);
-          }
+          navigate(`/project/${id}`);
         }}
       >
         本次季保養表單
@@ -146,13 +143,7 @@ function ProjectTopBar({
         icon={<PlusOutlined />} 
         onClick={() => {
           setDrawerOpen(false);
-          if (window.location.pathname === `/project/${id}/addmaintainancedata`) {
-            // 同頁面：重載網頁
-            window.location.reload();
-          } else {
-            // 不同頁面：導向其他網頁
-            navigate(`/project/${id}/addmaintainancedata`);
-          }
+          navigate(`/project/${id}/addmaintainancedata`);
         }}
       >
         新增季保養資料
@@ -163,13 +154,7 @@ function ProjectTopBar({
         icon={<EyeOutlined />} 
         onClick={() => {
           setDrawerOpen(false);
-          if (window.location.pathname === `/project/${id}/viewmaintainancedata`) {
-            // 同頁面：重載網頁
-            window.location.reload();
-          } else {
-            // 不同頁面：導向其他網頁
-            navigate(`/project/${id}/viewmaintainancedata`);
-          }
+          navigate(`/project/${id}/viewmaintainancedata`);
         }}
       >
         查看季保養資料
@@ -180,13 +165,7 @@ function ProjectTopBar({
         icon={<FileExcelOutlined />} 
         onClick={() => {
           setDrawerOpen(false);
-          if (window.location.pathname === `/project/${id}/export-excel`) {
-            // 同頁面：重載網頁
-            window.location.reload();
-          } else {
-            // 不同頁面：導向其他網頁
-            navigate(`/project/${id}/export-excel`);
-          }
+          navigate(`/project/${id}/export-excel`);
         }}
       >
         Excel匯出
@@ -198,13 +177,7 @@ function ProjectTopBar({
         icon={<SettingOutlined />} 
         onClick={() => {
           setDrawerOpen(false);
-          if (window.location.pathname === `/project/${id}/season-setting`) {
-            // 同頁面：重載網頁
-            window.location.reload();
-          } else {
-            // 不同頁面：導向其他網頁
-            navigate(`/project/${id}/season-setting`);
-          }
+          navigate(`/project/${id}/season-setting`);
         }}
       >
         本次季保養設定
@@ -215,13 +188,7 @@ function ProjectTopBar({
         icon={<ToolOutlined />} 
         onClick={() => {
           setDrawerOpen(false);
-          if (window.location.pathname === `/project/${id}/maintain-setting`) {
-            // 同頁面：重載網頁
-            window.location.reload();
-          } else {
-            // 不同頁面：導向其他網頁
-            navigate(`/project/${id}/maintain-setting`);
-          }
+          navigate(`/project/${id}/maintain-setting`);
         }}
       >
         保養資訊設定
@@ -243,7 +210,7 @@ function ProjectTopBar({
           transition: 'var(--transition-smooth)'
         }}
       >
-        刪除所有季保養照片資料
+        刪除所有季保養資料
       </Button>
       <div style={{ flex: 1 }} />
       <div style={{ textAlign: 'center', marginTop: 24 }}>

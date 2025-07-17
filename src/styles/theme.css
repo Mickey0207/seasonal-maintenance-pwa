@@ -298,6 +298,167 @@ html, body, #root {
   font-size: 16px !important;
 }
 
+/* 全域 Modal 深色主題樣式 */
+.ant-modal-mask {
+  background: rgba(0, 0, 0, 0.7) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+.ant-modal .ant-modal-content {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--shadow-intense) !important;
+}
+
+.ant-modal .ant-modal-header {
+  background: var(--bg-card) !important;
+  border-bottom: 1px solid var(--border-primary) !important;
+  border-radius: 16px 16px 0 0 !important;
+}
+
+.ant-modal .ant-modal-title {
+  color: var(--text-primary) !important;
+  font-weight: 600 !important;
+}
+
+.ant-modal .ant-modal-body {
+  background: transparent !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-modal .ant-modal-footer {
+  background: transparent !important;
+  border-top: 1px solid var(--border-primary) !important;
+  border-radius: 0 0 16px 16px !important;
+}
+
+.ant-modal .ant-modal-close {
+  color: var(--text-secondary) !important;
+}
+
+.ant-modal .ant-modal-close:hover {
+  color: var(--text-primary) !important;
+  background: var(--bg-hover) !important;
+}
+
+/* Modal 內的表單元素 */
+.ant-modal .ant-form-item-label > label {
+  color: var(--text-primary) !important;
+}
+
+.ant-modal .ant-input {
+  background: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-modal .ant-input:focus,
+.ant-modal .ant-input:hover {
+  border-color: var(--border-accent) !important;
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2) !important;
+}
+
+.ant-modal .ant-input::placeholder {
+  color: var(--text-muted) !important;
+}
+
+.ant-modal .ant-input-password {
+  background: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-primary) !important;
+}
+
+.ant-modal .ant-input-password input {
+  background: transparent !important;
+  color: var(--text-primary) !important;
+}
+
+/* Modal 按鈕樣式 */
+.ant-modal .ant-btn-primary {
+  background: var(--primary-gradient) !important;
+  border: none !important;
+  box-shadow: var(--shadow-glow) !important;
+  color: white !important;
+}
+
+.ant-modal .ant-btn-primary:hover {
+  background: var(--primary-gradient) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: var(--shadow-intense) !important;
+  color: white !important;
+}
+
+.ant-modal .ant-btn-default {
+  background: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-modal .ant-btn-default:hover {
+  background: var(--bg-card) !important;
+  border-color: var(--border-accent) !important;
+  color: var(--text-primary) !important;
+}
+
+/* 特定 Modal 樣式 */
+.user-setup-modal .ant-modal-content {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--shadow-intense) !important;
+}
+
+.modern-modal .ant-modal-content {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--shadow-intense) !important;
+}
+
+.custom-success-modal .ant-modal-content {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-success) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--shadow-success) !important;
+}
+
+/* Modal 確認對話框樣式 */
+.ant-modal-confirm .ant-modal-content {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: 16px !important;
+}
+
+.ant-modal-confirm .ant-modal-body {
+  color: var(--text-primary) !important;
+}
+
+.ant-modal-confirm .ant-modal-confirm-title {
+  color: var(--text-primary) !important;
+}
+
+.ant-modal-confirm .ant-modal-confirm-content {
+  color: var(--text-secondary) !important;
+}
+
+.ant-modal-confirm .ant-btn {
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  height: 36px !important;
+  padding: 0 16px !important;
+}
+
+.ant-modal-confirm .ant-btn-primary {
+  background: var(--primary-gradient) !important;
+  border: none !important;
+}
+
+.ant-modal-confirm .ant-btn-default {
+  background: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
 /* Modal 按鈕樣式 */
 .ant-modal-footer .ant-btn {
   border-radius: 8px !important;
@@ -458,9 +619,11 @@ html, body, #root {
 }
 
 .ant-message .ant-message-notice {
-  background: var(--bg-glass) !important;
-  backdrop-filter: blur(20px) !important;
+  background: var(--bg-card) !important;
   border: 1px solid var(--border-primary) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--shadow-card) !important;
+  backdrop-filter: blur(20px) !important;
   border-radius: 12px !important;
   box-shadow: var(--shadow-card) !important;
   padding: 16px 20px !important;

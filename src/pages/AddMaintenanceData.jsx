@@ -8,7 +8,7 @@ import ErrorMessage from '../components/ui/ErrorMessage';
 import { useAuth } from '../hooks/useAuth';
 import { useProject } from '../hooks/useProject';
 import { dbUtils } from '../utils/database';
-import SaveResultModal from '../components/ui/SaveResultModal';
+// 移除 SaveResultModal import
 import { ROUTES } from '../config/constants';
 import dayjs from 'dayjs';
 
@@ -19,9 +19,7 @@ export default function AddMaintenanceData() {
   const { project, loading, error } = useProject(id);
   const [form] = Form.useForm();
   const [submitting, setSubmitting] = useState(false);
-  const [saveResultVisible, setSaveResultVisible] = useState(false);
-  const [saveSuccess, setSaveSuccess] = useState(true);
-  const [saveMessage, setSaveMessage] = useState('');
+  // 移除不需要的 Modal 狀態
 
   useEffect(() => {
     // 自動填入新增日期為今天
@@ -64,9 +62,15 @@ export default function AddMaintenanceData() {
         throw error;
       }
 
-      setSaveSuccess(true);
-      setSaveMessage('季保養資料新增成功！');
-      setSaveResultVisible(true);
+      // 使用 message 而不是 Modal，避免卡住
+      message.success({
+        content: '季保養資料新增成功！',
+        duration: 3,
+        style: {
+          marginTop: '20vh',
+        }
+      });
+      
       // 成功後只重置表單，不重載頁面
       form.resetFields();
       form.setFieldsValue({
@@ -82,9 +86,11 @@ export default function AddMaintenanceData() {
         hint: error.hint,
         payload: payload
       });
-      setSaveSuccess(false);
-      setSaveMessage(`新增失敗：${error.message || '未知錯誤'}`);
-      setSaveResultVisible(true);
+      // 使用 message 而不是 Modal，避免卡住
+      message.error({
+        content: `新增失敗：${error.message || '未知錯誤'}`,
+        duration: 3
+      });
     } finally {
       setSubmitting(false);
     }
@@ -269,13 +275,6 @@ export default function AddMaintenanceData() {
           </Form>
         </Card>
       </div>
-      
-      <SaveResultModal
-        visible={saveResultVisible}
-        onClose={() => setSaveResultVisible(false)}
-        success={saveSuccess}
-        message={saveMessage}
-      />
     </PageLayout>
   );
 }

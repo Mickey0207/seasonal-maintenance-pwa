@@ -65,7 +65,47 @@ export default function ModernLoginForm({ onLoginSuccess }) {
         return;
       }
 
+      // 檢查用戶是否已設定用戶名
+      const { data: userNameData, error: userNameError } = await supabase
+        .from('user_names')
+        .select('user')
+        .eq('email', loginEmail)
+        .single();
+
       message.success('登入成功！');
+      
+      // 如果沒有用戶名記錄，顯示設定用戶名的模態框
+      if (userNameError || !userNameData) {
+        // 延遲一下再顯示模態框，確保登入流程完成
+        setTimeout(() => {
+          import('./UserNameSetupModal').then(({ default: UserNameSetupModal }) => {
+            const { createRoot } = require('react-dom/client');
+            const modalContainer = document.createElement('div');
+            document.body.appendChild(modalContainer);
+            const root = createRoot(modalContainer);
+            
+            const handleClose = () => {
+              root.unmount();
+              document.body.removeChild(modalContainer);
+            };
+            
+            const handleSuccess = (userName) => {
+              console.log('用戶名設定成功:', userName);
+              handleClose();
+            };
+            
+            root.render(
+              React.createElement(UserNameSetupModal, {
+                visible: true,
+                onClose: handleClose,
+                userEmail: loginEmail,
+                onSuccess: handleSuccess
+              })
+            );
+          });
+        }, 500);
+      }
+      
       if (onLoginSuccess) onLoginSuccess();
     } catch (err) {
       setError('登入異常：' + err.message);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Input, Button, Typography, Spin, Alert } from 'antd';
+import { Modal, Input, Button, Typography, Spin, Alert, App } from 'antd';
 import { PlusOutlined, CopyOutlined, ProjectOutlined } from '@ant-design/icons';
 import { projectTemplateUtils } from '../../utils/projectTemplate';
 
@@ -10,6 +10,7 @@ const CreateProjectModal = ({
   onClose, 
   onSuccess 
 }) => {
+  const { message } = App.useApp();
   const [loading, setLoading] = useState(false);
   const [templatePreview, setTemplatePreview] = useState(null);
   const [projectName, setProjectName] = useState('');
@@ -38,10 +39,9 @@ const CreateProjectModal = ({
 
   const handleCreateProject = async () => {
     if (!projectName.trim()) {
-      Modal.error({
-        title: '輸入錯誤',
-        content: '請輸入專案名稱',
-        className: 'modern-modal'
+      message.error({
+        content: '輸入錯誤：請輸入專案名稱',
+        duration: 3
       });
       return;
     }
