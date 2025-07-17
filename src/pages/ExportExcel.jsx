@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Spin, Alert, Table, App, Modal } from 'antd';
+import { Button, Spin, Alert, Table, App, Modal, Checkbox, Card, Row, Col, Divider } from 'antd';
 import ExcelJS from 'exceljs';
 import { useParams, useNavigate } from 'react-router-dom';
 import PageLayout from '../components/layout/PageLayout';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
+import ErrorMessage from '../components/ui/ErrorMessage';
 import { useAuth } from '../hooks/useAuth';
 import { useProject } from '../hooks/useProject';
 import { dbUtils } from '../utils/database';
@@ -24,6 +25,10 @@ export default function ExportExcel() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [maintenanceData, setMaintenanceData] = useState([]);
+  const [previewData, setPreviewData] = useState([]);
+  const [showPreview, setShowPreview] = useState(false);
+  const [exportType, setExportType] = useState('merged'); // 'merged' 或 'categorized'
+  const [groupedData, setGroupedData] = useState({});
 
   // 獲取保養資料
   const fetchMaintenanceData = async () => {
@@ -33,10 +38,40 @@ export default function ExportExcel() {
       const { data, error: dbError } = await dbUtils.maintenancePhoto.getByProject(project.name);
       if (dbError) throw dbError;
       setMaintenanceData(data || []);
+      
+      // 處理分類數據
+      if (data && data.length > 0) {
+        const grouped = data.reduce((acc, item) => {
+          const thingValue = item.thing || '未分類';
+          if (!acc[thingValue]) {
+            acc[thingValue] = [];
+          }
+          acc[thingValue].push(item);
+          return acc;
+        }, {});
+        setGroupedData(grouped);
+      }
     } catch (err) {
       console.error('Error fetching maintenance data:', err);
       setError('無法獲取保養資料');
     }
+  };
+
+  // 生成預覽數據
+  const generatePreviewData = () => {
+    if (!maintenanceData.length) return;
+
+    const preview = maintenanceData.map((item, index) => ({
+      key: index,
+      序號: `№${index + 1}`,
+      位置: item.location || '',
+      內容: item.thing || '',
+      備註: '',
+      照片: item.photo_path ? '有照片' : '無照片'
+    }));
+    
+    setPreviewData(preview);
+    setShowPreview(true);
   };
 
   useEffect(() => {
@@ -45,7 +80,7 @@ export default function ExportExcel() {
     }
   }, [project]);
 
-  // 生成 Excel 文件 - 完全按照 Excel.py 的格式
+  // 生成 Excel 文件 - 支持合併和分類輸出
   const generateExcelFile = async () => {
     setLoading(true);
     setError(null);
@@ -65,7 +100,64 @@ export default function ExportExcel() {
       if (dbError) throw dbError;
 
       const workbook = new ExcelJS.Workbook();
-      const worksheet = workbook.addWorksheet('1008-範本');
+
+      if (exportType === 'merged') {
+        // 合併輸出：創建單一工作表
+        await createWorksheet(workbook, '1008-範本', data);
+      } else {
+        // 分類輸出：根據thing欄位創建多個工作表
+        const grouped = data.reduce((acc, item) => {
+          const thingValue = item.thing || '未分類';
+          if (!acc[thingValue]) {
+            acc[thingValue] = [];
+          }
+          acc[thingValue].push(item);
+          return acc;
+        }, {});
+
+        // 為每個分類創建工作表
+        for (const [thingValue, items] of Object.entries(grouped)) {
+          const sheetName = thingValue.length > 31 ? thingValue.substring(0, 31) : thingValue;
+          await createWorksheet(workbook, sheetName, items);
+        }
+      }
+
+      // 生成並下載文件
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { 
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+      });
+      
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      const fileName = exportType === 'merged' 
+        ? `${project.name}_合併輸出.xlsx`
+        : `${project.name}_分類輸出.xlsx`;
+      link.download = fileName;
+      link.click();
+
+      message.success({
+        content: `Excel 文件已成功下載！檔案 ${fileName} 已生成`,
+        duration: 3,
+        style: {
+          marginTop: '20vh',
+        }
+      });
+
+    } catch (err) {
+      console.error('生成 Excel 失敗:', err);
+      message.error({
+        content: '生成失敗：無法生成 Excel 文件，請稍後再試',
+        duration: 3
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 創建工作表的通用函數
+  const createWorksheet = async (workbook, sheetName, data) => {
+      const worksheet = workbook.addWorksheet(sheetName);
 
       // 設定全部列高和欄寬 - 按照 SETUP.md
       // 全部的列設定為 49.5
@@ -313,42 +405,48 @@ export default function ExportExcel() {
           }
         }
       }
-
-      // 生成並下載文件
-      const buffer = await workbook.xlsx.writeBuffer();
-      const blob = new Blob([buffer], { 
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
-      });
-      
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `${project.name}_1008範本.xlsx`;
-      link.click();
-
-      // 使用 message 而不是 Modal，避免卡住
-      message.success({
-        content: `Excel 文件已成功下載！檔案 ${project.name}_1008範本.xlsx 已生成`,
-        duration: 3,
-        style: {
-          marginTop: '20vh',
-        }
-      });
-
-    } catch (err) {
-      console.error('生成 Excel 失敗:', err);
-      message.error({
-        content: '生成失敗：無法生成 Excel 文件，請稍後再試',
-        duration: 3
-      });
-    } finally {
-      setLoading(false);
-    }
   };
 
   if (projectLoading) return <LoadingSpinner />;
   if (projectError || !project) {
     return <ErrorMessage message="找不到專案資料" onBack={() => navigate('/')} />;
   }
+
+  // 預覽表格的列定義
+  const previewColumns = [
+    {
+      title: '序號',
+      dataIndex: '序號',
+      key: '序號',
+      width: 80,
+      align: 'center',
+    },
+    {
+      title: '位置',
+      dataIndex: '位置',
+      key: '位置',
+      width: 150,
+    },
+    {
+      title: '內容',
+      dataIndex: '內容',
+      key: '內容',
+      width: 150,
+    },
+    {
+      title: '備註',
+      dataIndex: '備註',
+      key: '備註',
+      width: 150,
+    },
+    {
+      title: '照片',
+      dataIndex: '照片',
+      key: '照片',
+      width: 100,
+      align: 'center',
+    },
+  ];
 
   return (
     <PageLayout
@@ -360,6 +458,150 @@ export default function ExportExcel() {
         <h1>匯出 Excel - SETUP.md 格式</h1>
         <p>按照 SETUP.md 的完整格式生成季保養資料 Excel 檔案。</p>
         
+        {/* 輸出選項 */}
+        <Card 
+          title="📋 輸出選項" 
+          style={{ 
+            marginBottom: '20px',
+            backgroundColor: 'var(--bg-card)',
+            border: '1px solid var(--border-primary)'
+          }}
+          headStyle={{ color: 'white', backgroundColor: 'var(--bg-secondary)' }}
+          bodyStyle={{ backgroundColor: 'var(--bg-card)' }}
+        >
+          <Row gutter={[16, 16]}>
+            <Col span={12}>
+              <Checkbox
+                checked={exportType === 'merged'}
+                onChange={(e) => e.target.checked && setExportType('merged')}
+                style={{ color: 'white' }}
+              >
+                <span style={{ color: 'white' }}>
+                  <strong>合併輸出</strong>
+                  <br />
+                  <small style={{ color: 'var(--text-secondary)' }}>
+                    不分類，直接匯出所有 maintainance_photo 資料到單一工作表
+                  </small>
+                </span>
+              </Checkbox>
+            </Col>
+            <Col span={12}>
+              <Checkbox
+                checked={exportType === 'categorized'}
+                onChange={(e) => e.target.checked && setExportType('categorized')}
+                style={{ color: 'white' }}
+              >
+                <span style={{ color: 'white' }}>
+                  <strong>分類輸出</strong>
+                  <br />
+                  <small style={{ color: 'var(--text-secondary)' }}>
+                    根據 thing 欄位分類，每個不同值創建一個工作表
+                  </small>
+                </span>
+              </Checkbox>
+            </Col>
+          </Row>
+          
+          {exportType === 'categorized' && Object.keys(groupedData).length > 0 && (
+            <div style={{ marginTop: '16px', padding: '12px', backgroundColor: 'var(--bg-secondary)', borderRadius: '6px' }}>
+              <h4 style={{ color: 'white', margin: '0 0 8px 0' }}>將創建的工作表：</h4>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                {Object.entries(groupedData).map(([thingValue, items]) => (
+                  <span 
+                    key={thingValue}
+                    style={{ 
+                      backgroundColor: 'var(--primary-color)', 
+                      color: 'white', 
+                      padding: '4px 8px', 
+                      borderRadius: '4px',
+                      fontSize: '12px'
+                    }}
+                  >
+                    {thingValue} ({items.length}筆)
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </Card>
+
+        {/* 操作按鈕 */}
+        <Row gutter={[16, 16]} style={{ marginBottom: '20px' }}>
+          <Col>
+            <Button
+              type="default"
+              onClick={generatePreviewData}
+              disabled={!maintenanceData.length}
+              size="large"
+              style={{
+                height: '48px',
+                fontSize: '16px',
+                fontWeight: 600
+              }}
+            >
+              📋 預覽表格
+            </Button>
+          </Col>
+          <Col>
+            <Button
+              type="primary"
+              onClick={generateExcelFile}
+              loading={loading}
+              disabled={loading || !maintenanceData.length}
+              size="large"
+              style={{
+                background: 'var(--primary-gradient)',
+                border: 'none',
+                height: '48px',
+                fontSize: '16px',
+                fontWeight: 600
+              }}
+            >
+              {loading ? '正在生成 Excel...' : `下載 ${exportType === 'merged' ? '合併' : '分類'}輸出 Excel`}
+            </Button>
+          </Col>
+        </Row>
+
+        {/* 預覽表格 */}
+        {showPreview && (
+          <Card 
+            title="📊 表格預覽 (與匯出的表格一模一樣)" 
+            style={{ 
+              marginBottom: '20px',
+              backgroundColor: 'var(--bg-card)',
+              border: '1px solid var(--border-primary)'
+            }}
+            headStyle={{ color: 'white', backgroundColor: 'var(--bg-secondary)' }}
+            bodyStyle={{ backgroundColor: 'var(--bg-card)' }}
+            extra={
+              <Button 
+                type="text" 
+                onClick={() => setShowPreview(false)}
+                style={{ color: 'white' }}
+              >
+                隱藏預覽
+              </Button>
+            }
+          >
+            <Table
+              columns={previewColumns}
+              dataSource={previewData}
+              pagination={{ pageSize: 10 }}
+              size="small"
+              style={{ backgroundColor: 'white' }}
+            />
+          </Card>
+        )}
+
+        {error && (
+          <Alert 
+            message={error} 
+            type="error" 
+            style={{ marginTop: 20 }} 
+            showIcon
+          />
+        )}
+
         <div style={{ 
           background: 'var(--bg-card)', 
           padding: '16px', 
@@ -378,36 +620,13 @@ export default function ExportExcel() {
           </ul>
         </div>
 
-        <Button
-          type="primary"
-          onClick={generateExcelFile}
-          loading={loading}
-          disabled={loading}
-          size="large"
-          style={{
-            background: 'var(--primary-gradient)',
-            border: 'none',
-            height: '48px',
-            fontSize: '16px',
-            fontWeight: 600
-          }}
-        >
-          {loading ? '正在生成 Excel...' : '下載 1008範本 Excel'}
-        </Button>
-
-        {error && (
-          <Alert 
-            message={error} 
-            type="error" 
-            style={{ marginTop: 20 }} 
-            showIcon
-          />
-        )}
-
         <div style={{ marginTop: '24px', fontSize: '14px', color: 'var(--text-secondary)' }}>
           <p>📊 資料統計：共 {maintenanceData.length} 筆保養照片記錄</p>
           <p>📁 檔案格式：Excel (.xlsx)</p>
           <p>🎯 範本版本：1008-範本 (與 Excel.py 完全一致)</p>
+          {exportType === 'categorized' && (
+            <p>📂 分類統計：將創建 {Object.keys(groupedData).length} 個工作表</p>
+          )}
         </div>
       </div>
     </PageLayout>
