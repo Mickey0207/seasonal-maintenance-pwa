@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { dbUtils } from '../utils/database';
 
 // 自定義項目 Hook
@@ -7,33 +7,42 @@ export const useProject = (projectId) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchProject = async () => {
-      if (!projectId) return;
-      
-      setLoading(true);
-      setError(null);
-      
-      try {
-        const { data, error: fetchError } = await dbUtils.projects.getById(projectId);
-        if (fetchError) {
-          setError(fetchError);
-          setProject(null);
-        } else {
-          setProject(data);
-        }
-      } catch (err) {
-        setError(err);
+  const fetchProject = useCallback(async () => {
+    if (!projectId) {
+      setLoading(false);
+      return;
+    }
+    
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const { data, error: fetchError } = await dbUtils.projects.getById(projectId);
+      if (fetchError) {
+        setError(fetchError);
         setProject(null);
-      } finally {
-        setLoading(false);
+      } else {
+        setProject(data);
       }
-    };
-
-    fetchProject();
+    } catch (err) {
+      setError(err);
+      setProject(null);
+    } finally {
+      setLoading(false);
+    }
   }, [projectId]);
 
-  return { project, loading, error };
+  useEffect(() => {
+    fetchProject();
+  }, [fetchProject]);
+
+  const projectData = useMemo(() => ({
+    project,
+    loading,
+    error
+  }), [project, loading, error]);
+
+  return projectData;
 };
 
 // 自定義項目列表 Hook
@@ -42,7 +51,7 @@ export const useProjects = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
     setLoading(true);
     setError(null);
     
@@ -60,11 +69,18 @@ export const useProjects = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchProjects();
-  }, []);
+  }, [fetchProjects]);
 
-  return { projects, loading, error, fetchProjects };
+  const projectsData = useMemo(() => ({
+    projects,
+    loading,
+    error,
+    fetchProjects
+  }), [projects, loading, error, fetchProjects]);
+
+  return projectsData;
 };

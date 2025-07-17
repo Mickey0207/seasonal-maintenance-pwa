@@ -228,42 +228,143 @@ function ProjectTopBar({
 
   return (
     <>
-      <Layout.Header className="modern-topbar">
-        <div className="topbar-left">
-          <Button 
-            className="menu-trigger-btn" 
-            type="text" 
-            icon={<MenuOutlined />} 
-            onClick={() => setDrawerOpen(true)} 
-          />
-        </div>
-        
-        <div className="topbar-center" style={{ 
-          position: 'absolute',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          textAlign: 'center'
+      <Layout.Header className="unified-topbar modern-topbar">
+        <div className="topbar-container" style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          width: '100%',
+          height: '100%',
+          padding: '0 24px',
+          position: 'relative'
         }}>
-          <Typography.Title className="topbar-title" level={4}>
-            {projectName}
-          </Typography.Title>
-        </div>
-        
-        <div className="topbar-right" style={{ marginLeft: 'auto' }}>
-          <Dropdown 
-            menu={{ items: userMenuItems }}
-            trigger={["click"]} 
-            placement="bottomRight"
-            popupRender={(menu) => (
-              <div className="user-dropdown">
-                {menu}
-              </div>
-            )}
-          >
-            <Button className="user-menu-trigger" type="text" icon={<UserOutlined />}>
-              {userName || '用戶'}
-            </Button>
-          </Dropdown>
+          {/* 左側：選單按鈕 */}
+          <div className="topbar-left" style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px',
+            minWidth: '120px'
+          }}>
+            <Button 
+              className="menu-trigger-btn interactive-click" 
+              type="text" 
+              icon={<MenuOutlined />} 
+              onClick={() => setDrawerOpen(true)}
+              style={{ 
+                color: 'var(--text-primary)',
+                fontSize: '18px',
+                width: '44px',
+                height: '44px',
+                borderRadius: 'var(--radius-md)',
+                background: 'var(--bg-tertiary)',
+                border: '1px solid var(--border-primary)',
+                transition: 'var(--transition-smooth)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            />
+          </div>
+          
+          {/* 中央：標題 */}
+          <div className="topbar-center" style={{
+            flex: 1,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <Typography.Title 
+              className="unified-topbar-title gradient-text animate-fadeInDown" 
+              level={4}
+              style={{
+                margin: 0,
+                fontSize: '24px',
+                fontWeight: 700,
+                background: 'var(--primary-gradient)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                textAlign: 'center',
+                cursor: 'pointer',
+                transition: 'var(--transition-smooth)'
+              }}
+              onClick={() => navigate(ROUTES.HOME)}
+            >
+              {projectName || '季保養管理系統'}
+            </Typography.Title>
+          </div>
+          
+          {/* 右側：用戶選單 */}
+          <div className="topbar-right" style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            minWidth: '120px',
+            justifyContent: 'flex-end'
+          }}>
+            {/* 用戶信息顯示 */}
+            <div className="user-info" style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '8px 12px',
+              background: 'transparent',
+              borderRadius: 'var(--radius-md)',
+              border: 'none',
+              transition: 'var(--transition-smooth)'
+            }}>
+              <span style={{ 
+                color: 'var(--text-secondary)', 
+                fontSize: '14px',
+                fontWeight: 500
+              }}>
+                👋
+              </span>
+              <span style={{ 
+                color: 'var(--text-primary)', 
+                fontSize: '14px',
+                fontWeight: 600,
+                maxWidth: '80px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap'
+              }}>
+                {userName || '用戶'}
+              </span>
+            </div>
+            
+            {/* 用戶選單按鈕 */}
+            <Dropdown 
+              menu={{ items: userMenuItems }}
+              trigger={["click"]} 
+              placement="bottomRight"
+              overlayClassName="unified-dropdown"
+              popupRender={(menu) => (
+                <div className="user-dropdown">
+                  {menu}
+                </div>
+              )}
+            >
+              <Button 
+                className="user-menu-trigger interactive-click neon-glow" 
+                type="text" 
+                style={{ 
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '8px 12px',
+                  height: '44px',
+                  background: 'var(--bg-tertiary)',
+                  border: '1px solid var(--border-primary)',
+                  borderRadius: 'var(--radius-md)',
+                  color: 'var(--text-primary)',
+                  transition: 'var(--transition-bounce)'
+                }}
+              >
+                <UserOutlined style={{ fontSize: '16px' }} />
+              </Button>
+            </Dropdown>
+          </div>
         </div>
       </Layout.Header>
       

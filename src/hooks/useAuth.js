@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { authUtils } from '../utils/auth';
 
 // 自定義認證 Hook
@@ -7,38 +7,40 @@ export const useAuth = () => {
   const [userName, setUserName] = useState('');
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      setLoading(true);
-      try {
-        const { user: currentUser } = await authUtils.getCurrentUser();
-        setUser(currentUser);
-        
-        if (currentUser) {
-          const name = await authUtils.getUserName();
-          setUserName(name);
-        }
-      } catch (error) {
-        console.error('獲取用戶資料失敗:', error);
-      } finally {
-        setLoading(false);
+  const fetchUserData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { user: currentUser } = await authUtils.getCurrentUser();
+      setUser(currentUser);
+      
+      if (currentUser) {
+        const name = await authUtils.getUserName();
+        setUserName(name);
       }
-    };
-
-    fetchUserData();
+    } catch (error) {
+      // Silent error handling in production
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  const logout = async () => {
+  useEffect(() => {
+    fetchUserData();
+  }, [fetchUserData]);
+
+  const logout = useCallback(async () => {
     await authUtils.logout();
     setUser(null);
     setUserName('');
-  };
+  }, []);
 
-  return {
+  const authData = useMemo(() => ({
     user,
     userName,
     loading,
     logout,
     isAuthenticated: !!user
-  };
+  }), [user, userName, loading, logout]);
+
+  return authData;
 };

@@ -90,7 +90,6 @@ export default function ModernLoginForm({ onLoginSuccess }) {
             };
             
             const handleSuccess = (userName) => {
-              console.log('用戶名設定成功:', userName);
               handleClose();
             };
             

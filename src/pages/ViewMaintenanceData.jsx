@@ -82,7 +82,6 @@ export default function ViewMaintenanceData() {
       groupDataByLocation(sortedData);
 
     } catch (error) {
-      console.error('獲取保養資料失敗:', error);
     } finally {
       setDataLoading(false);
     }
@@ -143,7 +142,6 @@ export default function ViewMaintenanceData() {
 
   const getImageUrl = (path) => {
     if (!path) {
-      console.log('圖片路徑為空:', path);
       return null;
     }
     
@@ -153,17 +151,14 @@ export default function ViewMaintenanceData() {
         .from('maintainance-data-photo')
         .getPublicUrl(path);
       
-      console.log('生成的圖片 URL:', path, '->', data.publicUrl);
       return data.publicUrl;
     } catch (error) {
-      console.error('生成圖片 URL 失敗:', path, error);
       return null;
     }
   };
 
   // 切換選擇模式
   const toggleSelectionMode = () => {
-    console.log('toggleSelectionMode 被調用', !isSelectionMode);
     setIsSelectionMode(!isSelectionMode);
     setSelectedItems([]);
   };
@@ -188,13 +183,11 @@ export default function ViewMaintenanceData() {
 
   // 批量刪除季保養項目 (maintainance_data)
   const handleBatchDeleteData = async () => {
-    console.log('handleBatchDeleteData 被調用', selectedItems);
     if (selectedItems.length === 0) {
       message.warning('請先選擇要刪除的項目');
       return;
     }
 
-    console.log('準備顯示刪除季保養項目確認對話框');
     
     modal.confirm({
       title: <span style={{ color: 'var(--text-primary)' }}><DeleteOutlined /> 確認刪除季保養項目</span>,
@@ -205,7 +198,6 @@ export default function ViewMaintenanceData() {
       centered: true,
       className: 'modern-modal',
       onOk: async () => {
-      console.log('用戶確認刪除季保養項目');
       setDeleteLoading(true);
       try {
         // 只刪除 maintainance_data 記錄
@@ -223,7 +215,6 @@ export default function ViewMaintenanceData() {
         // 重新獲取資料
         fetchMaintenanceData();
       } catch (error) {
-        console.error('刪除季保養項目失敗:', error);
         Modal.error({
           title: '刪除失敗',
           content: '操作失敗，請稍後再試',
@@ -238,7 +229,6 @@ export default function ViewMaintenanceData() {
 
   // 批量刪除本次季保養資料 (maintainance_photo)
   const handleBatchDeletePhoto = async () => {
-    console.log('handleBatchDeletePhoto 被調用', selectedItems);
     if (selectedItems.length === 0) {
       message.warning('請先選擇要刪除的項目');
       return;
@@ -334,9 +324,7 @@ export default function ViewMaintenanceData() {
                 alt="保養照片"
                 src={getImageUrl(item.photo_path)}
                 style={{ height: 160, objectFit: 'cover', width: '100%' }}
-                onLoad={() => console.log('圖片載入成功:', item.photo_path)}
                 onError={(e) => {
-                  console.error('圖片載入失敗:', item.photo_path, e);
                   e.target.style.display = 'none';
                   e.target.nextSibling.style.display = 'flex';
                 }}
@@ -503,7 +491,6 @@ export default function ViewMaintenanceData() {
                       danger
                       icon={<DeleteOutlined />}
                       onClick={() => {
-                        console.log('刪除季保養項目按鈕被點擊');
                         handleBatchDeleteData();
                       }}
                       loading={deleteLoading}
@@ -517,7 +504,6 @@ export default function ViewMaintenanceData() {
                       danger
                       icon={<DeleteOutlined />}
                       onClick={() => {
-                        console.log('刪除本次季保養資料按鈕被點擊');
                         handleBatchDeletePhoto();
                       }}
                       loading={deleteLoading}

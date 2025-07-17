@@ -64,14 +64,11 @@ export default function ProjectPage() {
 
   // 監聽表單欄位變更，更新預覽
   const handleFormChange = (changedValues, allValues) => {
-    console.log('handleValuesChange called. changedValues:', changedValues, 'allValues:', allValues);
     if ('floor' in changedValues) {
       form.setFieldsValue({ thing: undefined, location: undefined });
-      console.log('Floor changed, resetting thing and location in form.');
     }
     if ('thing' in changedValues) {
       form.setFieldsValue({ location: undefined });
-      console.log('Thing changed, resetting location in form.');
     }
     // Always re-filter options after any value change
     filterOptions();
@@ -87,7 +84,6 @@ export default function ProjectPage() {
       const { data, error } = await dbUtils.maintenanceSettings.getByProject(project.name);
 
       if (error && error.code !== 'PGRST116') {
-        console.error('檢查保養設定失敗:', error);
         return;
       }
 
@@ -105,7 +101,7 @@ export default function ProjectPage() {
         }
       }
     } catch (error) {
-      console.error('檢查保養設定錯誤:', error);
+      // Silent error handling
     }
   };
 
@@ -115,7 +111,6 @@ export default function ProjectPage() {
       if (error) throw error;
       setAllMaintenanceOptions(data);
     } catch (error) {
-      console.error('獲取保養選項失敗:', error);
     }
   };
 
@@ -127,19 +122,14 @@ export default function ProjectPage() {
       const submitted = new Set(data.map(item => `${item.floor}_${item.thing}_${item.location}`));
       setSubmittedLocations(Array.from(submitted));
     } catch (error) {
-      console.error('獲取已提交位置失敗:', error);
     }
   };
 
   const filterOptions = useCallback(() => {
-    console.log('--- filterOptions (Attempt 3) started ---');
-    console.log('allMaintenanceOptions (initial):', allMaintenanceOptions);
-    console.log('submittedLocations (initial):', submittedLocations);
 
     const currentSelectedFloor = form.getFieldValue('floor');
     const currentSelectedThing = form.getFieldValue('thing');
 
-    console.log('Current form values - selectedFloor:', currentSelectedFloor, 'selectedThing:', currentSelectedThing);
 
     const submittedSet = new Set(submittedLocations);
 
@@ -158,7 +148,6 @@ export default function ProjectPage() {
     } else {
       setFilteredLocations([]);
     }
-    console.log('Filtered Locations (Step 1):', [...new Set(newFilteredLocations)]);
 
     // Step 2: Determine truly available things for the currently selected floor
     // A thing is available if, for its floor, it has at least one unsubmitted location
@@ -182,7 +171,6 @@ export default function ProjectPage() {
     } else {
       setFilteredThings([]);
     }
-    console.log('Filtered Things (Step 2):', [...new Set(newFilteredThings)]);
 
     // Step 3: Determine truly available floors
     // A floor is available if it has at least one thing that has at least one unsubmitted location
@@ -211,13 +199,10 @@ export default function ProjectPage() {
       }
     });
     setAvailableFloors(Array.from(trulyAvailableFloors));
-    console.log('Available Floors (Step 3):', Array.from(trulyAvailableFloors));
-    console.log('--- filterOptions (Attempt 3) finished ---');
 
   }, [allMaintenanceOptions, form, submittedLocations]);
 
   useEffect(() => {
-    console.log('ProjectPage useEffect for filterOptions triggered. Project:', project, 'allMaintenanceOptions.length:', allMaintenanceOptions.length, 'submittedLocations.length:', submittedLocations.length);
     // Ensure filterOptions runs when dependencies change, and also on initial load if data is present
     // or if project is loaded and data is empty (to correctly set initial empty states)
     if (project && (allMaintenanceOptions.length > 0 || submittedLocations.length > 0 || (allMaintenanceOptions.length === 0 && submittedLocations.length === 0))) {
@@ -236,7 +221,6 @@ export default function ProjectPage() {
       const watermarkedFile = await addWatermarkToPhoto(file, formValues);
       return URL.createObjectURL(watermarkedFile);
     } catch (error) {
-      console.error('預覽浮水印生成失敗:', error);
       // 如果浮水印失敗，返回原始圖片
       return URL.createObjectURL(file);
     }
@@ -251,7 +235,6 @@ export default function ProjectPage() {
         // 創建帶浮水印的預覽URL
         const previewUrl = await generatePreviewWithWatermark(file);
         setPhotoPreview(previewUrl);
-        console.log('Photo selected:', file.name, file.type, file.size);
       } else {
         message.error('請選擇圖片檔案');
       }
@@ -334,7 +317,6 @@ export default function ProjectPage() {
             ctx.fillText(line, textX, textY);
           });
 
-          console.log('Watermark added with content:', watermarkLines);
 
           // 轉換為檔案
           canvas.toBlob((blob) => {
@@ -361,7 +343,6 @@ export default function ProjectPage() {
       return;
     }
 
-    console.log('Submitting maintenance data with photo:', values);
     setSubmitting(true);
 
     try {
@@ -369,9 +350,7 @@ export default function ProjectPage() {
 
       // 如果啟用浮水印，添加浮水印
       if (enableWatermark) {
-        console.log('Adding watermark to photo...');
         fileToUpload = await addWatermarkToPhoto(photoFile, values);
-        console.log('Watermark added successfully');
       }
 
       // 上傳照片到 Supabase Storage
@@ -398,7 +377,6 @@ export default function ProjectPage() {
         .eq('location', values.location)
         .single();
 
-      console.log('Queried maintenance data:', maintenanceData, 'Error:', queryError);
 
       // 準備要插入的資料
       const insertData = {
@@ -413,23 +391,19 @@ export default function ProjectPage() {
         company: maintenanceData?.company || '維護公司'
       };
 
-      console.log('Inserting data to maintainance_photo:', insertData);
 
       // 儲存保養資料到資料庫 (使用 maintainance_photo 表)
       const { data, error } = await supabase
         .from('maintainance_photo')
         .insert(insertData);
 
-      console.log('Database insert result:', { data, error });
 
       if (error) {
-        console.error('Database insert error details:', error);
         throw new Error(`資料庫儲存失敗: ${error.message}`);
       }
 
       // 檢查是否成功插入（即使 data 為 null，只要沒有 error 就算成功）
       if (!error) {
-        console.log('Data saved successfully to database');
         setSaveSuccess(true);
         setSaveMessage('保養資料已成功儲存！');
         form.resetFields();
@@ -440,13 +414,11 @@ export default function ProjectPage() {
         removePhoto();
         await fetchSubmittedLocations();
       } else {
-        console.error('Save failed:', error);
         setSaveSuccess(false);
         setSaveMessage(error?.message || '儲存失敗，請重試');
       }
       setSaveResultVisible(true);
     } catch (error) {
-      console.error('提交失敗:', error);
       setSaveSuccess(false);
       setSaveMessage(error.message || '儲存失敗，請重試');
       setSaveResultVisible(true);

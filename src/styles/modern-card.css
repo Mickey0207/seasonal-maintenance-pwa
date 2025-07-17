@@ -1,0 +1,95 @@
+/* 現代化卡片樣式 - 統一主題擴展 */
+
+.modern-card {
+  background: var(--bg-glass) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-card) !important;
+  transition: var(--transition-smooth) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.modern-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--glass-gradient);
+  opacity: 0.8;
+}
+
+.modern-card:hover {
+  transform: translateY(-4px) !important;
+  border-color: var(--border-accent) !important;
+  box-shadow: var(--shadow-glow) !important;
+}
+
+/* 現代化頂部導航 */
+.modern-topbar {
+  background: var(--bg-glass) !important;
+  backdrop-filter: blur(20px) !important;
+  border: none !important;
+  border-bottom: 1px solid var(--border-primary) !important;
+  box-shadow: var(--shadow-card) !important;
+  height: 70px !important;
+}
+
+/* 現代化模態框 */
+.modern-modal .ant-modal-content {
+  background: var(--bg-glass) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-intense) !important;
+}
+
+.modern-modal .ant-modal-header {
+  background: transparent !important;
+  border-bottom: 1px solid var(--border-primary) !important;
+}
+
+.modern-modal .ant-modal-title {
+  color: var(--text-primary) !important;
+  font-weight: 600 !important;
+}
+
+/* 現代化選擇器 */
+.modern-select .ant-select-selector {
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: var(--radius-md) !important;
+  color: var(--text-primary) !important;
+  transition: var(--transition-smooth) !important;
+}
+
+.modern-select .ant-select-selector:hover {
+  border-color: var(--border-accent) !important;
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.1) !important;
+}
+
+.modern-select.ant-select-focused .ant-select-selector {
+  border-color: var(--text-accent) !important;
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2) !important;
+}
+
+/* 手機版優化 */
+@media (max-width: 768px) {
+  .modern-topbar {
+    height: 60px !important;
+    padding: 0 16px !important;
+  }
+  
+  .modern-card {
+    margin: var(--mobile-margin) !important;
+    border-radius: var(--radius-mobile) !important;
+  }
+  
+  .modern-modal .ant-modal-content {
+    margin: var(--mobile-margin) !important;
+    border-radius: var(--radius-mobile) !important;
+  }
+}

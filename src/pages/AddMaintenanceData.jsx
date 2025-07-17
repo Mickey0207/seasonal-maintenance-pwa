@@ -46,15 +46,6 @@ export default function AddMaintenanceData() {
         direction: project.directions
       };
 
-      console.log('準備提交的資料:', payload);
-      console.log('專案ID:', id);
-      console.log('專案資料:', project);
-
-      // 檢查每個欄位的值和類型
-      console.log('欄位檢查:');
-      Object.entries(payload).forEach(([key, value]) => {
-        console.log(`${key}:`, value, typeof value);
-      });
       
       const { error } = await dbUtils.maintenanceData.create(payload);
 
@@ -78,14 +69,7 @@ export default function AddMaintenanceData() {
         user: userName
       });
     } catch (error) {
-      console.error('新增季保養資料失敗:', error);
-      console.error('錯誤詳細資訊:', {
-        message: error.message,
-        code: error.code,
-        details: error.details,
-        hint: error.hint,
-        payload: payload
-      });
+      message.error('新增季保養資料失敗: ' + (error.message || '未知錯誤'));
       // 使用 message 而不是 Modal，避免卡住
       message.error({
         content: `新增失敗：${error.message || '未知錯誤'}`,
