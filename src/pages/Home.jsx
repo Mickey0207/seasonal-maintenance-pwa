@@ -80,20 +80,10 @@ export default function Home() {
         {APP_CONFIG.HOME_SIDEBAR_TITLE}
       </div>
       <Button 
-        className="sidebar-menu-item" 
+        className="sidebar-menu-item sidebar-primary-btn" 
         type="text" 
         icon={<PlusOutlined />} 
         onClick={handleCreateProject}
-        style={{
-          background: 'var(--primary-gradient)',
-          color: 'white',
-          borderRadius: '8px',
-          margin: '4px 0',
-          fontWeight: 600,
-          boxShadow: 'var(--shadow-primary)',
-          border: '1px solid var(--border-primary)',
-          transition: 'var(--transition-smooth)'
-        }}
       >
         新增案場
       </Button>

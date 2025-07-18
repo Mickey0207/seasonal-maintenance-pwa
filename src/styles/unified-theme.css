@@ -34,16 +34,21 @@
   --text-accent: #60a5fa;
   --text-success: #10b981;
   --text-warning: #f59e0b;
+  --text-gold: #ffd700;
   --text-danger: #ef4444;
   
   /* 🔲 邊框和陰影 */
   --border-primary: rgba(255, 255, 255, 0.1);
   --border-accent: rgba(96, 165, 250, 0.3);
   --border-glow: rgba(96, 165, 250, 0.5);
+  --border-success: rgba(16, 185, 129, 0.3);
+  --border-warning: rgba(245, 158, 11, 0.3);
+  --border-danger: rgba(239, 68, 68, 0.3);
   --shadow-glow: 0 0 30px rgba(96, 165, 250, 0.4);
   --shadow-card: 0 10px 40px rgba(0, 0, 0, 0.5);
   --shadow-intense: 0 25px 80px rgba(0, 0, 0, 0.7);
   --shadow-mobile: 0 8px 25px rgba(0, 0, 0, 0.6);
+  --shadow-primary: 0 0 25px rgba(96, 165, 250, 0.4);
   --shadow-success: 0 0 25px rgba(16, 185, 129, 0.4);
   --shadow-danger: 0 0 25px rgba(239, 68, 68, 0.4);
   --shadow-warning: 0 0 25px rgba(245, 158, 11, 0.4);
@@ -1469,25 +1474,147 @@ body {
   border-bottom: 1px solid var(--border-primary) !important;
 }
 
-/* 側邊選單樣式 */
+/* 側邊選單樣式 - 強制覆蓋所有可能的背景 */
+.modern-sidebar,
+.modern-sidebar .ant-drawer,
+.modern-sidebar .ant-drawer-content,
+.modern-sidebar .ant-drawer-content-wrapper,
+.modern-sidebar .ant-drawer-wrapper-body,
+.modern-sidebar .ant-drawer-body {
+  background: var(--bg-primary) !important;
+  background-color: var(--bg-primary) !important;
+}
+
 .modern-sidebar .ant-drawer-content {
-  background: var(--bg-glass) !important;
   backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--border-primary) !important;
+  box-shadow: var(--shadow-intense) !important;
+}
+
+/* 全域 Drawer 深色主題覆蓋 */
+.ant-drawer.modern-sidebar,
+.ant-drawer .modern-sidebar,
+.ant-drawer-content-wrapper .modern-sidebar,
+.ant-drawer-content .modern-sidebar {
+  background: var(--bg-primary) !important;
+  background-color: var(--bg-primary) !important;
+}
+
+/* 針對所有可能的 Drawer 子元素 */
+.modern-sidebar *:not(.sidebar-menu-item):not(.sidebar-title):not(.sidebar-divider) {
+  background: inherit !important;
+}
+
+.ant-drawer-mask {
+  background: rgba(0, 0, 0, 0.7) !important;
 }
 
 .modern-sidebar .ant-drawer-header {
-  background: transparent !important;
+  background: var(--bg-secondary) !important;
   border-bottom: 1px solid var(--border-primary) !important;
+  padding: 16px 24px !important;
 }
 
 .modern-sidebar .ant-drawer-title {
   color: var(--text-primary) !important;
   font-weight: 600 !important;
+  font-size: 18px !important;
+  /* 移除漸變背景，使用淺色文字 */
 }
 
 .modern-sidebar .ant-drawer-body {
-  background: transparent !important;
+  background: var(--bg-primary) !important;
   padding: 16px !important;
+}
+
+/* 側邊欄選單項目樣式 */
+.sidebar-menu-item {
+  width: 100% !important;
+  height: 48px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 12px !important;
+  padding: 12px 16px !important;
+  margin: 4px 0 !important;
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: var(--radius-md) !important;
+  color: var(--text-primary) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  transition: var(--transition-smooth) !important;
+  text-align: left !important;
+  box-shadow: var(--shadow-card) !important;
+}
+
+/* 側邊欄標題樣式 */
+.sidebar-title {
+  color: var(--text-primary) !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  margin-bottom: 16px !important;
+  padding: 0 4px !important;
+  /* 使用淺色文字而非漸變 */
+}
+
+.sidebar-menu-item:hover {
+  background: var(--bg-hover) !important;
+  border-color: var(--border-accent) !important;
+  color: var(--text-accent) !important;
+  transform: translateX(4px) !important;
+  box-shadow: var(--shadow-glow) !important;
+}
+
+.sidebar-menu-item:active {
+  transform: translateX(2px) scale(0.98) !important;
+}
+
+.sidebar-menu-item .anticon {
+  font-size: 16px !important;
+  color: inherit !important;
+}
+
+/* 側邊欄分隔線 */
+.sidebar-divider {
+  height: 1px !important;
+  background: var(--border-primary) !important;
+  margin: 16px 0 !important;
+  opacity: 0.6 !important;
+}
+
+/* 主要按鈕特殊樣式 */
+.sidebar-menu-item.sidebar-primary-btn {
+  background: var(--primary-gradient) !important;
+  border: 1px solid var(--border-accent) !important;
+  color: var(--text-primary) !important;
+  font-weight: 600 !important;
+  box-shadow: var(--shadow-primary) !important;
+}
+
+.sidebar-menu-item.sidebar-primary-btn:hover {
+  background: linear-gradient(135deg, #5b7cfa 0%, #6b46c1 100%) !important;
+  border-color: var(--border-glow) !important;
+  color: var(--text-primary) !important;
+  transform: translateX(4px) !important;
+  box-shadow: var(--shadow-glow) !important;
+}
+
+/* 刪除按鈕特殊樣式 */
+.sidebar-menu-item.delete-all-data-btn {
+  background: var(--danger-gradient) !important;
+  border: 1px solid var(--border-danger) !important;
+  color: var(--text-primary) !important;
+  font-weight: 600 !important;
+  box-shadow: var(--shadow-danger) !important;
+}
+
+.sidebar-menu-item.delete-all-data-btn:hover {
+  background: linear-gradient(135deg, #ff2d55 0%, #ff1744 100%) !important;
+  border-color: var(--border-danger) !important;
+  color: var(--text-primary) !important;
+  transform: translateX(4px) !important;
+  box-shadow: var(--shadow-danger) !important;
 }
 
 /* 用戶下拉選單樣式 */
@@ -1563,5 +1690,51 @@ body {
   /* 手機版側邊選單 */
   .modern-sidebar .ant-drawer-content {
     border-radius: 0 var(--radius-mobile) var(--radius-mobile) 0 !important;
+    background: var(--bg-primary) !important;
+  }
+  
+  .modern-sidebar .ant-drawer-header {
+    padding: 12px 16px !important;
+    background: var(--bg-secondary) !important;
+    border-bottom: 1px solid var(--border-primary) !important;
+  }
+  
+  .modern-sidebar .ant-drawer-title {
+    font-size: 16px !important;
+    color: var(--text-primary) !important;
+  }
+  
+  .modern-sidebar .ant-drawer-body {
+    padding: 12px !important;
+    background: var(--bg-primary) !important;
+  }
+  
+  .sidebar-menu-item {
+    height: var(--mobile-button-height) !important;
+    padding: 12px 14px !important;
+    margin: 6px 0 !important;
+    border-radius: var(--radius-mobile) !important;
+    font-size: 15px !important;
+    gap: 10px !important;
+  }
+  
+  .sidebar-menu-item:hover {
+    transform: translateX(2px) !important;
+    background: var(--bg-hover) !important;
+    border-color: var(--border-accent) !important;
+    box-shadow: var(--shadow-glow) !important;
+  }
+  
+  .sidebar-menu-item .anticon {
+    font-size: 18px !important;
+  }
+  
+  .sidebar-divider {
+    margin: 12px 0 !important;
+  }
+  
+  .sidebar-title {
+    font-size: 14px !important;
+    margin-bottom: 12px !important;
   }
 }

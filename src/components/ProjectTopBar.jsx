@@ -199,16 +199,6 @@ function ProjectTopBar({
         type="text" 
         icon={<ExclamationCircleOutlined />} 
         onClick={handleDeleteAllMaintenanceData}
-        style={{
-          background: 'var(--danger-gradient)',
-          color: 'white',
-          borderRadius: '8px',
-          margin: '4px 0',
-          fontWeight: 600,
-          boxShadow: 'var(--shadow-danger)',
-          border: '1px solid var(--border-danger)',
-          transition: 'var(--transition-smooth)'
-        }}
       >
         刪除所有季保養資料
       </Button>

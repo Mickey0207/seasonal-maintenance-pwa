@@ -10,6 +10,7 @@ import { useProject } from '../hooks/useProject';
 import { dbUtils } from '../utils/database';
 import { supabase } from '../lib/supabaseClient';
 import { ROUTES } from '../config/constants';
+import '../styles/horizontal-scroll.css';
 
 const { Title, Text } = Typography;
 
@@ -288,17 +289,19 @@ export default function ViewMaintenanceData() {
     const hasPhoto = item.photo_path;
     const isSelected = selectedItems.includes(item.id);
     const cardStyle = {
-      minWidth: 280,
+      minWidth: 200,
+      maxWidth: 220,
       flexShrink: 0,
       position: 'relative',
       border: isSelected ? '2px solid #1890ff' : undefined,
-      boxShadow: isSelected ? '0 0 10px rgba(24, 144, 255, 0.3)' : undefined
+      boxShadow: isSelected ? '0 0 10px rgba(24, 144, 255, 0.3)' : undefined,
+      margin: '0 8px'
     };
 
     return (
       <Card
         key={item.id}
-        className={`modern-card ${hasPhoto ? '' : 'maintenance-card-missing'}`}
+        className={`modern-card compact-maintenance-card ${hasPhoto ? '' : 'maintenance-card-missing'}`}
         style={cardStyle}
         cover={
           <div style={{ position: 'relative' }}>
@@ -323,7 +326,7 @@ export default function ViewMaintenanceData() {
               <img
                 alt="保養照片"
                 src={getImageUrl(item.photo_path)}
-                style={{ height: 160, objectFit: 'cover', width: '100%' }}
+                style={{ height: 120, objectFit: 'cover', width: '100%' }}
                 onError={(e) => {
                   e.target.style.display = 'none';
                   e.target.nextSibling.style.display = 'flex';
@@ -331,14 +334,14 @@ export default function ViewMaintenanceData() {
               />
             ) : (
               <div style={{ 
-                height: 160, 
+                height: 120, 
                 display: 'flex', 
                 alignItems: 'center', 
                 justifyContent: 'center',
                 backgroundColor: 'rgba(255, 77, 79, 0.2)',
-                color: '#ff4d4f'
+                color: 'var(--text-danger)'
               }}>
-                <WarningOutlined style={{ fontSize: 48 }} />
+                <WarningOutlined style={{ fontSize: 32 }} />
               </div>
             )}
           </div>
@@ -346,29 +349,34 @@ export default function ViewMaintenanceData() {
       >
         <Card.Meta
           title={
-            <div style={{ color: hasPhoto ? 'var(--text-primary)' : '#ff4d4f' }}>
+            <div style={{ 
+              color: hasPhoto ? 'var(--text-primary)' : 'var(--text-danger)',
+              fontSize: '14px',
+              fontWeight: 600,
+              marginBottom: '8px'
+            }}>
               {item.location}
             </div>
           }
           description={
             <div>
-              <Text style={{ color: 'var(--text-secondary)' }}>
+              <Text style={{ color: 'var(--text-secondary)', fontSize: '12px' }}>
                 檢查項目：{item.thing}
               </Text>
               <br />
-              <Text style={{ color: 'var(--text-muted)' }}>
+              <Text style={{ color: 'var(--text-muted)', fontSize: '11px' }}>
                 樓層：{item.floor}
               </Text>
               <br />
-              <Text style={{ color: 'var(--text-muted)' }}>
+              <Text style={{ color: 'var(--text-muted)', fontSize: '11px' }}>
                 新增日期：{item.maintainance_time}
               </Text>
               <br />
-              <Text style={{ color: 'var(--text-muted)' }}>
+              <Text style={{ color: 'var(--text-muted)', fontSize: '11px' }}>
                 保養者：{item.maintainance_user || '未填寫'}
               </Text>
               {!hasPhoto && (
-                <div style={{ marginTop: 8, color: '#ff4d4f', fontSize: 12 }}>
+                <div style={{ marginTop: 6, color: 'var(--text-danger)', fontSize: 10 }}>
                   ⚠️ 缺少照片資料
                 </div>
               )}
@@ -399,14 +407,25 @@ export default function ViewMaintenanceData() {
         }}>
           📂 {groupName}
         </Title>
-        <div className="horizontal-scroll">
+        <div className="horizontal-scroll-container" style={{
+          display: 'flex',
+          overflowX: 'auto',
+          overflowY: 'hidden',
+          gap: '0px',
+          padding: '8px 0',
+          scrollBehavior: 'smooth',
+          WebkitOverflowScrolling: 'touch',
+          scrollbarWidth: 'thin',
+          scrollbarColor: 'var(--border-accent) transparent'
+        }}>
           {items.map((item, index) => (
             <div 
               key={item.id}
               className="animate-scaleIn"
               style={{
                 animationDelay: `${(groupIndex * 0.1) + (index * 0.05)}s`,
-                animationFillMode: 'both'
+                animationFillMode: 'both',
+                flexShrink: 0
               }}
             >
               {renderMaintenanceCard(item)}
